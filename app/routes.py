@@ -1,6 +1,4 @@
-import io
 import logging
-import zipfile
 from flask import request, jsonify
 from structlog import wrap_logger
 
