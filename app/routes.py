@@ -29,19 +29,34 @@ def deliver_comments():
     return process("EDCComments", "comments")
 
 
+@app.errorhandler(500)
+def server_error(error=None):
+    logger.error("Server error", error=repr(error))
+    message = {
+        'status': 500,
+        'message': "Internal server error: " + repr(error),
+    }
+    resp = jsonify(message)
+    resp.status_code = 500
+    return resp
+
+
 def process(dataset, directory):
-    files = request.files
-    file_bytes = files['zip'].read()
-    filename = files['zip'].filename
-    logger.info(f"filename: {filename}")
-    description = request.args.get("description")
-    logger.info(f"description: {description}")
-    iteration = request.args.get("iteration")
-    logger.info(f"iteration: {iteration}")
-    deliver(file_bytes=file_bytes,
-            filename=filename,
-            dataset=dataset,
-            description=description,
-            iteration=iteration,
-            directory=directory)
-    return jsonify(success=True)
+    try:
+        files = request.files
+        file_bytes = files['zip'].read()
+        filename = files['zip'].filename
+        logger.info(f"filename: {filename}")
+        description = request.args.get("description")
+        logger.info(f"description: {description}")
+        iteration = request.args.get("iteration")
+        logger.info(f"iteration: {iteration}")
+        deliver(file_bytes=file_bytes,
+                filename=filename,
+                dataset=dataset,
+                description=description,
+                iteration=iteration,
+                directory=directory)
+        return jsonify(success=True)
+    except Exception as e:
+        return server_error(e)

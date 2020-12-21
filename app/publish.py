@@ -30,18 +30,6 @@ def publish_data(message_str: str, filename: str):
     return future.result()
 
 
-def get_description(survey_dict: dict) -> str:
-    return "{} survey response for period {} sample unit {}".format(
-        survey_dict['survey_id'],
-        survey_dict['collection']['period'],
-        survey_dict['metadata']['ru_ref']
-    )
-
-
-def get_iteration(survey_dict: dict) -> str:
-    return survey_dict['collection']['period']
-
-
 def create_dap_message(data_bytes: bytes,
                        filename: str,
                        dataset: str,
