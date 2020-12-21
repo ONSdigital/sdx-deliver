@@ -14,13 +14,14 @@ def deliver(file_bytes: bytes,
             filename: str,
             dataset: str,
             description: str,
-            iteration: str):
+            iteration: str,
+            directory: str):
 
     logger.info("encrypting")
     encrypted_payload = encrypt_data(file_bytes)
 
     logger.info("storing")
-    write_to_bucket(encrypted_payload)
+    write_to_bucket(encrypted_payload, filename=filename, directory=directory)
 
     logger.info("sending dap notification")
     notify_dap(data=encrypted_payload,

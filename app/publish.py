@@ -1,7 +1,14 @@
+import logging
+
+from structlog import wrap_logger
+
 from app import dap_publisher, dap_topic_path
 import hashlib
 import json
 from datetime import datetime
+
+
+logger = wrap_logger(logging.getLogger(__name__))
 
 
 def notify_dap(data: str, filename: str, dataset: str, description: str, iteration: str):
@@ -19,6 +26,7 @@ def publish_data(message_str: str, filename: str):
     message = message_str.encode("utf-8")
     # When you publish a message, the client returns a future.
     future = dap_publisher.publish(dap_topic_path, message, filename=filename)
+    logger.info("published message to dap")
     return future.result()
 
 
@@ -59,7 +67,7 @@ def create_dap_message(data_bytes: bytes,
         'schemaversion': '1'
     }
 
-    print("Created dap data")
+    logger.info("Created dap data")
     str_dap_message = json.dumps(dap_message)
     return str_dap_message
 

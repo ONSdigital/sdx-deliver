@@ -16,4 +16,4 @@ def write_to_bucket(data: str, filename: str, directory: str):
     bucket = storage_client.bucket('sdx-outputs')
     blob = bucket.blob(path)
     blob.upload_from_string(data)
-    logger.info('Successfully uploaded: ', filename)
+    logger.info(f"Successfully uploaded: {filename} to {directory}")

@@ -1,58 +1,49 @@
 import io
+import logging
 import zipfile
 from flask import request, jsonify
+from structlog import wrap_logger
+
 from app import app
 from app.deliver import deliver
+
+logger = wrap_logger(logging.getLogger(__name__))
 
 
 @app.route('/deliver/dap', methods=['POST'])
 def deliver_dap():
     dataset = request.args.get("survey_id")
-    process(dataset)
+    return process(dataset, "surveys")
 
 
 @app.route('/deliver/survey', methods=['POST'])
 def deliver_survey():
-    process("EDCSurvey")
+    return process("EDCSurvey", "surveys")
 
 
 @app.route('/deliver/feedback', methods=['POST'])
 def deliver_feedback():
-    process("EDCFeedback")
+    return process("EDCFeedback", "feedback")
 
 
 @app.route('/deliver/comments', methods=['POST'])
-def deliver_feedback():
-    process("EDCComments")
+def deliver_comments():
+    return process("EDCComments", "comments")
 
 
-def process(dataset):
+def process(dataset, directory):
     files = request.files
     file_bytes = files['zip'].read()
-    filename = request.args.get("filename")
+    filename = files['zip'].filename
+    logger.info(f"filename: {filename}")
     description = request.args.get("description")
+    logger.info(f"description: {description}")
     iteration = request.args.get("iteration")
+    logger.info(f"iteration: {iteration}")
     deliver(file_bytes=file_bytes,
             filename=filename,
             dataset=dataset,
             description=description,
-            iteration=iteration)
-
-
-def view_zip():
-    files = request.files
-    f = files['zip'].read()
-    print(type(f))
-    file_bytes = io.BytesIO(f)
-    print(type(file_bytes))
-    z = zipfile.ZipFile(file_bytes)
-    print(type(z))
-
-    for filename in z.namelist():
-        if filename.endswith('/'):
-            continue
-
-        edc_file = z.open(filename)
-        print(edc_file.read())
-
+            iteration=iteration,
+            directory=directory)
     return jsonify(success=True)
