@@ -2,8 +2,8 @@ import logging
 
 from structlog import wrap_logger
 
-from app.encryption import encrypt_data
-from app.publish_dap import notify_dap
+from app.encrypt import encrypt_data
+from app.publish import notify_dap
 from app.store import write_to_bucket
 
 
@@ -23,7 +23,7 @@ def deliver(file_bytes: bytes,
     write_to_bucket(encrypted_payload)
 
     logger.info("sending dap notification")
-    notify_dap(file_bytes=encrypted_payload,
+    notify_dap(data=encrypted_payload,
                filename=filename,
                dataset=dataset,
                description=description,

@@ -4,8 +4,9 @@ import json
 from datetime import datetime
 
 
-def notify_dap(data: bytes, filename: str, dataset: str, description: str, iteration: str):
-    message_str = create_dap_message(data,
+def notify_dap(data: str, filename: str, dataset: str, description: str, iteration: str):
+    data_bytes = data.encode("utf-8")
+    message_str = create_dap_message(data_bytes,
                                      filename=filename,
                                      dataset=dataset,
                                      description=description,
@@ -33,20 +34,20 @@ def get_iteration(survey_dict: dict) -> str:
     return survey_dict['collection']['period']
 
 
-def create_dap_message(survey_bytes: bytes,
+def create_dap_message(data_bytes: bytes,
                        filename: str,
                        dataset: str,
                        description: str,
                        iteration: str) -> str:
 
-    md5_hash = hashlib.md5(survey_bytes).hexdigest()
+    md5_hash = hashlib.md5(data_bytes).hexdigest()
 
     dap_message = {
         'version': '1',
         'files': [{
             'name': filename,
             'URL': f"http://sdx-store:5000/responses/{filename}",
-            'sizeBytes': len(survey_bytes),
+            'sizeBytes': len(data_bytes),
             'md5sum': md5_hash
         }],
         'sensitivity': 'High',
