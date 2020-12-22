@@ -49,12 +49,15 @@ def process(dataset, directory):
         file_bytes = files[DELIVER_NAME].read()
         filename = files[DELIVER_NAME].filename
         logger.info(f"filename: {filename}")
+        tx_id = request.args.get("tx_id")
+        logger.info(f"tx_id: {tx_id}")
         description = request.args.get("description")
         logger.info(f"description: {description}")
         iteration = request.args.get("iteration")
         logger.info(f"iteration: {iteration}")
         deliver(file_bytes=file_bytes,
                 filename=filename,
+                tx_id=tx_id,
                 dataset=dataset,
                 description=description,
                 iteration=iteration,

@@ -12,6 +12,7 @@ logger = wrap_logger(logging.getLogger(__name__))
 
 def deliver(file_bytes: bytes,
             filename: str,
+            tx_id: str,
             dataset: str,
             description: str,
             iteration: str,
@@ -26,6 +27,7 @@ def deliver(file_bytes: bytes,
     logger.info("sending dap notification")
     notify_dap(data=encrypted_payload,
                filename=filename,
+               tx_id=tx_id,
                dataset=dataset,
                description=description,
                iteration=iteration)

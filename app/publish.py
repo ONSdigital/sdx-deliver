@@ -11,22 +11,28 @@ from datetime import datetime
 logger = wrap_logger(logging.getLogger(__name__))
 
 
-def notify_dap(data: str, filename: str, dataset: str, description: str, iteration: str):
+def notify_dap(data: str,
+               filename: str,
+               tx_id: str,
+               dataset: str,
+               description: str,
+               iteration: str):
+
     data_bytes = data.encode("utf-8")
     message_str = create_dap_message(data_bytes,
                                      filename=filename,
                                      dataset=dataset,
                                      description=description,
                                      iteration=iteration)
-    publish_data(message_str, filename)
+    publish_data(message_str, tx_id, filename)
 
 
-def publish_data(message_str: str, filename: str):
+def publish_data(message_str: str, tx_id: str, filename: str):
     # Data must be a byte-string
     message = message_str.encode("utf-8")
     # When you publish a message, the client returns a future.
-    future = dap_publisher.publish(dap_topic_path, message, filename=filename)
-    logger.info("published message to dap")
+    future = dap_publisher.publish(dap_topic_path, message, tx_id=tx_id, filename=filename)
+    logger.info(f"published message with tx_id={tx_id} to dap")
     return future.result()
 
 
