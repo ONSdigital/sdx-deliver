@@ -7,6 +7,8 @@ from app.deliver import deliver
 
 logger = wrap_logger(logging.getLogger(__name__))
 
+DELIVER_NAME = 'zip'
+
 
 @app.route('/deliver/dap', methods=['POST'])
 def deliver_dap():
@@ -44,8 +46,8 @@ def server_error(error=None):
 def process(dataset, directory):
     try:
         files = request.files
-        file_bytes = files['zip'].read()
-        filename = files['zip'].filename
+        file_bytes = files[DELIVER_NAME].read()
+        filename = files[DELIVER_NAME].filename
         logger.info(f"filename: {filename}")
         description = request.args.get("description")
         logger.info(f"description: {description}")
