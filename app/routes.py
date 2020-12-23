@@ -45,6 +45,7 @@ def server_error(error=None):
 
 def process(dataset, directory):
     try:
+        logger.info(f"processing request")
         files = request.files
         file_bytes = files[DELIVER_NAME].read()
         filename = files[DELIVER_NAME].filename
