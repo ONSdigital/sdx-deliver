@@ -48,7 +48,8 @@ def process(dataset, directory):
         logger.info(f"processing request")
         files = request.files
         file_bytes = files[DELIVER_NAME].read()
-        filename = files[DELIVER_NAME].filename
+        # filename = files[DELIVER_NAME].filename
+        filename = request.args.get("filename")
         logger.info(f"filename: {filename}")
         tx_id = request.args.get("tx_id")
         logger.info(f"tx_id: {tx_id}")
