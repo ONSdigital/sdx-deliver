@@ -1,4 +1,3 @@
-import json
 import logging
 
 import yaml
@@ -11,12 +10,8 @@ logger = wrap_logger(logging.getLogger(__name__))
 KEY_PURPOSE_SUBMISSION = 'submission'
 
 
-def encrypt_data(data) -> str:
-    if isinstance(data, dict):
-        data_str = json.dumps(data)
-    else:
-        data_str = str(data)
-
+def encrypt_data(data: bytes) -> str:
+    data_str = str(data)
     with open("./keys.yml") as file:
         secrets_from_file = yaml.safe_load(file)
     key_store = KeyStore(secrets_from_file)

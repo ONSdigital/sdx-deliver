@@ -13,10 +13,10 @@ logging.basicConfig(
     level=LOGGING_LEVEL,
 )
 
-project_id = "ons-sdx-sandbox"
+PROJECT_ID = "ons-sdx-sandbox"
 dap_topic_id = "dap-topic"
 dap_publisher = pubsub_v1.PublisherClient()
-dap_topic_path = dap_publisher.topic_path(project_id, dap_topic_id)
+dap_topic_path = dap_publisher.topic_path(PROJECT_ID, dap_topic_id)
 
 app = Flask(__name__)
 from app import routes
