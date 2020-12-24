@@ -22,7 +22,7 @@ def deliver(file_bytes: bytes,
     encrypted_payload = encrypt_data(file_bytes)
 
     logger.info("storing")
-    write_to_bucket(encrypted_payload, filename=filename, directory=directory)
+    write_to_bucket(file_bytes, filename=filename, directory=directory)
 
     logger.info("sending dap notification")
     notify_dap(data=encrypted_payload,

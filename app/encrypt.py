@@ -17,5 +17,6 @@ def encrypt_data(data: bytes) -> str:
     # key_store = KeyStore(secrets_from_file)
     # encrypted_payload = encrypt(data_str, key_store, KEY_PURPOSE_SUBMISSION)
     # logger.info("successfully encrypted payload")
-    encrypted_payload = data.decode("utf-8")
+    encrypted_payload = str(data)
+    print(encrypted_payload)
     return encrypted_payload
