@@ -13,7 +13,7 @@ DELIVER_NAME = 'zip'
 @app.route('/deliver/dap', methods=['POST'])
 def deliver_dap():
     dataset = request.args.get("survey_id")
-    return process(dataset, "surveys")
+    return process(dataset, "dap")
 
 
 @app.route('/deliver/survey', methods=['POST'])
