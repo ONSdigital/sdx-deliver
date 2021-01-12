@@ -13,7 +13,8 @@ logging.basicConfig(
     level=LOGGING_LEVEL,
 )
 
-PROJECT_ID = "ons-sdx-sandbox"
+PROJECT_ID = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
+BUCKET_NAME = f'{PROJECT_ID}-outputs'
 dap_topic_id = "dap-topic"
 dap_publisher = pubsub_v1.PublisherClient()
 dap_topic_path = dap_publisher.topic_path(PROJECT_ID, dap_topic_id)
