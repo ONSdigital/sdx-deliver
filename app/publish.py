@@ -68,7 +68,7 @@ def create_dap_message(data_bytes: bytes,
 
 def get_formatted_current_utc():
     """
-    Returns a formatted utc date with only 3 milliseconds as opposed to the ususal 6 that python provides.
+    Returns a formatted utc date with only 3 milliseconds as opposed to the usual 6 that python provides.
     Additionally, we provide the Zulu time indicator (Z) at the end to indicate it being UTC time. This is
     done for consistency with timestamps provided in other languages.
     The format the time is returned is YYYY-mm-ddTHH:MM:SS.fffZ (e.g., 2018-10-10T08:42:24.737Z)
