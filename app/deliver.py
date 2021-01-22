@@ -20,4 +20,4 @@ def deliver(filename: str, data_bytes: bytes, survey_dict: dict, output_type: Ou
     path = write_to_bucket(encrypted_output, filename=filename, output_type=output_type)
 
     logger.info("sending dap notification")
-    send_message(filename, path, survey_dict, output_type)
+    send_message(encrypted_output.encode(), filename, path, survey_dict, output_type)
