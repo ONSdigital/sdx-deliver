@@ -18,7 +18,7 @@ def deliver_dap():
     return process(OutputType.DAP)
 
 
-@app.route('/deliver/survey', methods=['POST'])
+@app.route('/deliver/legacy', methods=['POST'])
 def deliver_legacy():
     return process(OutputType.LEGACY)
 
@@ -51,6 +51,7 @@ def process(output_type: OutputType) -> str:
         files = request.files
 
         submission_bytes = b""
+        survey_dict = {}
 
         if not output_type == OutputType.COMMENTS:
             submission_bytes = files[SUBMISSION_FILE].read()
@@ -68,6 +69,7 @@ def process(output_type: OutputType) -> str:
                 data_bytes=data_bytes,
                 survey_dict=survey_dict,
                 output_type=output_type)
+
         return jsonify(success=True)
     except Exception as e:
         return server_error(e)
