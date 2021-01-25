@@ -24,9 +24,8 @@ def encrypt_output(data_bytes: bytes, output_type: OutputType) -> str:
 
 def encrypt_json(data_bytes: bytes) -> str:
     claims = data_bytes.decode("utf-8")
-    claim_str = json.dumps(claims)
-    logger.info(f'claim_str: {claim_str}')
-    encrypted_payload = encrypt(claim_str, key_store, KEY_PURPOSE_SUBMISSION)
+    logger.info(f'claims: {claims}')
+    encrypted_payload = encrypt(claims, key_store, KEY_PURPOSE_SUBMISSION)
     logger.info("successfully encrypted json payload")
     return encrypted_payload
 
