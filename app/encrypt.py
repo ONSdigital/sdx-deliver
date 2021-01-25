@@ -24,20 +24,22 @@ def encrypt_output(data_bytes: bytes, output_type: OutputType) -> str:
 
 def encrypt_json(data_bytes: bytes) -> str:
     claims = data_bytes.decode("utf-8")
-    encrypted_payload = encrypt(json.dumps(claims), key_store, KEY_PURPOSE_SUBMISSION)
-    logger.info("successfully encrypted payload")
+    claim_str = json.dumps(claims)
+    logger.info(f'claim_str: {claim_str}')
+    encrypted_payload = encrypt(claim_str, key_store, KEY_PURPOSE_SUBMISSION)
+    logger.info("successfully encrypted json payload")
     return encrypted_payload
 
 
 def encrypt_feedback(data_bytes: bytes) -> str:
     claims = {'feedback': data_bytes.decode("utf-8")}
     encrypted_payload = encrypt(json.dumps(claims), key_store, KEY_PURPOSE_SUBMISSION)
-    logger.info("successfully encrypted payload")
+    logger.info("successfully encrypted feedback payload")
     return encrypted_payload
 
 
 def encrypt_zip(zip_bytes: bytes) -> str:
     claims = {'zip': base64.b64encode(zip_bytes).decode()}
     encrypted_payload = encrypt(json.dumps(claims), key_store, KEY_PURPOSE_SUBMISSION)
-    logger.info("successfully encrypted payload")
+    logger.info("successfully encrypted zip payload")
     return encrypted_payload
