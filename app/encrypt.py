@@ -1,22 +1,44 @@
+import base64
+import json
 import logging
 
-# import yaml
-# from sdc.crypto.key_store import KeyStore
-# from sdc.crypto.encrypter import encrypt
+from sdc.crypto.encrypter import encrypt
 from structlog import wrap_logger
+
+from app import key_store
+from app.output_type import OutputType
 
 logger = wrap_logger(logging.getLogger(__name__))
 
 KEY_PURPOSE_SUBMISSION = 'submission'
 
 
-def encrypt_data(data: bytes) -> str:
-    # data_str = str(data)
-    # with open("./keys.yml") as file:
-    #     secrets_from_file = yaml.safe_load(file)
-    # key_store = KeyStore(secrets_from_file)
-    # encrypted_payload = encrypt(data_str, key_store, KEY_PURPOSE_SUBMISSION)
-    # logger.info("successfully encrypted payload")
-    encrypted_payload = str(data)
-    print(encrypted_payload)
+def encrypt_output(data_bytes: bytes, output_type: OutputType) -> str:
+    if output_type == OutputType.DAP:
+        return encrypt_json(data_bytes)
+    elif output_type == OutputType.FEEDBACK:
+        return encrypt_feedback(data_bytes)
+    else:
+        return encrypt_zip(data_bytes)
+
+
+def encrypt_json(data_bytes: bytes) -> str:
+    claims = data_bytes.decode("utf-8")
+    logger.info(f'claims: {claims}')
+    encrypted_payload = encrypt(claims, key_store, KEY_PURPOSE_SUBMISSION)
+    logger.info("successfully encrypted json payload")
+    return encrypted_payload
+
+
+def encrypt_feedback(data_bytes: bytes) -> str:
+    claims = {'feedback': data_bytes.decode("utf-8")}
+    encrypted_payload = encrypt(json.dumps(claims), key_store, KEY_PURPOSE_SUBMISSION)
+    logger.info("successfully encrypted feedback payload")
+    return encrypted_payload
+
+
+def encrypt_zip(zip_bytes: bytes) -> str:
+    claims = {'zip': base64.b64encode(zip_bytes).decode()}
+    encrypted_payload = encrypt(json.dumps(claims), key_store, KEY_PURPOSE_SUBMISSION)
+    logger.info("successfully encrypted zip payload")
     return encrypted_payload
