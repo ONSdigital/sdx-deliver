@@ -1,12 +1,8 @@
 import logging
 import os
-
 import gnupg
-import yaml
 from google.cloud import pubsub_v1
 from flask import Flask
-
-from sdc.crypto.key_store import KeyStore
 
 LOGGING_LEVEL = logging.getLevelName(os.getenv('LOGGING_LEVEL', 'DEBUG'))
 LOGGING_FORMAT = "%(asctime)s.%(msecs)06dZ|%(levelname)s: sdx-deliver: %(message)s"
