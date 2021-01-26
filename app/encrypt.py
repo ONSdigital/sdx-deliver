@@ -1,44 +1,21 @@
-import base64
-import json
 import logging
-
-from sdc.crypto.encrypter import encrypt
 from structlog import wrap_logger
 
-from app import key_store
-from app.output_type import OutputType
+from app import gpg
 
 logger = wrap_logger(logging.getLogger(__name__))
 
-KEY_PURPOSE_SUBMISSION = 'submission'
+DAP_RECIPIENT = 'dap@ons.gov.uk'
 
 
-def encrypt_output(data_bytes: bytes, output_type: OutputType) -> str:
-    if output_type == OutputType.DAP:
-        return encrypt_json(data_bytes)
-    elif output_type == OutputType.FEEDBACK:
-        return encrypt_feedback(data_bytes)
+def encrypt_output(data_bytes: bytes) -> str:
+
+    encrypted_data = gpg.encrypt(data_bytes, recipients=[DAP_RECIPIENT], always_trust=True)
+
+    if encrypted_data.ok:
+        logger.info("successfully encrypted output")
     else:
-        return encrypt_zip(data_bytes)
+        logger.info("failed to encrypt output")
+        logger.info(encrypted_data.status)
 
-
-def encrypt_json(data_bytes: bytes) -> str:
-    claims = data_bytes.decode("utf-8")
-    logger.info(f'claims: {claims}')
-    encrypted_payload = encrypt(claims, key_store, KEY_PURPOSE_SUBMISSION)
-    logger.info("successfully encrypted json payload")
-    return encrypted_payload
-
-
-def encrypt_feedback(data_bytes: bytes) -> str:
-    claims = {'feedback': data_bytes.decode("utf-8")}
-    encrypted_payload = encrypt(json.dumps(claims), key_store, KEY_PURPOSE_SUBMISSION)
-    logger.info("successfully encrypted feedback payload")
-    return encrypted_payload
-
-
-def encrypt_zip(zip_bytes: bytes) -> str:
-    claims = {'zip': base64.b64encode(zip_bytes).decode()}
-    encrypted_payload = encrypt(json.dumps(claims), key_store, KEY_PURPOSE_SUBMISSION)
-    logger.info("successfully encrypted zip payload")
-    return encrypted_payload
+    return str(encrypted_data)
