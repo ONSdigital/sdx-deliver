@@ -14,7 +14,7 @@ logger = wrap_logger(logging.getLogger(__name__))
 def deliver(filename: str, data_bytes: bytes, survey_dict: dict, output_type: OutputType):
 
     logger.info("encrypting")
-    encrypted_output = encrypt_output(data_bytes, output_type)
+    encrypted_output = encrypt_output(data_bytes)
 
     logger.info("storing")
     path = write_to_bucket(encrypted_output, filename=filename, output_type=output_type)
