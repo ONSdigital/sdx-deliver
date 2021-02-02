@@ -66,7 +66,7 @@ def process(output_type: OutputType) -> str:
             logger.info('checking for comments')
             logger.info(files[ZIP_FILE])
             logger.info(files[ZIP_FILE].read())
-            data_bytes = files[ZIP_FILE]
+            data_bytes = files[ZIP_FILE].read()
             logger.info(data_bytes)
         else:
             logger.info('else')
