@@ -53,13 +53,15 @@ def process(output_type: OutputType) -> str:
         submission_bytes = b""
         survey_dict = {}
 
+        logger.info('Checking if not output_type == OutputType.COMMENTS')
         if not output_type == OutputType.COMMENTS:
             submission_bytes = files[SUBMISSION_FILE].read()
             survey_dict = json.loads(submission_bytes.decode())
-
+        logger.info('checking if output_type == OutputType.DAP or.......')
         if output_type == OutputType.DAP or output_type == OutputType.FEEDBACK or output_type == OutputType.COMMENTS:
             data_bytes = submission_bytes
         else:
+            logger.info('else')
             data_bytes = files[TRANSFORMED_FILE].read()
 
         filename = request.args.get("filename")
