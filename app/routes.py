@@ -9,6 +9,7 @@ from app.output_type import OutputType
 
 logger = wrap_logger(logging.getLogger(__name__))
 
+ZIP_FILE = 'zip'
 SUBMISSION_FILE = 'submission'
 TRANSFORMED_FILE = 'transformed'
 
@@ -58,8 +59,15 @@ def process(output_type: OutputType) -> str:
             submission_bytes = files[SUBMISSION_FILE].read()
             survey_dict = json.loads(submission_bytes.decode())
         logger.info('checking if output_type == OutputType.DAP or.......')
-        if output_type == OutputType.DAP or output_type == OutputType.FEEDBACK or output_type == OutputType.COMMENTS:
+        if output_type == OutputType.DAP or output_type == OutputType.FEEDBACK:
             data_bytes = submission_bytes
+
+        elif output_type == OutputType.COMMENTS:
+            logger.info('checking for comments')
+            logger.info(files[ZIP_FILE])
+            logger.info(files[ZIP_FILE].read())
+            data_bytes = files[ZIP_FILE]
+            logger.info(data_bytes)
         else:
             logger.info('else')
             data_bytes = files[TRANSFORMED_FILE].read()
