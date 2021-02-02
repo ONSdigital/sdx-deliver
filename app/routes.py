@@ -54,17 +54,15 @@ def process(output_type: OutputType) -> str:
         submission_bytes = b""
         survey_dict = {}
 
-        logger.info('Checking if not output_type == OutputType.COMMENTS')
         if not output_type == OutputType.COMMENTS:
             submission_bytes = files[SUBMISSION_FILE].read()
             survey_dict = json.loads(submission_bytes.decode())
-        logger.info('checking if output_type == OutputType.DAP or.......')
+
         if output_type == OutputType.DAP or output_type == OutputType.FEEDBACK:
             data_bytes = submission_bytes
 
         elif output_type == OutputType.COMMENTS:
-            logger.info('checking for comments')
-            logger.info(files[ZIP_FILE])
+            logger.info('Reading comments')
             data_bytes = files[ZIP_FILE].read()
 
         else:
