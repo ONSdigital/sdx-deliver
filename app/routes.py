@@ -9,6 +9,7 @@ from app.output_type import OutputType
 
 logger = wrap_logger(logging.getLogger(__name__))
 
+ZIP_FILE = 'zip'
 SUBMISSION_FILE = 'submission'
 TRANSFORMED_FILE = 'transformed'
 
@@ -59,7 +60,13 @@ def process(output_type: OutputType) -> str:
 
         if output_type == OutputType.DAP or output_type == OutputType.FEEDBACK:
             data_bytes = submission_bytes
+
+        elif output_type == OutputType.COMMENTS:
+            logger.info('Reading comments')
+            data_bytes = files[ZIP_FILE].read()
+
         else:
+            logger.info('else')
             data_bytes = files[TRANSFORMED_FILE].read()
 
         filename = request.args.get("filename")

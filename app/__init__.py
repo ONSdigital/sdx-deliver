@@ -4,6 +4,8 @@ import gnupg
 from google.cloud import pubsub_v1
 from flask import Flask
 
+from app.secret_manager import get_secret
+
 LOGGING_LEVEL = logging.getLevelName(os.getenv('LOGGING_LEVEL', 'DEBUG'))
 LOGGING_FORMAT = "%(asctime)s.%(msecs)06dZ|%(levelname)s: sdx-deliver: %(message)s"
 
@@ -21,9 +23,8 @@ dap_topic_path = dap_publisher.topic_path(PROJECT_ID, dap_topic_id)
 
 gpg = gnupg.GPG()
 
-with open('dap_public_key.asc') as f:
-    key_data = f.read()
-import_result = gpg.import_keys(key_data)
+ENCRYPTION_KEY = get_secret(PROJECT_ID, 'sdx-deliver-encryption-key')
+import_result = gpg.import_keys(ENCRYPTION_KEY)
 
 
 app = Flask(__name__)
