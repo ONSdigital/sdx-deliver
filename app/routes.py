@@ -70,7 +70,7 @@ def deliver_seft():
     meta_bytes = files[METADATA_FILE].read()
     meta_dict = json.loads(meta_bytes.decode())
     data_bytes = files[SEFT_FILE].read()
-    meta.set_seft(meta_dict, data_bytes)
+    meta.set_seft(meta_dict)
     return process(meta, data_bytes)
 
 
