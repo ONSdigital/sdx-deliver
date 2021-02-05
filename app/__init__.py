@@ -23,7 +23,7 @@ dap_topic_path = dap_publisher.topic_path(PROJECT_ID, dap_topic_id)
 
 gpg = gnupg.GPG()
 
-ENCRYPTION_KEY = get_secret(PROJECT_ID, 'sdx-deliver-encryption-key')
+ENCRYPTION_KEY = get_secret(PROJECT_ID, 'sdx-deliver-encryption')
 import_result = gpg.import_keys(ENCRYPTION_KEY)
 
 
