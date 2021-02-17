@@ -9,7 +9,7 @@ from app.secret_manager import get_secret
 
 logging_config()
 
-PROJECT_ID = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
+PROJECT_ID = os.getenv('PROJECT_ID', 'ons-sdx-chaitali')
 BUCKET_NAME = f'{PROJECT_ID}-outputs'
 dap_topic_id = "dap-topic"
 dap_publisher = pubsub_v1.PublisherClient()
