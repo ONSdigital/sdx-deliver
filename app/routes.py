@@ -2,6 +2,8 @@ import json
 import structlog
 
 from flask import request, jsonify
+from structlog.contextvars import bind_contextvars
+
 from app import app
 from app.deliver import deliver
 from app.meta_wrapper import MetaWrapper
@@ -87,6 +89,8 @@ def server_error(error=None):
 
 def process(meta_data: MetaWrapper, data_bytes: bytes) -> str:
     try:
+        bind_contextvars(app="sdx-deliver")
+        bind_contextvars(tx_id=meta_data.tx_id)
         logger.info(f"processing request")
         deliver(meta_data, data_bytes)
         return jsonify(success=True)

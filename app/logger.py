@@ -4,7 +4,7 @@ import sys
 import structlog
 import logging
 from structlog import configure
-from structlog.contextvars import merge_contextvars
+from structlog.contextvars import merge_contextvars, bind_contextvars
 from structlog.stdlib import LoggerFactory
 
 
@@ -40,3 +40,4 @@ def logging_config():
             structlog.processors.JSONRenderer(),
         ],
     )
+
