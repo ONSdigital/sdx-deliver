@@ -1,13 +1,12 @@
 import json
-import logging
-from flask import request, jsonify
-from structlog import wrap_logger
+import structlog
 
+from flask import request, jsonify
 from app import app
 from app.deliver import deliver
 from app.meta_wrapper import MetaWrapper
 
-logger = wrap_logger(logging.getLogger(__name__))
+logger = structlog.get_logger()
 
 ZIP_FILE = 'zip'
 SUBMISSION_FILE = 'submission'
