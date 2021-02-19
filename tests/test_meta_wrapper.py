@@ -5,6 +5,7 @@ from app.output_type import OutputType
 
 
 class TestMetaWrapper(unittest.TestCase):
+
     def test_get_description(self):
         filename = "9010576d-f3df-4011-aa41-adecd9bee011"
         expected = "023 survey response for period 0216 sample unit 12345"
