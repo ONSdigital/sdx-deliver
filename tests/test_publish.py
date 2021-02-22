@@ -6,7 +6,7 @@ from unittest import mock
 from unittest.mock import patch
 from app.meta_wrapper import MetaWrapper
 from app.output_type import OutputType
-from app.publish import get_formatted_current_utc, send_message, create_message_data, publish_data
+from app.publish import get_formatted_current_utc, send_message, create_message_data
 
 
 class TestPublish(unittest.TestCase):
