@@ -9,6 +9,7 @@ from app.secret_manager import get_secret
 logging_config()
 
 PROJECT_ID = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
+
 BUCKET_NAME = f'{PROJECT_ID}-outputs'
 storage_client = storage.Client(PROJECT_ID)
 BUCKET = storage_client.bucket(BUCKET_NAME)
