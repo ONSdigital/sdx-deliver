@@ -7,39 +7,42 @@ from flask import Flask
 from app.logger import logging_config
 from app.secret_manager import get_secret
 
-print("calling init file!!!!!!!!!!!!!!!!!")
 
 logging_config()
 logger = structlog.get_logger()
-
-PROJECT_ID = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
-
-BUCKET_NAME = f'{PROJECT_ID}-outputs'
-storage_client = storage.Client(PROJECT_ID)
-BUCKET = storage_client.bucket(BUCKET_NAME)
-dap_topic_id = "dap-topic"
-dap_publisher = None
-dap_topic_path = None
-
-# key
-ENCRYPTION_KEY = None
-logger.info(ENCRYPTION_KEY)
-gpg = gnupg.GPG()
+project_id = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
 
 
-def load_config():
+class Config:
 
-    print("loading config")
-    global dap_publisher
+    def __init__(self, proj_id) -> None:
+        self.PROJECT_ID = proj_id
+        self.BUCKET_NAME = f'{proj_id}-outputs'
+        self.BUCKET = None
+        self.DAP_TOPIC_PATH = None
+        self.DAP_PUBLISHER = None
+        self.ENCRYPTION_KEY = None
+        self.GPG = None
+
+
+CONFIG = Config(project_id)
+
+
+def cloud_config():
+
+    print("loading cloud config")
     dap_publisher = pubsub_v1.PublisherClient()
-    global dap_topic_path
-    dap_topic_path = dap_publisher.topic_path(PROJECT_ID, dap_topic_id)
-    print(f'IM THE DAP PUBLISHER: {dap_publisher}')
+    CONFIG.DAP_TOPIC_PATH = dap_publisher.topic_path(CONFIG.PROJECT_ID, "dap-topic")
+    CONFIG.DAP_PUBLISHER = dap_publisher
 
-    global ENCRYPTION_KEY
-    ENCRYPTION_KEY = get_secret(PROJECT_ID, 'sdx-deliver-encryption')
-    print(f'Im the key: {ENCRYPTION_KEY}')
-    gpg.import_keys(ENCRYPTION_KEY)
+    gpg = gnupg.GPG()
+    encryption_key = get_secret(CONFIG.PROJECT_ID, 'sdx-deliver-encryption')
+    gpg.import_keys(encryption_key)
+    CONFIG.ENCRYPTION_KEY = encryption_key
+    CONFIG.GPG = gpg
+
+    storage_client = storage.Client(CONFIG.PROJECT_ID)
+    CONFIG.BUCKET = storage_client.bucket(CONFIG.BUCKET_NAME)
 
 
 app = Flask(__name__)
