@@ -25,11 +25,12 @@ gpg = gnupg.GPG()
 def load_config():
     global dap_publisher
     dap_publisher = pubsub_v1.PublisherClient()
+    global dap_topic_path
     dap_topic_path = dap_publisher.topic_path(PROJECT_ID, dap_topic_id)
 
     global ENCRYPTION_KEY
     ENCRYPTION_KEY = get_secret(PROJECT_ID, 'sdx-deliver-encryption')
-    import_result = gpg.import_keys(ENCRYPTION_KEY)
+    gpg.import_keys(ENCRYPTION_KEY)
 
 
 app = Flask(__name__)
