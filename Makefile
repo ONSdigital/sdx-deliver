@@ -6,4 +6,4 @@ start:
 
 test:
 	pip install -r test_requirements.txt ; \
-	python -m unittest discover -s tests
+	pytest --cov tests

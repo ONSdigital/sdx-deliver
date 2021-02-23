@@ -34,6 +34,7 @@ def load_config():
 
     global ENCRYPTION_KEY
     ENCRYPTION_KEY = get_secret(PROJECT_ID, 'sdx-deliver-encryption')
+    print(f'Im the key: {ENCRYPTION_KEY}')
     gpg.import_keys(ENCRYPTION_KEY)
 
 
