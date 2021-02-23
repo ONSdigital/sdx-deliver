@@ -1,12 +1,13 @@
 import structlog
 
-from app import dap_publisher, dap_topic_path, BUCKET_NAME, PROJECT_ID
+from app import dap_publisher, dap_topic_path, BUCKET_NAME, PROJECT_ID, load_config
 import json
 from datetime import datetime
 from app.meta_wrapper import MetaWrapper
 from app.output_type import OutputType
 
 logger = structlog.get_logger()
+load_config()
 
 
 def send_message(meta_data: MetaWrapper, path: str):
@@ -72,4 +73,3 @@ def publish_data(message_str: str, tx_id: str, path: str):
     future = dap_publisher.publish(dap_topic_path, message, **attributes)
     logger.info(f"published message with tx_id={tx_id} to dap")
     return future.result()
-

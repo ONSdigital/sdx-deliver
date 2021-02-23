@@ -31,6 +31,7 @@ def load_config():
     dap_publisher = pubsub_v1.PublisherClient()
     global dap_topic_path
     dap_topic_path = dap_publisher.topic_path(PROJECT_ID, dap_topic_id)
+    print(f'IM THE DAP PUBLISHER: {dap_publisher}')
 
     global ENCRYPTION_KEY
     ENCRYPTION_KEY = get_secret(PROJECT_ID, 'sdx-deliver-encryption')
