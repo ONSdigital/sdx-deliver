@@ -1,5 +1,6 @@
 import os
 import gnupg
+import structlog
 
 from google.cloud import pubsub_v1, storage
 from flask import Flask
@@ -9,6 +10,7 @@ from app.secret_manager import get_secret
 print("calling init file!!!!!!!!!!!!!!!!!")
 
 logging_config()
+logger = structlog.get_logger()
 
 PROJECT_ID = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
 
@@ -21,6 +23,7 @@ dap_topic_path = None
 
 # key
 ENCRYPTION_KEY = None
+logger.info(ENCRYPTION_KEY)
 gpg = gnupg.GPG()
 
 
