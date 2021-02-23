@@ -8,6 +8,7 @@ DAP_RECIPIENT = 'dap@ons.gov.uk'
 
 def encrypt_output(data_bytes: bytes) -> str:
 
+    logger.error(f"gpg: {gpg}")
     encrypted_data = gpg.encrypt(data_bytes, recipients=[DAP_RECIPIENT], always_trust=True)
 
     if encrypted_data.ok:

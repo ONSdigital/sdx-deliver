@@ -6,6 +6,8 @@ from flask import Flask
 from app.logger import logging_config
 from app.secret_manager import get_secret
 
+print("calling init file!!!!!!!!!!!!!!!!!")
+
 logging_config()
 
 PROJECT_ID = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
@@ -23,6 +25,8 @@ gpg = gnupg.GPG()
 
 
 def load_config():
+
+    print("loading config")
     global dap_publisher
     dap_publisher = pubsub_v1.PublisherClient()
     global dap_topic_path
