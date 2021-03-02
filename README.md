@@ -33,7 +33,6 @@ $ make start
 ### PubSub
 
 Once a submission has been successfully encrypted and stored in the Bucket. A message is published to the `dap-topic`.
-Message attributes specify location and name of the data.
 
 **Message Structure Example:**
 ```python
