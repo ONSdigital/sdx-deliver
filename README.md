@@ -7,12 +7,8 @@ data's location within the GCP Bucket. It also provides metadata for validation 
 
 The sdx-deliver is flask application made up of **five** endpoints. As a request is made to the service, metadata 
 is extracted and the data is then stored within the google bucket. The metadata is used to 
-construct a PubSub message to: `dap-topic` to notify DAP that a new submission is in the bucket.
+construct a PubSub message to: `dap-topic`. This notifies DAP that a new submission is in the bucket.
 
-##### note:
-
-deliver runs within the kubernetes cluster and utilises a `kubernetes service`.This assigns the service with an IP 
-address and DNS name exposing it to the other services.
 
 ## Getting started
 Install requirements:
@@ -78,7 +74,6 @@ specified in `attributes."gcs.key"`.
 
 Allows Survey, SEFT and Collate to send data to be stored by deliver
 
-#### 
 * `POST /deliver/dap` - Dap surveys
 
 * `POST /deliver/legacy` - Legacy surveys
@@ -88,6 +83,10 @@ Allows Survey, SEFT and Collate to send data to be stored by deliver
 * `POST /deliver/comments` - comments endpoint called by sdx-collate
 
 * `POST /deliver/seft` - seft endpoint called by sdx-seft
+
+##### note: 
+deliver runs within the kubernetes cluster and utilises a `kubernetes service`.This assigns the service with an IP 
+address and DNS name exposing it to the other services.
 
 ## Configuration
 | Environment Variable    | Description
