@@ -9,7 +9,7 @@ The sdx-deliver is flask application made up of **five** endpoints. As a request
 is extracted and the data is then stored within the google bucket. The metadata is used to 
 construct a PubSub message to: `dap-topic` to notify DAP that a new submission is in the bucket.
 
-#####NOTE:
+####NOTE:
 
 deliver runs within the kubernetes cluster and utilises a `kubernetes service`.This assigns the service with an IP 
 address and DNS name exposing it to the other services.
@@ -34,7 +34,7 @@ $ make start
 
 ## GCP
 
-#### PubSub
+### PubSub
 
 Once a submission has been successfully encrypted and stored in the Bucket. A message is published to the `dap-topic`.
 Message attributes specify location and name of the data.
@@ -69,7 +69,7 @@ dap_message: Message {
     }
 ```
 
-#### Google Storage
+### Google Storage
 
 All submissions are stored within: `ons-sdx-{project_id}-outputs` in their respective folders. The file-path is
 specified in `attributes."gcs.key"`.
