@@ -1,17 +1,21 @@
 # sdx-deliver
 [![Build Status](https://github.com/ONSdigital/sdx-deliver/workflows/Build/badge.svg)](https://github.com/ONSdigital/sdx-deliver) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0d8f1899b0054322b9d0ec8f2bd62d86)](https://www.codacy.com/app/ons-sdc/sdx-deliver?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ONSdigital/sdx-deliver&amp;utm_campaign=Badge_Grade)
  
-The SDX-Deliver service is responsible for encrypting and storing all data processed by SDX. It then notifies DAP of the 
-data's location within the GCP Bucket. It also provides metadata for validation once decrypted downstream.
+The SDX-Deliver service is responsible for ensuring that all SDX outputs are delivered to DAP. This is done by
+encrypting and storing data into a GCP Bucket. It then notifies DAP of the data's location. Metadata is provided for
+validation once decrypted downstream.
 
 ## Process
 
 The sdx-deliver is flask application made up of **five** endpoints. As a request is made to the service, metadata 
 is extracted and the data is then stored within the google bucket. The metadata is used to 
 construct a PubSub message to: `dap-topic`. This notifies DAP that a new submission is in the bucket.
-
+##### note:
+**SEFT** submissions are already encrypted as they come through SDX and therefore require no additional encryption 
+before being stored
 
 ## Getting started
+
 Install requirements:
 ```shell
 $ make build
