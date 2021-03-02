@@ -1,7 +1,7 @@
 # sdx-deliver
 
 The SDX-Deliver service is responsible for encrypting and storing all data processed by SDX and notifying DAP of its 
-location within the bucket, alongside providing metadata.
+location within the GCP Bucket. It also provides metadata for validation once decrypted.
 
 ## Process
 
