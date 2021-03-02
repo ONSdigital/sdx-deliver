@@ -9,7 +9,7 @@ The sdx-deliver is flask application made up of **five** endpoints. As a request
 is extracted and the data is then stored within the google bucket. The metadata is used to 
 construct a PubSub message to: `dap-topic` to notify DAP that a new submission is in the bucket.
 
-####NOTE:
+##### note:
 
 deliver runs within the kubernetes cluster and utilises a `kubernetes service`.This assigns the service with an IP 
 address and DNS name exposing it to the other services.
