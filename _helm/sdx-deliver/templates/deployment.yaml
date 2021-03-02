@@ -15,18 +15,18 @@ spec:
         app: sdx-deliver
     spec:
       containers:
-      - image: eu.gcr.io/{{ .Values.project_id }}/sdx-deliver:{{ .Chart.appVersion }}
+      - image: eu.gcr.io/{{ .Values.registry_location }}/sdx-deliver:{{ .Chart.AppVersion }}
         imagePullPolicy: Always
         name: sdx-deliver
         env:
           - name: PROJECT_ID
             valueFrom:
               configMapKeyRef:
-                name: config
+                name: sdx-config
                 key: project_id
           - name: LOGGING_LEVEL
             valueFrom:
               configMapKeyRef:
-                name: config
+                name: sdx-config
                 key: logging_level
       serviceAccountName: sdx-workload-identity
