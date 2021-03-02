@@ -1,5 +1,6 @@
 # sdx-deliver
-[![Build Status](https://github.com/ONSdigital/sdx-deliver/workflows/Build/badge.svg)](https://github.com/ONSdigital/sdx-deliver) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0d8f1899b0054322b9d0ec8f2bd62d86)](https://www.codacy.com/app/ons-sdc/sdx-deliver?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ONSdigital/sdx-deliver&amp;utm_campaign=Badge_Grade) 
+[![Build Status](https://github.com/ONSdigital/sdx-deliver/workflows/Build/badge.svg)](https://github.com/ONSdigital/sdx-deliver) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/0d8f1899b0054322b9d0ec8f2bd62d86)](https://www.codacy.com/app/ons-sdc/sdx-deliver?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ONSdigital/sdx-deliver&amp;utm_campaign=Badge_Grade)
+ 
 The SDX-Deliver service is responsible for encrypting and storing all data processed by SDX. It then notifies DAP of the 
 data's location within the GCP Bucket. It also provides metadata for validation once decrypted downstream.
 
