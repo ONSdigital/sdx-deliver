@@ -1,14 +1,16 @@
 # sdx-deliver
 
 The SDX-Deliver service is responsible for encrypting and storing all data processed by SDX and notifying DAP of its 
-location and metadata.
+location within the bucket, alongside providing metadata.
 
 ## Process
 
 The sdx-deliver is flask application made up of **five** endpoints. As a request is made to the service, metadata 
 is extracted and the data is then stored within the google bucket. The metadata is used to 
 construct a PubSub message to: `dap-topic` to notify DAP that a new submission is in the bucket.
+
 #####NOTE:
+
 deliver runs within the kubernetes cluster and utilises a `kubernetes service`.This assigns the service with an IP 
 address and DNS name exposing it to the other services.
 
