@@ -7,8 +7,8 @@ validation once decrypted downstream.
 
 ## Process
 
-The sdx-deliver is flask application made up of **five** endpoints. As a request is made to the service, metadata 
-is extracted and the data is then stored within the google bucket. The metadata is used to 
+SDX-Deliver is flask application made up of **five** endpoints. As a request is made to the service, metadata 
+is extracted and the data is then stored within a google bucket. The metadata is used to 
 construct a PubSub message to: `dap-topic`. This notifies DAP that a new submission is in the bucket.
 ##### note:
 **SEFT** submissions are already encrypted as they come through SDX and therefore require no additional encryption 
