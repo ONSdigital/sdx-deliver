@@ -96,7 +96,7 @@ address and DNS name exposing it to the other services.
 | Environment Variable    | Description
 |-------------------------|------------------------------------
 | PROJECT_ID              | Name of project
-| BUCKET_NAME             | Name of the bucket: `ons-sdx-{project_id}-outputs`
+| BUCKET_NAME             | Name of the bucket: `{project_id}-outputs`
 | BUCKET                  | Bucket client to GCP
 | DAP_TOPIC_PATH          | Name of the dap topic: `dap-topic`
 | DAP_PUBLISHER           | PubSub publisher client to GCP
