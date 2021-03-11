@@ -30,13 +30,13 @@ CONFIG = Config(project_id)
 
 def cloud_config():
 
-    print("loading cloud config")
+    logger.info("Loading Cloud Config")
     dap_publisher = pubsub_v1.PublisherClient()
     CONFIG.DAP_TOPIC_PATH = dap_publisher.topic_path(CONFIG.PROJECT_ID, "dap-topic")
     CONFIG.DAP_PUBLISHER = dap_publisher
 
     gpg = gnupg.GPG()
-    encryption_key = get_secret(CONFIG.PROJECT_ID, 'sdx-deliver-encryption')
+    encryption_key = get_secret(CONFIG.PROJECT_ID, 'dap-public-gpg')
     gpg.import_keys(encryption_key)
     CONFIG.ENCRYPTION_KEY = encryption_key
     CONFIG.GPG = gpg
