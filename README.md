@@ -82,6 +82,7 @@ made on program startup and stored in `ENCRYPTION_KEY`.
 
 Allows Survey, SEFT and Collate to send data to be stored by deliver
 
+
 * `POST /deliver/dap` - Stores JSON surveys destined for DAP
 
 * `POST /deliver/legacy` - Stores JSON surveys destined for Legacy downstream
@@ -91,6 +92,7 @@ Allows Survey, SEFT and Collate to send data to be stored by deliver
 * `POST /deliver/comments` - Stores zipped spreadsheet (.xls) of comments
 
 * `POST /deliver/seft` - Stores SEFT submissions
+
 
 ##### note: 
 deliver runs within the kubernetes cluster and utilises a `kubernetes service`.This assigns the service with an IP 
