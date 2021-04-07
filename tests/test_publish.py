@@ -3,10 +3,10 @@ import json
 import unittest
 
 from unittest import mock
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from app.meta_wrapper import MetaWrapper
 from app.output_type import OutputType
-from app.publish import get_formatted_current_utc, send_message, create_message_data
+from app.publish import get_formatted_current_utc, send_message, create_message_data, publish_data
 from app import CONFIG
 
 
@@ -44,6 +44,29 @@ class TestPublish(unittest.TestCase):
             'dataset': meta_data.survey_id,
             'schemaversion': '1',
             'iterationL1': meta_data.period
+        }
+        self.assertEqual(json.dumps(expected), actual)
+
+    @patch('app.publish.get_formatted_current_utc', return_value="2021-10-10T08:42:24.737Z")
+    def test_create_message_data_comment(self, mock_time):
+        filename = "9010576d-f3df-4011-aa41-adecd9bee011"
+        test_bytes = b"Test Bytes"
+        meta_data = MetaWrapper(filename)
+        meta_data.set_comments(test_bytes)
+        actual = create_message_data(meta_data)
+        expected = {
+            'version': '1',
+            'files': [{
+                'name': filename,
+                'sizeBytes': meta_data.sizeBytes,
+                'md5sum': meta_data.md5sum
+            }],
+            'sensitivity': 'High',
+            'sourceName': CONFIG.PROJECT_ID,
+            'manifestCreated': mock_time.return_value,
+            'description': "Comments.zip",
+            'dataset': 'comments',
+            'schemaversion': '1'
         }
         self.assertEqual(json.dumps(expected), actual)
 
@@ -224,3 +247,12 @@ class TestPublish(unittest.TestCase):
         mock_create_message_data.return_value = str_dap_message
         send_message(meta_data, path)
         mock_publish_data.assert_called_with(str_dap_message, filename, path)
+
+    def test_pubsub(self):
+        message = "test message"
+        tx_id = '12345'
+        path = 'seft/12345'
+        CONFIG.DAP_PUBLISHER = MagicMock()
+        response = publish_data(message, tx_id, path)
+        self.assertTrue(response)
+
