@@ -4,6 +4,7 @@ from unittest.mock import patch, MagicMock
 
 import google
 from google import pubsub_v1
+from google.cloud import storage
 from google.cloud.secretmanager_v1 import SecretManagerServiceClient
 
 import app
@@ -35,8 +36,11 @@ class TestStore(unittest.TestCase):
         self.assertTrue(actual)
 
     @patch('app.get_secret', return_value='my secret')
-    @patch.object(pubsub_v1.PublisherClient(), 'topic_path')
-    def test_cloud_config(self, mock_pubsub, mock_secret):
+    @patch.object(pubsub_v1.PublisherClient, 'topic_path')
+    @patch.object(storage.Client, 'bucket')
+    def test_cloud_config(self, mock_bucket, mock_pubsub, mock_secret):
+        mock_bucket.return_value = 'bucket'
+        mock_pubsub.return_value = 'pubsub'
         cloud_config()
         assert app.CONFIG.ENCRYPTION_KEY == 'my secret'
         assert app.CONFIG.BUCKET is not None
