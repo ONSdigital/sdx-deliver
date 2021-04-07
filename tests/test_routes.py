@@ -1,19 +1,13 @@
 import unittest
 from unittest import mock
 
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 import pytest
 from flask import jsonify
 
 from app import routes, app
 from app.routes import SUBMISSION_FILE, TRANSFORMED_FILE, ZIP_FILE, SEFT_FILE, METADATA_FILE, process, server_error
-
-
-class FakeRequest:
-
-    def __init__(self) -> None:
-        self.args = {}
 
 
 class FakeFileBytes:
@@ -34,7 +28,7 @@ class TestRoutes(unittest.TestCase):
         filename = "test_filename"
         submission_bytes = b'{"survey_id":"283"}'
 
-        mock_request = FakeRequest()
+        mock_request = MagicMock()
         mock_request.args['filename'] = filename
 
         mock_file_bytes = FakeFileBytes(submission_bytes)
@@ -53,7 +47,7 @@ class TestRoutes(unittest.TestCase):
         filename = "test_filename"
         submission_bytes = b'{"survey_id":"283"}'
 
-        mock_request = FakeRequest()
+        mock_request = MagicMock()
         mock_request.args['filename'] = filename
 
         mock_file_bytes = FakeFileBytes(submission_bytes)
@@ -72,7 +66,7 @@ class TestRoutes(unittest.TestCase):
         filename = "test_filename"
         submission_bytes = b'{"survey_id":"283"}'
 
-        mock_request = FakeRequest()
+        mock_request = MagicMock()
         mock_request.args['filename'] = filename
 
         mock_file_bytes = FakeFileBytes(submission_bytes)
@@ -91,7 +85,7 @@ class TestRoutes(unittest.TestCase):
         filename = "test_filename"
         submission_bytes = b'{"survey_id":"283"}'
 
-        mock_request = FakeRequest()
+        mock_request = MagicMock()
         mock_request.args['filename'] = filename
 
         mock_file_bytes = FakeFileBytes(submission_bytes)
@@ -110,7 +104,7 @@ class TestRoutes(unittest.TestCase):
         filename = "test_filename"
         submission_bytes = b'{"survey_id":"283"}'
 
-        mock_request = FakeRequest()
+        mock_request = MagicMock()
         mock_request.args['filename'] = filename
 
         mock_file_bytes = FakeFileBytes(submission_bytes)
