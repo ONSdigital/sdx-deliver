@@ -1,4 +1,7 @@
 import unittest
+
+from google.cloud.secretmanager_v1 import SecretManagerServiceClient
+
 import app
 
 from unittest.mock import patch, MagicMock
@@ -21,13 +24,13 @@ class TestStore(unittest.TestCase):
         mock_config.BUCKET.blob.assert_called_with(f"dap/{filename}")
         mock_blob.upload_from_string.assert_called_with(data)
 
-    # @patch.object(SecretManagerServiceClient, 'access_secret_version')
-    # def test_secret_manager(self, mock_secret_manager):
-    #     project_id = "test"
-    #     secret = "secret"
-    #     secret_manager.client = MagicMock()
-    #     actual = get_secret(project_id, secret)
-    #     self.assertTrue(actual)
+    @patch('app.secret_manager.secretmanager')
+    def test_secret_manager(self, mock_secret_manager):
+        project_id = "test"
+        secret = "secret"
+        secret_manager.client = MagicMock()
+        actual = get_secret(project_id, secret)
+        self.assertTrue(actual)
 
     @patch('app.get_secret', return_value='my secret')
     @patch('app.pubsub_v1')
