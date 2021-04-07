@@ -1,3 +1,6 @@
 pytest
 pytest-cov
 pytest-html
+google-cloud-storage
+google-cloud-secret-manager
+google-cloud-pubsub

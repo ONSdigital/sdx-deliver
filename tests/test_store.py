@@ -1,8 +1,6 @@
 import unittest
-from unittest import mock
 from unittest.mock import patch, MagicMock
 
-import google
 from google import pubsub_v1
 from google.cloud import storage
 from google.cloud.secretmanager_v1 import SecretManagerServiceClient
