@@ -48,6 +48,36 @@ class TestPublish(unittest.TestCase):
         self.assertEqual(json.dumps(expected), actual)
 
     @patch('app.publish.get_formatted_current_utc', return_value="2021-10-10T08:42:24.737Z")
+    def test_create_message_data_feedback(self, mock_time):
+        filename = "9010576d-f3df-4011-aa41-adecd9bee011"
+        meta_data = MetaWrapper(filename)
+        meta_data.output_type = OutputType.FEEDBACK
+        meta_data.survey_id = "023"
+        meta_data.period = "0216"
+        meta_data.ru_ref = "12345"
+        data_bytes = b"bytes"
+        meta_data.sizeBytes = len(data_bytes)
+        meta_data.md5sum = hashlib.md5(b"bytes").hexdigest()
+        actual = create_message_data(meta_data)
+        expected = {
+            'version': '1',
+            'files': [{
+                'name': filename,
+                'sizeBytes': meta_data.sizeBytes,
+                'md5sum': meta_data.md5sum
+            }],
+            'sensitivity': 'High',
+            'sourceName': CONFIG.PROJECT_ID,
+            'manifestCreated': mock_time.return_value,
+            'description': "023 feedback response for period 0216 sample unit 12345",
+            'dataset': meta_data.survey_id,
+            'schemaversion': '1',
+            'iterationL1': meta_data.period,
+            'iterationL2': 'feedback'
+        }
+        self.assertEqual(json.dumps(expected), actual)
+
+    @patch('app.publish.get_formatted_current_utc', return_value="2021-10-10T08:42:24.737Z")
     def test_create_message_data_comment(self, mock_time):
         filename = "9010576d-f3df-4011-aa41-adecd9bee011"
         test_bytes = b"Test Bytes"
