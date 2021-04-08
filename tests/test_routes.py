@@ -39,6 +39,7 @@ class TestRoutes(unittest.TestCase):
 
         mock_deliver.assert_called()
         mock_jsonify.assert_called_with(success=True)
+        mock_meta_wrapper.assert_called()
 
     @patch('app.routes.MetaWrapper')
     @patch('app.routes.deliver')
@@ -58,6 +59,7 @@ class TestRoutes(unittest.TestCase):
 
         mock_deliver.assert_called()
         mock_jsonify.assert_called_with(success=True)
+        mock_meta_wrapper.assert_called()
 
     @patch('app.routes.MetaWrapper')
     @patch('app.routes.deliver')
@@ -77,6 +79,7 @@ class TestRoutes(unittest.TestCase):
 
         mock_deliver.assert_called()
         mock_jsonify.assert_called_with(success=True)
+        mock_meta_wrapper.assert_called()
 
     @patch('app.routes.MetaWrapper')
     @patch('app.routes.deliver')
@@ -96,6 +99,7 @@ class TestRoutes(unittest.TestCase):
 
         mock_deliver.assert_called()
         mock_jsonify.assert_called_with(success=True)
+        mock_meta_wrapper.assert_called()
 
     @patch('app.routes.MetaWrapper')
     @patch('app.routes.deliver')
@@ -115,6 +119,7 @@ class TestRoutes(unittest.TestCase):
 
         mock_deliver.assert_called()
         mock_jsonify.assert_called_with(success=True)
+        mock_meta_wrapper.assert_called()
 
     @patch('app.routes.MetaWrapper')
     @mock.patch('app.routes.deliver', side_effect=Exception())
