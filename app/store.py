@@ -20,6 +20,7 @@ def write_to_bucket(data: str, filename: str, output_type: OutputType) -> str:
     """
     logger.info("Uploading to bucket")
     directory = dir_dict.get(output_type)
+    # remove destination suffix
     name = filename.split(":")[0]
     path = f"{directory}/{name}"
     logger.info(f"Storing as {path}")
