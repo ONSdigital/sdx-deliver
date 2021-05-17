@@ -19,7 +19,7 @@ SEFT_FILE = 'seft'
 
 
 @app.post('/deliver/dap')
-async def deliver_dap():
+def deliver_dap():
     """
     Endpoint for submissions only intended for DAP. POST request requires the submission JSON to be uploaded
     as "submission" and the filename passed in the query parameters.
@@ -36,7 +36,7 @@ async def deliver_dap():
 
 
 @app.post('/deliver/legacy')
-async def deliver_legacy():
+def deliver_legacy():
     """
     Endpoint for submissions intended for legacy systems. POST request requires the submission JSON to be uploaded as
     "submission", the zipped transformed artifact as "transformed", and the filename passed in the query
@@ -54,7 +54,7 @@ async def deliver_legacy():
 
 
 @app.post('/deliver/hybrid')
-async def deliver_hybrid():
+def deliver_hybrid():
     """
     Endpoint for submissions intended for dap and legacy systems. POST request requires the submission JSON to be
     uploaded as "submission", the zipped transformed artifact as "transformed", and the filename passed in the
@@ -72,7 +72,7 @@ async def deliver_hybrid():
 
 
 @app.post('/deliver/feedback')
-async def deliver_feedback():
+def deliver_feedback():
     """
     Endpoint for feedback submissions only. POST request requires the feedback JSON to be uploaded as
     "submission", and the filename passed in the query parameters.
@@ -89,7 +89,7 @@ async def deliver_feedback():
 
 
 @app.post('/deliver/comments')
-async def deliver_comments():
+def deliver_comments():
     """
     Endpoint for delivering daily comment report. POST request requires the zipped up comments to be uploaded as
     "zip", and the filename passed in the query parameters.
@@ -104,7 +104,7 @@ async def deliver_comments():
 
 
 @app.post('/deliver/seft')
-async def deliver_seft():
+def deliver_seft():
     """
     Endpoint for delivering SEFT submissions. POST request requires the encrypted SEFT to be uploaded as
     "seft", metadata JSON as "metadata", and the filename passed in the query parameters.
