@@ -4,7 +4,7 @@ import structlog
 
 from structlog.contextvars import bind_contextvars
 from fastapi import File, UploadFile, HTTPException
-from app import app
+from app import app, cloud_config
 from app.deliver import deliver
 from app.meta_wrapper import MetaWrapper
 
@@ -15,6 +15,8 @@ SUBMISSION_FILE = 'submission'
 TRANSFORMED_FILE = 'transformed'
 METADATA_FILE = 'metadata'
 SEFT_FILE = 'seft'
+
+cloud_config()
 
 
 @app.post('/deliver/legacy')
@@ -33,7 +35,7 @@ async def deliver_legacy(filename: str,
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = transformed.file.read()
     meta.set_legacy(survey_dict, data_bytes)
-    return await process(meta, data_bytes)
+    return process(meta, data_bytes)
 
 
 @app.post('/deliver/dap')
@@ -48,7 +50,7 @@ async def deliver_dap(filename: str, submission: UploadFile = File(...)):
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = submission_bytes
     meta.set_dap(survey_dict, data_bytes)
-    return await process(meta, data_bytes)
+    return process(meta, data_bytes)
 
 
 @app.post('/deliver/hybrid')
@@ -82,7 +84,7 @@ async def deliver_feedback(filename: str,
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = submission_bytes
     meta.set_feedback(survey_dict, data_bytes)
-    return await process(meta, data_bytes)
+    return process(meta, data_bytes)
 
 
 @app.post('/deliver/comments')
@@ -96,7 +98,7 @@ async def deliver_comments(filename: str,
     meta = MetaWrapper(filename)
     data_bytes = zip.file.read()
     meta.set_comments(data_bytes)
-    return await process(meta, data_bytes)
+    return process(meta, data_bytes)
 
 
 @app.post('/deliver/seft')
@@ -115,7 +117,7 @@ async def deliver_seft(filename: str,
     meta_dict = json.loads(metadata_bytes.decode())
     data_bytes = seft.file.read()
     meta.set_seft(meta_dict)
-    return await process(meta, data_bytes)
+    return process(meta, data_bytes)
 
 
 @app.get('/healthcheck')

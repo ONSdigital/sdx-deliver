@@ -7,7 +7,6 @@ from fastapi import FastAPI
 from app.logger import logging_config
 from app.secret_manager import get_secret
 
-
 logging_config()
 logger = structlog.get_logger()
 project_id = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
@@ -57,5 +56,6 @@ def cloud_config():
     CONFIG.BUCKET = storage_client.bucket(CONFIG.BUCKET_NAME)
 
 
+cloud_config()
 app = FastAPI()
 from app import routes
