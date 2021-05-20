@@ -33,7 +33,7 @@ async def deliver_legacy(filename: str,
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = transformed.file.read()
     meta.set_legacy(survey_dict, data_bytes)
-    return process(meta, data_bytes)
+    return await process(meta, data_bytes)
 
 
 @app.post('/deliver/dap')
@@ -48,7 +48,7 @@ async def deliver_dap(filename: str, submission: UploadFile = File(...)):
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = submission_bytes
     meta.set_dap(survey_dict, data_bytes)
-    return process(meta, data_bytes)
+    return await process(meta, data_bytes)
 
 
 @app.post('/deliver/hybrid')
@@ -82,7 +82,7 @@ async def deliver_feedback(filename: str,
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = submission_bytes
     meta.set_feedback(survey_dict, data_bytes)
-    return process(meta, data_bytes)
+    return await process(meta, data_bytes)
 
 
 @app.post('/deliver/comments')
@@ -96,7 +96,7 @@ async def deliver_comments(filename: str,
     meta = MetaWrapper(filename)
     data_bytes = zip.file.read()
     meta.set_comments(data_bytes)
-    return process(meta, data_bytes)
+    return await process(meta, data_bytes)
 
 
 @app.post('/deliver/seft')
@@ -115,12 +115,12 @@ async def deliver_seft(filename: str,
     meta_dict = json.loads(metadata_bytes.decode())
     data_bytes = seft.file.read()
     meta.set_seft(meta_dict)
-    return process(meta, data_bytes)
+    return await process(meta, data_bytes)
 
 
-# @app.get('/healthcheck')
-# async def healthcheck():
-#     return {'status': 'OK'}
+@app.get('/healthcheck')
+async def healthcheck():
+    return {'status': 'OK'}
 
 
 def process(meta_data: MetaWrapper, data_bytes: bytes) -> str:
