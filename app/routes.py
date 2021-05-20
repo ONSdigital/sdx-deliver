@@ -7,6 +7,7 @@ from fastapi import File, UploadFile, HTTPException
 from app import app
 from app.deliver import deliver
 from app.meta_wrapper import MetaWrapper
+
 logger = structlog.get_logger()
 
 ZIP_FILE = 'zip'
@@ -36,7 +37,7 @@ async def deliver_legacy(filename: str,
 
 
 @app.post('/deliver/dap')
-def deliver_dap(filename: str, submission: UploadFile = File(...)):
+async def deliver_dap(filename: str, submission: UploadFile = File(...)):
     """
     Endpoint for submissions only intended for DAP. POST request requires the submission JSON to be uploaded
     as "submission" and the filename passed in the query parameters.
@@ -51,9 +52,9 @@ def deliver_dap(filename: str, submission: UploadFile = File(...)):
 
 
 @app.post('/deliver/hybrid')
-def deliver_hybrid(filename: str,
-                   transformed: UploadFile = File(...),
-                   submission: UploadFile = File(...)):
+async def deliver_hybrid(filename: str,
+                         transformed: UploadFile = File(...),
+                         submission: UploadFile = File(...)):
     """
     Endpoint for submissions intended for dap and legacy systems. POST request requires the submission JSON to be
     uploaded as "submission", the zipped transformed artifact as "transformed", and the filename passed in the
@@ -69,8 +70,8 @@ def deliver_hybrid(filename: str,
 
 
 @app.post('/deliver/feedback')
-def deliver_feedback(filename: str,
-                     submission: UploadFile = File(...)):
+async def deliver_feedback(filename: str,
+                           submission: UploadFile = File(...)):
     """
     Endpoint for feedback submissions only. POST request requires the feedback JSON to be uploaded as
     "submission", and the filename passed in the query parameters.
@@ -85,8 +86,8 @@ def deliver_feedback(filename: str,
 
 
 @app.post('/deliver/comments')
-def deliver_comments(filename: str,
-                     zip: UploadFile = File(...)):
+async def deliver_comments(filename: str,
+                           zip: UploadFile = File(...)):
     """
     Endpoint for delivering daily comment report. POST request requires the zipped up comments to be uploaded as
     "zip", and the filename passed in the query parameters.
@@ -99,9 +100,9 @@ def deliver_comments(filename: str,
 
 
 @app.post('/deliver/seft')
-def deliver_seft(filename: str,
-                 metadata: UploadFile = File(...),
-                 seft: UploadFile = File(...)):
+async def deliver_seft(filename: str,
+                       metadata: UploadFile = File(...),
+                       seft: UploadFile = File(...)):
     """
     Endpoint for delivering SEFT submissions. POST request requires the encrypted SEFT to be uploaded as
     "seft", metadata JSON as "metadata", and the filename passed in the query parameters.
@@ -118,7 +119,7 @@ def deliver_seft(filename: str,
 
 
 @app.get('/healthcheck')
-def healthcheck():
+async def healthcheck():
     return {'status': 'OK'}
 
 
