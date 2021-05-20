@@ -1,3 +1,5 @@
+import os
+
 import structlog
 import uvicorn
 
@@ -25,7 +27,8 @@ logger = structlog.get_logger()
 #         return self.application
 
 
-# if __name__ == '__main__':
-#     logger.info('Starting SDX Deliver')
-#     cloud_config()
-#     uvicorn.run(app, host="0.0.0.0", workers=2, port=5000)
+if __name__ == '__main__':
+    logger.info('Starting SDX Deliver')
+    cloud_config()
+    os.system("uvicorn app.routes:app --host 0.0.0.0 --port 5000 --workers 5 --timeout-keep-alive 43200")
+    # uvicorn.run(app, host="0.0.0.0", workers=2, port=5000)
