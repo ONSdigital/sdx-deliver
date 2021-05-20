@@ -118,9 +118,9 @@ async def deliver_seft(filename: str,
     return process(meta, data_bytes)
 
 
-@app.get('/healthcheck')
-async def healthcheck():
-    return {'status': 'OK'}
+# @app.get('/healthcheck')
+# async def healthcheck():
+#     return {'status': 'OK'}
 
 
 def process(meta_data: MetaWrapper, data_bytes: bytes) -> str:
