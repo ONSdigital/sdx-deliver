@@ -29,6 +29,16 @@ spec:
               configMapKeyRef:
                 name: sdx-config
                 key: logging_level
+          - name: DATA_SENSITIVITY
+            valueFrom:
+              configMapKeyRef:
+                name: sdx-config
+                key: data_sensitivity
+          - name: DATA_RECIPIENT
+            valueFrom:
+              configMapKeyRef:
+                name: sdx-config
+                key: data_recipient
         livenessProbe:
           httpGet:
             path: /healthcheck
