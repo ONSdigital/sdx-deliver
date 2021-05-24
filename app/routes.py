@@ -32,7 +32,7 @@ async def deliver_legacy(filename: str,
     submission_bytes = submission.file.read()
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = transformed.file.read()
-    meta.set_legacy(survey_dict, data_bytes)
+    meta.set_legacy(survey_dict)
     return process(meta, data_bytes)
 
 
@@ -47,7 +47,7 @@ async def deliver_dap(filename: str, submission: UploadFile = File(...)):
     submission_bytes = submission.file.read()
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = submission_bytes
-    meta.set_dap(survey_dict, data_bytes)
+    meta.set_dap(survey_dict)
     return process(meta, data_bytes)
 
 
@@ -65,7 +65,7 @@ async def deliver_hybrid(filename: str,
     submission_bytes = submission.file.read()
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = transformed.file.read()
-    meta.set_hybrid(survey_dict, data_bytes)
+    meta.set_hybrid(survey_dict)
     return process(meta, data_bytes)
 
 
@@ -81,7 +81,7 @@ async def deliver_feedback(filename: str,
     submission_bytes = submission.file.read()
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = submission_bytes
-    meta.set_feedback(survey_dict, data_bytes)
+    meta.set_feedback(survey_dict)
     return process(meta, data_bytes)
 
 
@@ -95,7 +95,7 @@ async def deliver_comments(filename: str,
     logger.info('Processing Comments submission')
     meta = MetaWrapper(filename)
     data_bytes = zip.file.read()
-    meta.set_comments(data_bytes)
+    meta.set_comments()
     return process(meta, data_bytes)
 
 
