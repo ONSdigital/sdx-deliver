@@ -16,8 +16,6 @@ TRANSFORMED_FILE = 'transformed'
 METADATA_FILE = 'metadata'
 SEFT_FILE = 'seft'
 
-cloud_config()
-
 
 @app.post('/deliver/legacy')
 async def deliver_legacy(filename: str,

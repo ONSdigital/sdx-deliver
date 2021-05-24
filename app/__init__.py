@@ -10,6 +10,8 @@ from app.secret_manager import get_secret
 logging_config()
 logger = structlog.get_logger()
 project_id = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
+data_sensitivity = os.getenv('DATA_SENSITIVITY', 'High')
+data_recipient = os.getenv('DATA_RECIPIENT', 'dap@ons.gov.uk')
 
 
 class Config:
@@ -22,14 +24,8 @@ class Config:
         self.DAP_PUBLISHER = None
         self.ENCRYPTION_KEY = None
         self.GPG = None
-        if proj_id == "ons-sdx-preprod":
-            data_sensitivity = "Low"
-            recipients = ["sdx_preprod@ons.gov.uk"]
-        else:
-            data_sensitivity = "High"
-            recipients = ['dap@ons.gov.uk']
         self.DATA_SENSITIVITY = data_sensitivity
-        self.RECIPIENTS = recipients
+        self.RECIPIENTS = [data_recipient]
 
 
 CONFIG = Config(project_id)

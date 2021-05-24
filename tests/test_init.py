@@ -43,10 +43,6 @@ class TestInit(unittest.TestCase):
         actual = get_secret(project_id, secret)
         self.assertTrue(actual)
 
-    def test_data_sensitivity_low(self):
-        config = app.Config("ons-sdx-preprod")
-        self.assertEqual(config.DATA_SENSITIVITY, "Low")
-
     def test_data_sensitivity_high(self):
         config = app.Config("ons-sdx-prod")
         self.assertEqual(config.DATA_SENSITIVITY, "High")
