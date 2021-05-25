@@ -4,17 +4,11 @@ import structlog
 
 from structlog.contextvars import bind_contextvars
 from fastapi import File, UploadFile, HTTPException
-from app import app, cloud_config
+from app import app
 from app.deliver import deliver
 from app.meta_wrapper import MetaWrapper
 
 logger = structlog.get_logger()
-
-ZIP_FILE = 'zip'
-SUBMISSION_FILE = 'submission'
-TRANSFORMED_FILE = 'transformed'
-METADATA_FILE = 'metadata'
-SEFT_FILE = 'seft'
 
 
 @app.post('/deliver/legacy')
@@ -37,7 +31,8 @@ async def deliver_legacy(filename: str,
 
 
 @app.post('/deliver/dap')
-async def deliver_dap(filename: str, submission: UploadFile = File(...)):
+async def deliver_dap(filename: str,
+                      submission: UploadFile = File(...)):
     """
     Endpoint for submissions only intended for DAP. POST request requires the submission JSON to be uploaded
     as "submission" and the filename passed in the query parameters.
