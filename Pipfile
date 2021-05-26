@@ -13,6 +13,9 @@ python-gnupg = "==0.4.7"
 uvicorn = "==0.13.4"
 python-multipart = "==0.0.5"
 fastapi = "0.63.0"
+uvloop = "==0.15.2"
+httptools = "==0.2.0"
+
 
 [dev-packages]
 pytest = "==6.2.3"
