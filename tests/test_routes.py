@@ -1,12 +1,9 @@
-import json
 import unittest
-from unittest import mock
-
-from unittest.mock import patch, MagicMock
-
 import pytest
-from flask import jsonify
 
+from unittest import mock
+from unittest.mock import patch, MagicMock
+from flask import jsonify
 from app import routes, app
 from app.routes import SUBMISSION_FILE, TRANSFORMED_FILE, ZIP_FILE, SEFT_FILE, METADATA_FILE, process, server_error
 
@@ -22,7 +19,7 @@ class FakeFileBytes:
 
 class TestRoutes(unittest.TestCase):
 
-    @patch('app.routes.MetaWrapper')
+    @patch('app.routes.MetaWrapper.set_dap')
     @patch('app.routes.deliver')
     @patch('app.routes.jsonify')
     def test_deliver_dap(self, mock_jsonify, mock_deliver, mock_meta_wrapper):
@@ -42,7 +39,7 @@ class TestRoutes(unittest.TestCase):
         mock_jsonify.assert_called_with(success=True)
         mock_meta_wrapper.assert_called()
 
-    @patch('app.routes.MetaWrapper')
+    @patch('app.routes.MetaWrapper.set_legacy')
     @patch('app.routes.deliver')
     @patch('app.routes.jsonify')
     def test_deliver_legacy(self, mock_jsonify, mock_deliver, mock_meta_wrapper):
@@ -62,7 +59,7 @@ class TestRoutes(unittest.TestCase):
         mock_jsonify.assert_called_with(success=True)
         mock_meta_wrapper.assert_called()
 
-    @patch('app.routes.MetaWrapper')
+    @patch('app.routes.MetaWrapper.set_hybrid')
     @patch('app.routes.deliver')
     @patch('app.routes.jsonify')
     def test_deliver_hybrid(self, mock_jsonify, mock_deliver, mock_meta_wrapper):
@@ -82,7 +79,7 @@ class TestRoutes(unittest.TestCase):
         mock_jsonify.assert_called_with(success=True)
         mock_meta_wrapper.assert_called()
 
-    @patch('app.routes.MetaWrapper')
+    @patch('app.routes.MetaWrapper.set_feedback')
     @patch('app.routes.deliver')
     @patch('app.routes.jsonify')
     def test_deliver_feedback(self, mock_jsonify, mock_deliver, mock_meta_wrapper):
@@ -102,7 +99,7 @@ class TestRoutes(unittest.TestCase):
         mock_jsonify.assert_called_with(success=True)
         mock_meta_wrapper.assert_called()
 
-    @patch('app.routes.MetaWrapper')
+    @patch('app.routes.MetaWrapper.set_comments')
     @patch('app.routes.deliver')
     @patch('app.routes.jsonify')
     def test_deliver_comments(self, mock_jsonify, mock_deliver, mock_meta_wrapper):
@@ -122,7 +119,7 @@ class TestRoutes(unittest.TestCase):
         mock_jsonify.assert_called_with(success=True)
         mock_meta_wrapper.assert_called()
 
-    @patch('app.routes.MetaWrapper')
+    @patch('app.routes.MetaWrapper.set_seft')
     @patch('app.routes.deliver')
     @patch('app.routes.jsonify')
     def test_deliver_seft(self, mock_jsonify, mock_deliver, mock_meta_wrapper):
