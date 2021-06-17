@@ -50,7 +50,7 @@ dap_message: Message {
   ordering_key: ''
   attributes: {
     "gcs.bucket": "ons-sdx-sandbox-outputs",
-    "gcs.key": "dap/087bfc03-8698-4137-a3ac-7a596b9beb2b",
+    "gcs.key": "dap|087bfc03-8698-4137-a3ac-7a596b9beb2b",
     "tx_id": "087bfc03-8698-4137-a3ac-7a596b9beb2b"
   }
 }
@@ -60,16 +60,17 @@ dap_message: Message {
     data : {
         'version': '1',
         'files': [{
-            'name': meta_data.filename,
-            'sizeBytes': meta_data.sizeBytes,
-            'md5sum': meta_data.md5sum
+            'name': '4f1c130a-0681-442f-8195-b5fa6c57e469:ftp',
+            'sizeBytes': 121144,
+            'md5sum': 'be08e1e407c79507a17d1e6dcdada055'
         }],
         'sensitivity': 'High',
-        'sourceName': CONFIG.PROJECT_ID,
-        'manifestCreated': get_formatted_current_utc(),
-        'description': meta_data.get_description(),
-        'dataset': dataset,
-        'schemaversion': '1'
+        'sourceName': 'ons-sdx-sandbox',
+        'manifestCreated': '2021-06-16T07:47:45.481Z',
+        'description': '009 survey response for period 1704 sample unit 49900108249D',
+        'dataset': '009',
+        'schemaversion': '1',
+        'iterationL1': '1704'
     }
 ```
 
