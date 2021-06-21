@@ -20,7 +20,7 @@ class TestInit(unittest.TestCase):
             test_data = b'{data to be encrypted}'
             encrypt_output(test_data)
         self.assertEqual(actual.output[0], 'INFO:app.encrypt:{"event": "Successfully encrypted output", "level": '
-                                           '"info", "logger": "app.encrypt"}')
+                                           '"info", "logger": "app.encrypt", "app": "SDX-Deliver"}')
 
     @patch('app.encrypt.CONFIG')
     def test_encrypt_bad(self, mock_encrypt):
@@ -31,4 +31,4 @@ class TestInit(unittest.TestCase):
             test_data = b'{data to be encrypted}'
             encrypt_output(test_data)
         self.assertEqual(actual.output[0], 'ERROR:app.encrypt:{"event": "Failed to encrypt output", "level": '
-                                           '"error", "logger": "app.encrypt"}')
+                                           '"error", "logger": "app.encrypt", "app": "SDX-Deliver"}')
