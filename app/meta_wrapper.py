@@ -15,7 +15,7 @@ class MetaWrapper:
     """
 
     def __init__(self, filename):
-        self.filename = filename
+        self.filename = f'{filename}_GCP'
         self.tx_id = None
         self.survey_id = None
         self.period = None
