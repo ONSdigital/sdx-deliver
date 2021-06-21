@@ -3,7 +3,7 @@ import threading
 import structlog
 
 from flask import request, jsonify
-from structlog.contextvars import bind_contextvars
+from structlog.contextvars import bind_contextvars, unbind_contextvars
 
 from app import app
 from app.deliver import deliver
@@ -143,14 +143,24 @@ def process(meta_data: MetaWrapper, data_bytes: bytes) -> str:
     Binds submission data to logger and begins deliver process
     """
     try:
-        bind_contextvars(app="SDX-Deliver")
-        bind_contextvars(tx_id=meta_data.tx_id)
-        bind_contextvars(survey_id=meta_data.survey_id)
-        bind_contextvars(output_type=meta_data.output_type)
-        bind_contextvars(thread=threading.currentThread().getName())
+        bind_contextvars(
+            tx_id=meta_data.tx_id,
+            survey_id=meta_data.survey_id,
+            output_type=meta_data.output_type,
+            thread=threading.currentThread().getName()
+        )
         logger.info("Processing request")
         deliver(meta_data, data_bytes)
         logger.info("Process completed successfully")
         return jsonify(success=True)
+
     except Exception as e:
         return server_error(e)
+
+    finally:
+        unbind_contextvars(
+            'tx_id',
+            'survey_id',
+            'output_type',
+            'thread'
+        )

@@ -2,6 +2,7 @@ import os
 import gnupg
 import structlog
 
+from structlog import bind_co
 from google.cloud import pubsub_v1, storage
 from flask import Flask
 from app.logger import logging_config
