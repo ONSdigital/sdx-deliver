@@ -8,6 +8,18 @@ locations = {
 }
 
 
+def add_gcp_suffix(filename):
+    """
+        Add _GCP as a suffix to the filename, but before any file extension.
+        This is a temporary measure whilst 2 instances of preprod exist.
+    """
+    i = filename.find('.')
+    if i > 0:
+        return f'{filename[:i]}_GCP{filename[i:]}'
+    else:
+        return f'{filename}_GCP'
+
+
 class MetaWrapper:
 
     """
@@ -15,7 +27,7 @@ class MetaWrapper:
     """
 
     def __init__(self, filename):
-        self.filename = f'{filename}_GCP'
+        self.filename = add_gcp_suffix(filename)
         self.tx_id = None
         self.survey_id = None
         self.period = None
