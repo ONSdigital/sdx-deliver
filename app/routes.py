@@ -151,6 +151,10 @@ def process(meta_data: MetaWrapper, data_bytes: bytes) -> str:
         )
         logger.info("Processing request")
         deliver(meta_data, data_bytes)
+        """
+        WE USE THE BELOW LOG MESSAGE "logger.info("Process completed successfully")" TO CREATE "LOG-BASED" CUSTOM METRICS.
+        DO NOT CHANGE THIS STATEMENT.
+        """
         logger.info("Process completed successfully")
         return jsonify(success=True)
 
