@@ -60,7 +60,7 @@ class TestMetaWrapper(unittest.TestCase):
         meta_data.set_dap(self.test_survey)
         actual = meta_data.get_description()
         self.assertEqual(expected, actual)
-        self.assertEqual(f'{filename}:dap', meta_data.filename)
+        self.assertEqual(f'{filename}_GCP:dap', meta_data.filename)
 
     def test_set_legacy(self):
         filename = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
@@ -69,7 +69,7 @@ class TestMetaWrapper(unittest.TestCase):
         meta_data.set_legacy(self.test_survey)
         actual = meta_data.get_description()
         self.assertEqual(expected, actual)
-        self.assertEqual(f'{filename}:ftp', meta_data.filename)
+        self.assertEqual(f'{filename}_GCP:ftp', meta_data.filename)
 
     def test_set_hybrid(self):
         filename = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
@@ -78,7 +78,7 @@ class TestMetaWrapper(unittest.TestCase):
         meta_data.set_hybrid(self.test_survey)
         actual = meta_data.get_description()
         self.assertEqual(expected, actual)
-        self.assertEqual(f'{filename}:hybrid', meta_data.filename)
+        self.assertEqual(f'{filename}_GCP:hybrid', meta_data.filename)
 
     def test_set_feedback(self):
         filename = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
@@ -87,7 +87,7 @@ class TestMetaWrapper(unittest.TestCase):
         meta_data.set_feedback(self.test_survey)
         actual = meta_data.get_description()
         self.assertEqual(expected, actual)
-        self.assertEqual(f'{filename}:ftp', meta_data.filename)
+        self.assertEqual(f'{filename}_GCP:ftp', meta_data.filename)
 
     def test_set_comments(self):
         filename = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
@@ -96,13 +96,13 @@ class TestMetaWrapper(unittest.TestCase):
         meta_data.set_comments()
         actual = meta_data.get_description()
         self.assertEqual(expected, actual)
-        self.assertEqual(f'{filename}:ftp', meta_data.filename)
+        self.assertEqual(f'{filename}_GCP:ftp', meta_data.filename)
 
     def test_set_seft(self):
-        filename = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
+        filename = "11110000004H_202103_074_20210622072550.xlsx.gpg"
         expected = "057 seft response for period 202009 sample unit 20210121143526"
         meta_data = MetaWrapper(filename)
         meta_data.set_seft(self.test_seft)
         actual = meta_data.get_description()
         self.assertEqual(expected, actual)
-        self.assertEqual(f'{filename}:ftp', meta_data.filename)
+        self.assertEqual('11110000004H_202103_074_20210622072550_GCP.xlsx.gpg:ftp', meta_data.filename)
