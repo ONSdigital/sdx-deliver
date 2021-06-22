@@ -41,7 +41,7 @@ def logging_config():
             structlog.stdlib.add_logger_name,
             structlog.stdlib.PositionalArgumentsFormatter(),
             merge_contextvars,
-            structlog.processors.JSONRenderer(indent=2, sort_keys=True),
+            structlog.processors.JSONRenderer(),
         ],
     )
     bind_contextvars(app='SDX-Deliver')
