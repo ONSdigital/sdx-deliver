@@ -1,3 +1,5 @@
+import sys
+
 import structlog
 from gunicorn.app.base import BaseApplication
 
@@ -25,8 +27,26 @@ class Server(BaseApplication):
         return self.application
 
 
+class ErrorFilter:
+
+    def __init__(self, stream):
+        self.stream = stream
+
+    def __getattr__(self, attr_name):
+        return getattr(self.stream, attr_name)
+
+    def write(self, data):
+        if ' [INFO] ' not in data:
+            self.stream.write(data)
+            self.stream.flush()
+
+    def flush(self):
+        self.stream.flush()
+
+
 if __name__ == '__main__':
     logger.info('Starting SDX Deliver')
+    sys.stderr = ErrorFilter(sys.stderr)
     options = {
         'bind': '%s:%s' % ('0.0.0.0', '5000'),
         'workers': 2,
