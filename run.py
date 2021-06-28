@@ -29,24 +29,27 @@ class Server(BaseApplication):
 
 class ErrorFilter:
 
-    def __init__(self, stream):
-        self.stream = stream
+    def __init__(self):
+        self.stderr = sys.stderr
 
     def __getattr__(self, attr_name):
-        return getattr(self.stream, attr_name)
+        return getattr(self.stderr, attr_name)
 
     def write(self, data):
         if ' [INFO] ' not in data:
-            self.stream.write(data)
-            self.stream.flush()
+            self.stderr.write(data)
+            self.stderr.flush()
+        else:
+            sys.stdout.write(data)
+            sys.stdout.flush()
 
     def flush(self):
-        self.stream.flush()
+        self.stderr.flush()
 
 
 if __name__ == '__main__':
     logger.info('Starting SDX Deliver')
-    sys.stderr = ErrorFilter(sys.stderr)
+    sys.stderr = ErrorFilter()
     options = {
         'bind': '%s:%s' % ('0.0.0.0', '5000'),
         'workers': 2,
