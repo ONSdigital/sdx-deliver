@@ -77,5 +77,5 @@ def publish_data(message_str: str, tx_id: str, path: str):
         'tx_id': tx_id
     }
     future = CONFIG.DAP_PUBLISHER.publish(CONFIG.DAP_TOPIC_PATH, message, **attributes)
-    logger.info("Published message to DAP topic", tx_id=tx_id)
+    logger.info("Published message to DAP topic", gcs_key=key)
     return future.result()

@@ -41,7 +41,7 @@ class MetaWrapper:
         self._from_survey(survey_dict)
 
     def set_dap(self, survey_dict: dict):
-        self.filename = f'{self.filename}:{locations["DAP"]}'
+        self.filename = f'{self.filename}.json:{locations["DAP"]}'
         self.output_type = OutputType.DAP
         self._from_survey(survey_dict)
 

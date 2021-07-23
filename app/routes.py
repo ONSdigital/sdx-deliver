@@ -2,7 +2,7 @@ import json
 import threading
 import structlog
 
-from flask import request, jsonify
+from flask import request, jsonify, Response
 from structlog.contextvars import bind_contextvars, unbind_contextvars
 
 from app import app
@@ -138,7 +138,7 @@ def server_error(error=None):
     return resp
 
 
-def process(meta_data: MetaWrapper, data_bytes: bytes) -> str:
+def process(meta_data: MetaWrapper, data_bytes: bytes) -> Response:
     """
     Binds submission data to logger and begins deliver process
     """
