@@ -60,7 +60,7 @@ class TestMetaWrapper(unittest.TestCase):
         meta_data.set_dap(self.test_survey)
         actual = meta_data.get_description()
         self.assertEqual(expected, actual)
-        self.assertEqual(f'{filename}:dap', meta_data.filename)
+        self.assertEqual(f'{filename}.json:dap', meta_data.filename)
 
     def test_set_legacy(self):
         filename = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
