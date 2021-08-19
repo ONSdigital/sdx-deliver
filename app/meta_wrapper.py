@@ -46,7 +46,7 @@ class MetaWrapper:
         self._from_survey(survey_dict)
 
     def set_feedback(self, survey_dict: dict):
-        self.filename = f'{self.filename}:{locations["FTP"]}'
+        self.filename = f'{self.filename}-feedback:{locations["FTP"]}'
         self.output_type = OutputType.FEEDBACK
         self._from_survey(survey_dict)
 
