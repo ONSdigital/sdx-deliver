@@ -1,7 +1,7 @@
 import unittest
+from unittest.mock import patch
 
 from app.meta_wrapper import MetaWrapper
-from app.output_type import OutputType
 
 
 class TestMetaWrapper(unittest.TestCase):
@@ -80,14 +80,16 @@ class TestMetaWrapper(unittest.TestCase):
         self.assertEqual(expected, actual)
         self.assertEqual(f'{filename}:hybrid', meta_data.filename)
 
-    def test_set_feedback(self):
+    @patch('app.meta_wrapper.time.time')
+    def test_set_feedback(self, mock_time):
+        mock_time.return_value = 1629452867.587326
         filename = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
         expected = "009 feedback response for period 2019 sample unit 49900108249D"
         meta_data = MetaWrapper(filename)
         meta_data.set_feedback(self.test_survey)
         actual = meta_data.get_description()
         self.assertEqual(expected, actual)
-        self.assertEqual(f'{filename}-feedback:ftp', meta_data.filename)
+        self.assertEqual(f'{filename}-fb-1629452867:ftp', meta_data.filename)
 
     def test_set_comments(self):
         filename = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
