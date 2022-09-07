@@ -1,5 +1,4 @@
-import time
-
+from datetime import datetime
 from app.output_type import OutputType
 
 
@@ -48,10 +47,13 @@ class MetaWrapper:
         self._from_survey(survey_dict)
 
     def set_feedback(self, survey_dict: dict):
-        time_stamp = str(time.time()).split(".")[0]
-        self.filename = f'{self.filename}-fb-{time_stamp}:{locations["FTP"]}'
+        postfix = datetime.today().strftime('%H:%M:%S_%d-%m-%Y')
+        tx_id = self.filename
+        self.filename = f'{self.filename}-fb-{postfix}:{locations["FTP"]}'
         self.output_type = OutputType.FEEDBACK
         self._from_survey(survey_dict)
+        # reset the transaction id to the filename
+        self.tx_id = tx_id
 
     def set_comments(self):
         self.filename = f'{self.filename}:{locations["FTP"]}'
