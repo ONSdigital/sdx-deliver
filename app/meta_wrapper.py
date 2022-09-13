@@ -47,7 +47,7 @@ class MetaWrapper:
         self._from_survey(survey_dict)
 
     def set_feedback(self, survey_dict: dict):
-        postfix = datetime.today().strftime('%H:%M:%S_%d-%m-%Y')
+        postfix = datetime.today().strftime('%H-%M-%S_%d-%m-%Y')
         tx_id = self.filename
         self.filename = f'{self.filename}-fb-{postfix}:{locations["FTP"]}'
         self.output_type = OutputType.FEEDBACK

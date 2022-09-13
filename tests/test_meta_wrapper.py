@@ -83,7 +83,7 @@ class TestMetaWrapper(unittest.TestCase):
     @patch('app.meta_wrapper.datetime')
     def test_set_feedback(self, mock_datetime):
         mock_today = Mock()
-        mock_today.strftime.return_value = '15:47:27_05-09-2022'
+        mock_today.strftime.return_value = '15-47-27_05-09-2022'
         mock_datetime.today.return_value = mock_today
         filename = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
         expected = "009 feedback response for period 2019 sample unit 49900108249D"
@@ -91,7 +91,7 @@ class TestMetaWrapper(unittest.TestCase):
         meta_data.set_feedback(self.test_survey)
         actual = meta_data.get_description()
         self.assertEqual(expected, actual)
-        self.assertEqual(f'{filename}-fb-15:47:27_05-09-2022:ftp', meta_data.filename)
+        self.assertEqual(f'{filename}-fb-15-47-27_05-09-2022:ftp', meta_data.filename)
 
     def test_set_comments(self):
         filename = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
