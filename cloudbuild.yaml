@@ -2,6 +2,7 @@
 substitutions:
   _SERVICE_NAME: '${REPO_NAME}'
   _IMAGE_PATH: 'eu.gcr.io/${PROJECT_ID}/${BRANCH_NAME}/${REPO_NAME}'
+  _IMAGE_VERSION: '1.7.2'
 
 steps:
 - name: 'gcr.io/cloud-builders/docker'
@@ -9,7 +10,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['tag', '${_IMAGE_PATH}:${BUILD_ID}', '${_IMAGE_PATH}:latest']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['tag', '${_IMAGE_PATH}:${BUILD_ID}', '${_IMAGE_PATH}:${TAG_NAME}']
+  args: ['tag', '${_IMAGE_PATH}:${BUILD_ID}', '${_IMAGE_PATH}:${_IMAGE_VERSION}']
 - name: 'eu.gcr.io/${PROJECT_ID}/${BRANCH_NAME}/helm:latest'
   args: ['scripts/helm-deploy']
   env:
@@ -23,7 +24,7 @@ steps:
 images:
   - ${_IMAGE_PATH}:latest
   - ${_IMAGE_PATH}:${BUILD_ID}
-  - ${_IMAGE_PATH}:${TAG_NAME}
+  - ${_IMAGE_PATH}:${_IMAGE_VERSION}
 
 availableSecrets:
   secretManager:
