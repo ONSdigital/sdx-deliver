@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-gcloud container clusters get-credentials --region "$REGION" "$CLUSTER_NAME"
+gcloud container clusters get-credentials \
+  --region "$REGION" \
+  "$CLUSTER_NAME"
 
 helm dep up ./_helm/${SERVICE_NAME}
 
