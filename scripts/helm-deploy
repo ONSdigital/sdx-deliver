@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+gcloud container clusters get-credentials --zone "$CLOUDSDK_COMPUTE_ZONE" "$CLOUDSDK_CONTAINER_CLUSTER"
+
+helm dep up ./_helm/${SERVICE_NAME}
+
+helm upgrade ${SERVICE_NAME} \
+  --set registry_location=${REGISTRY_LOCATION} \
+  ./_helm/${SERVICE_NAME} \
+  --wait \
+  --install
