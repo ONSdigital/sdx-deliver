@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+
+gcloud container clusters get-credentials \
+  --region "$REGION" \
+  "$CLUSTER_NAME"
+
+helm dep up ./_helm/${SERVICE_NAME}
+
+helm upgrade ${SERVICE_NAME} \
+  --set registry_location=${REGISTRY_LOCATION} \
+  ./_helm/${SERVICE_NAME} \
+  --wait \
+  --install
