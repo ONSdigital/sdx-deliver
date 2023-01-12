@@ -80,3 +80,24 @@ class MetaWrapper:
                              OutputType.FEEDBACK: 'feedback',
                              OutputType.SEFT: 'seft'}.get(self.output_type)
             return f"{self.survey_id} {response_type} response for period {self.period} sample unit {self.ru_ref}"
+
+
+class MetaWrapperV2(MetaWrapper):
+
+    def _from_survey(self, survey_dict: dict):
+        self.tx_id = survey_dict['tx_id']
+        self.survey_id = survey_dict['survey_metadata']['survey_id']
+        self.period = survey_dict['survey_metadata']['period_id']
+        self.ru_ref = survey_dict['survey_metadata']['ru_ref']
+
+
+class MetaWrapperAdhoc(MetaWrapper):
+
+    def _from_survey(self, survey_dict: dict):
+        self.tx_id = survey_dict['tx_id']
+        self.survey_id = survey_dict['survey_metadata']['survey_id']
+        self.period = None
+        self.ru_ref = None
+
+    def get_description(self) -> str:
+        return f"{self.survey_id} survey response for adhoc survey"
