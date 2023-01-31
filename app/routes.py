@@ -1,5 +1,7 @@
 import json
 import threading
+from typing import Dict
+
 import structlog
 
 from flask import request, jsonify, Response
@@ -7,7 +9,7 @@ from structlog.contextvars import bind_contextvars, unbind_contextvars
 
 from app import app
 from app.deliver import deliver
-from app.meta_wrapper import MetaWrapper
+from app.meta_wrapper import MetaWrapper, MetaWrapperV2, MetaWrapperAdhoc
 
 logger = structlog.get_logger()
 
@@ -16,6 +18,23 @@ SUBMISSION_FILE = 'submission'
 TRANSFORMED_FILE = 'transformed'
 METADATA_FILE = 'metadata'
 SEFT_FILE = 'seft'
+FILE_NAME = "filename"
+VERSION = "version"
+V1 = "v1"
+V2 = "v2"
+ADHOC = "adhoc"
+
+
+def get_wrapper(req_args: Dict[str, str]) -> MetaWrapper:
+    filename = req_args.get(FILE_NAME)
+    version = req_args.get(VERSION, V1)
+
+    if version == V2:
+        return MetaWrapperV2(filename)
+    elif version == ADHOC:
+        return MetaWrapperAdhoc(filename)
+    else:
+        return MetaWrapper(filename)
 
 
 @app.post('/deliver/dap')
@@ -25,8 +44,7 @@ def deliver_dap():
     as "submission" and the filename passed in the query parameters.
     """
     logger.info('Processing DAP submission')
-    filename = request.args.get("filename")
-    meta = MetaWrapper(filename)
+    meta = get_wrapper(request.args)
     files = request.files
     submission_bytes = files[SUBMISSION_FILE].read()
     survey_dict = json.loads(submission_bytes.decode())
@@ -43,8 +61,7 @@ def deliver_legacy():
     parameters.
     """
     logger.info('Processing Legacy submission')
-    filename = request.args.get("filename")
-    meta = MetaWrapper(filename)
+    meta = get_wrapper(request.args)
     files = request.files
     submission_bytes = files[SUBMISSION_FILE].read()
     survey_dict = json.loads(submission_bytes.decode())
@@ -61,8 +78,7 @@ def deliver_hybrid():
     query parameters.
     """
     logger.info('Processing Hybrid submission')
-    filename = request.args.get("filename")
-    meta = MetaWrapper(filename)
+    meta = get_wrapper(request.args)
     files = request.files
     submission_bytes = files[SUBMISSION_FILE].read()
     survey_dict = json.loads(submission_bytes.decode())
@@ -78,8 +94,7 @@ def deliver_feedback():
     "submission", and the filename passed in the query parameters.
     """
     logger.info('Processing Feedback submission')
-    filename = request.args.get("filename")
-    meta = MetaWrapper(filename)
+    meta = get_wrapper(request.args)
     files = request.files
     submission_bytes = files[SUBMISSION_FILE].read()
     survey_dict = json.loads(submission_bytes.decode())
@@ -95,8 +110,7 @@ def deliver_comments():
     "zip", and the filename passed in the query parameters.
     """
     logger.info('Processing Comments submission')
-    filename = request.args.get("filename")
-    meta = MetaWrapper(filename)
+    meta = get_wrapper(request.args)
     files = request.files
     data_bytes = files[ZIP_FILE].read()
     meta.set_comments()
@@ -111,8 +125,7 @@ def deliver_seft():
     Metadata file is required to provide information about the submissions to construct the PubSub message.
     """
     logger.info('Processing SEFT submission')
-    filename = request.args.get("filename")
-    meta = MetaWrapper(filename)
+    meta = get_wrapper(request.args)
     files = request.files
     meta_bytes = files[METADATA_FILE].read()
     meta_dict = json.loads(meta_bytes.decode())
@@ -152,7 +165,8 @@ def process(meta_data: MetaWrapper, data_bytes: bytes) -> Response:
         logger.info("Processing request")
         deliver(meta_data, data_bytes)
         """
-        WE USE THE BELOW LOG MESSAGE "logger.info("Process completed successfully")" TO CREATE "LOG-BASED" CUSTOM METRICS.
+        WE USE THE BELOW LOG MESSAGE "logger.info("Process completed successfully")" 
+        TO CREATE "LOG-BASED" CUSTOM METRICS.
         DO NOT CHANGE THIS STATEMENT.
         """
         logger.info("Process completed successfully")

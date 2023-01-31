@@ -4,7 +4,7 @@ import unittest
 
 from unittest import mock
 from unittest.mock import patch, MagicMock
-from app.meta_wrapper import MetaWrapper
+from app.meta_wrapper import MetaWrapper, MetaWrapperAdhoc
 from app.output_type import OutputType
 from app.publish import get_formatted_current_utc, send_message, create_message_data, publish_data
 from app import CONFIG
@@ -139,3 +139,21 @@ class TestPublish(unittest.TestCase):
         CONFIG.DAP_PUBLISHER = MagicMock()
         response = publish_data(message, tx_id, path)
         self.assertTrue(response)
+
+    @patch('app.publish.get_formatted_current_utc', return_value="2021-10-10T08:42:24.737Z")
+    def test_create_message_for_adhoc(self, mock_time):
+        self.meta_data = MetaWrapperAdhoc('test_file_name')
+        self.meta_data.output_type = OutputType.DAP
+        self.meta_data.survey_id = "001"
+        self.meta_data.period = None
+        self.meta_data.ru_ref = None
+        self.meta_data.sizeBytes = len(b"bytes")
+        self.meta_data.md5sum = hashlib.md5(b"bytes").hexdigest()
+
+        self.expected['manifestCreated'] = mock_time.return_value
+        self.expected['dataset'] = "001"
+        self.expected['description'] = "001 survey response for adhoc survey"
+        self.expected.pop('iterationL1')
+
+        actual = create_message_data(self.meta_data)
+        self.assertEqual(json.dumps(self.expected), actual)

@@ -26,7 +26,7 @@ def create_message_data(meta_data: MetaWrapper) -> str:
         iteration1 = None
     else:
         dataset = meta_data.survey_id
-        iteration1 = meta_data.period
+        iteration1 = meta_data.period if meta_data.period else None
 
     message_data = {
         'version': '1',
