@@ -21,8 +21,13 @@ def create_message_data(meta_data: MetaWrapper) -> str:
     """
     Generates PubSub message using MetaWrapper
     """
+    source_name = CONFIG.PROJECT_ID
     if meta_data.output_type == OutputType.COMMENTS:
         dataset = "sdx_comments"
+        iteration1 = None
+    elif meta_data.survey_id == "739":
+        dataset = "covid_resp_inf_surv_response"
+        source_name = "ons"
         iteration1 = None
     else:
         dataset = meta_data.survey_id
@@ -36,7 +41,7 @@ def create_message_data(meta_data: MetaWrapper) -> str:
             'md5sum': meta_data.md5sum
         }],
         'sensitivity': CONFIG.DATA_SENSITIVITY,
-        'sourceName': CONFIG.PROJECT_ID,
+        'sourceName': source_name,
         'manifestCreated': get_formatted_current_utc(),
         'description': meta_data.get_description(),
         'dataset': dataset,
