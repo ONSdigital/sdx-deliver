@@ -28,6 +28,7 @@ def create_message_data(meta_data: MetaWrapper) -> str:
     elif meta_data.survey_id == "739":
         dataset = "covid_resp_inf_surv_response"
         source_name = "ons"
+        iteration1 = None
     else:
         dataset = meta_data.survey_id
         iteration1 = meta_data.period if meta_data.period else None
