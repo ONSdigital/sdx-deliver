@@ -166,7 +166,7 @@ class TestPublish(unittest.TestCase):
     @patch('app.publish.CONFIG')
     def test_create_message_for_adhoc_preprod(self, mock_config, mock_time):
         mock_config.PROJECT_ID = "ons-sdx-preprod"
-        mock_config.DATA_SENSITIVITY = "Low"
+        mock_config.DATA_SENSITIVITY = "Medium"
         self.meta_data = MetaWrapperAdhoc('test_file_name')
         self.meta_data.output_type = OutputType.DAP
         self.meta_data.survey_id = "739"
@@ -179,7 +179,7 @@ class TestPublish(unittest.TestCase):
         self.expected['sourceName'] = "ons"
         self.expected['dataset'] = "covid_resp_inf_surv_response"
         self.expected['description'] = "739 survey response for adhoc survey"
-        self.expected['sensitivity'] = "Low"
+        self.expected['sensitivity'] = "Medium"
         self.expected['iterationL1'] = "test"
 
         actual = create_message_data(self.meta_data)
