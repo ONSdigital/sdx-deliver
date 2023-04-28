@@ -9,7 +9,7 @@ from structlog.contextvars import bind_contextvars, unbind_contextvars
 
 from app import app
 from app.deliver import deliver
-from app.meta_wrapper import MetaWrapper, MetaWrapperV2, MetaWrapperAdhoc
+from app.meta_wrapper import MetaWrapper, MetaWrapperV2, MetaWrapperAdhoc, InvalidDataException
 
 logger = structlog.get_logger()
 
@@ -139,6 +139,19 @@ def healthcheck():
     return jsonify({'status': 'OK'})
 
 
+@app.errorhandler(400)
+def client_error(error=None):
+    logger.error("Client error", error=str(error))
+    message = {
+        'status': 400,
+        'message': str(error),
+        'uri': request.url,
+    }
+    resp = jsonify(message)
+    resp.status_code = 400
+    return resp
+
+
 @app.errorhandler(500)
 def server_error(error=None):
     logger.error("Server error", error=repr(error))
@@ -146,7 +159,7 @@ def server_error(error=None):
         'status': 500,
         'message': "Internal server error: " + repr(error),
     }
-    resp = jsonify(message)
+    resp = jsonify(str(message))
     resp.status_code = 500
     return resp
 
@@ -171,6 +184,9 @@ def process(meta_data: MetaWrapper, data_bytes: bytes) -> Response:
         """
         logger.info("Process completed successfully")
         return jsonify(success=True)
+
+    except InvalidDataException as ide:
+        return client_error(ide)
 
     except Exception as e:
         return server_error(e)
