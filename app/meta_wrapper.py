@@ -9,6 +9,19 @@ locations = {
 }
 
 
+class InvalidDataException(Exception):
+    pass
+
+
+def _get_field(survey_dict: dict, *field_names: str) -> str:
+    current = survey_dict
+    for key in field_names:
+        current = current.get(key)
+        if not current:
+            raise InvalidDataException(f'Missing field {key} from response!')
+    return current
+
+
 class MetaWrapper:
 
     """
@@ -26,10 +39,10 @@ class MetaWrapper:
         self.output_type = None
 
     def _from_survey(self, survey_dict: dict):
-        self.tx_id = survey_dict['tx_id']
-        self.survey_id = survey_dict['survey_id']
-        self.period = survey_dict['collection']['period']
-        self.ru_ref = survey_dict['metadata']['ru_ref']
+        self.tx_id = _get_field(survey_dict, 'tx_id')
+        self.survey_id = _get_field(survey_dict, 'survey_id')
+        self.period = _get_field(survey_dict, 'collection', 'period')
+        self.ru_ref = _get_field(survey_dict, 'metadata', 'ru_ref')
 
     def set_legacy(self, survey_dict: dict):
         self.filename = f'{self.filename}:{locations["FTP"]}'
@@ -85,17 +98,17 @@ class MetaWrapper:
 class MetaWrapperV2(MetaWrapper):
 
     def _from_survey(self, survey_dict: dict):
-        self.tx_id = survey_dict['tx_id']
-        self.survey_id = survey_dict['survey_metadata']['survey_id']
-        self.period = survey_dict['survey_metadata']['period_id']
-        self.ru_ref = survey_dict['survey_metadata']['ru_ref']
+        self.tx_id = _get_field(survey_dict, 'tx_id')
+        self.survey_id = _get_field(survey_dict, 'survey_metadata', 'survey_id')
+        self.period = _get_field(survey_dict, 'survey_metadata', 'period_id')
+        self.ru_ref = _get_field(survey_dict, 'survey_metadata', 'ru_ref')
 
 
 class MetaWrapperAdhoc(MetaWrapper):
 
     def _from_survey(self, survey_dict: dict):
-        self.tx_id = survey_dict['tx_id']
-        self.survey_id = survey_dict['survey_metadata']['survey_id']
+        self.tx_id = _get_field(survey_dict, 'tx_id')
+        self.survey_id = _get_field(survey_dict, 'survey_metadata', 'survey_id')
         self.period = None
         self.ru_ref = None
 
