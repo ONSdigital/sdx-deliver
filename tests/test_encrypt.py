@@ -1,5 +1,6 @@
+import json
 import unittest
-from unittest.mock import patch, Mock, MagicMock
+from unittest.mock import patch, MagicMock
 
 from app import gnupg, CONFIG
 from app.encrypt import encrypt_output
@@ -19,8 +20,9 @@ class TestInit(unittest.TestCase):
         with self.assertLogs('app.encrypt', level='INFO') as actual:
             test_data = b'{data to be encrypted}'
             encrypt_output(test_data)
-        self.assertEqual(actual.output[0], 'INFO:app.encrypt:{"event": "Successfully encrypted output", "level": '
-                                           '"info", "logger": "app.encrypt", "app": "SDX-Deliver"}')
+            log_str = actual.output[0]
+            log_json = json.loads(log_str[17:])
+            self.assertEqual('Successfully encrypted output', log_json['message'])
 
     @patch('app.encrypt.CONFIG')
     def test_encrypt_bad(self, mock_encrypt):
@@ -30,5 +32,6 @@ class TestInit(unittest.TestCase):
             mock_encrypt.GPG.encrypt.return_value = mock_encrypted
             test_data = b'{data to be encrypted}'
             encrypt_output(test_data)
-        self.assertEqual(actual.output[0], 'ERROR:app.encrypt:{"event": "Failed to encrypt output", "level": '
-                                           '"error", "logger": "app.encrypt", "app": "SDX-Deliver"}')
+            log_str = actual.output[0]
+            log_json = json.loads(log_str[18:])
+            self.assertEqual('Failed to encrypt output', log_json['message'])

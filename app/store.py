@@ -1,9 +1,9 @@
-import structlog
+from sdx_gcp.app import get_logger
 
-from app import CONFIG
+from app import CONFIG, sdx_app
 from app.output_type import OutputType
 
-logger = structlog.get_logger()
+logger = get_logger()
 
 
 dir_dict = {OutputType.DAP: "dap",
@@ -20,11 +20,6 @@ def write_to_bucket(data: str, filename: str, output_type: OutputType) -> str:
     """
     logger.info("Uploading to bucket")
     directory = dir_dict.get(output_type)
-    # remove destination suffix
+    # remove destination suffix if it exists
     name = filename.split(":")[0]
-    path = f"{directory}/{name}"
-    logger.info(f"Storing as {path}")
-    blob = CONFIG.BUCKET.blob(path)
-    blob.upload_from_string(data)
-    logger.info(f"Successfully uploaded: {filename} to {directory}")
-    return path
+    return sdx_app.gcs_write(data, name, CONFIG.BUCKET_NAME, directory)

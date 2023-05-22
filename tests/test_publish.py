@@ -3,10 +3,10 @@ import json
 import unittest
 
 from unittest import mock
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from app.meta_wrapper import MetaWrapper, MetaWrapperAdhoc
 from app.output_type import OutputType
-from app.publish import get_formatted_current_utc, send_message, create_message_data, publish_data
+from app.publish import get_formatted_current_utc, send_message, create_message_data
 from app import CONFIG
 
 
@@ -131,14 +131,6 @@ class TestPublish(unittest.TestCase):
         mock_create_message_data.return_value = str_dap_message
         send_message(self.meta_data, path)
         mock_publish_data.assert_called_with(str_dap_message, self.meta_data.tx_id, path)
-
-    def test_pubsub(self):
-        message = "test message"
-        tx_id = '12345'
-        path = 'seft/12345'
-        CONFIG.DAP_PUBLISHER = MagicMock()
-        response = publish_data(message, tx_id, path)
-        self.assertTrue(response)
 
     @patch('app.publish.get_formatted_current_utc', return_value="2021-10-10T08:42:24.737Z")
     @patch('app.publish.CONFIG')

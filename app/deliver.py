@@ -1,6 +1,6 @@
 import hashlib
 
-import structlog
+from sdx_gcp.app import get_logger
 
 from app.encrypt import encrypt_output
 from app.meta_wrapper import MetaWrapper
@@ -8,7 +8,7 @@ from app.output_type import OutputType
 from app.publish import send_message
 from app.store import write_to_bucket
 
-logger = structlog.get_logger()
+logger = get_logger()
 
 
 def deliver(meta_data: MetaWrapper, data_bytes: bytes):

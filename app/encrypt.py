@@ -1,7 +1,8 @@
-import structlog
+from sdx_gcp.app import get_logger
+
 from app import CONFIG
 
-logger = structlog.get_logger()
+logger = get_logger()
 
 
 def encrypt_output(data_bytes: bytes) -> str:

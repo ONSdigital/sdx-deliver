@@ -1,12 +1,12 @@
-import structlog
+from sdx_gcp.app import get_logger
 
-from app import CONFIG
+from app import CONFIG, sdx_app
 import json
 from datetime import datetime
 from app.meta_wrapper import MetaWrapper
 from app.output_type import OutputType
 
-logger = structlog.get_logger()
+logger = get_logger()
 
 
 def send_message(meta_data: MetaWrapper, path: str):
@@ -76,8 +76,6 @@ def publish_data(message_str: str, tx_id: str, path: str):
     """
     Publishes message to DAP
     """
-    # Data must be a byte-string
-    message = message_str.encode("utf-8")
     # NIFI can't handle forward slash
     key = path.replace("/", "|")
     attributes = {
@@ -85,6 +83,7 @@ def publish_data(message_str: str, tx_id: str, path: str):
         'gcs.key': key,
         'tx_id': tx_id
     }
-    future = CONFIG.DAP_PUBLISHER.publish(CONFIG.DAP_TOPIC_PATH, message, **attributes)
+
+    sdx_app.publish_to_pubsub(CONFIG.DAP_TOPIC_ID, message_str, attributes)
+
     logger.info("Published message to DAP topic", gcs_key=key)
-    return future.result()
