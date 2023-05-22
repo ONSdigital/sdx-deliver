@@ -1,0 +1,2 @@
+sdx-gcp==1.2.3
+python-gnupg==0.4.7
