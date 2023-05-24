@@ -30,3 +30,5 @@ def deliver(meta_data: MetaWrapper, data_bytes: bytes):
 
     logger.info("Sending DAP notification")
     send_message(meta_data, path)
+
+    logger.info("Process completed successfully")

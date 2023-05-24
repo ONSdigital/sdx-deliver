@@ -1,4 +1,7 @@
 from datetime import datetime
+
+from sdx_gcp.errors import DataError
+
 from app.output_type import OutputType
 
 
@@ -9,16 +12,12 @@ locations = {
 }
 
 
-class InvalidDataException(Exception):
-    pass
-
-
 def _get_field(survey_dict: dict, *field_names: str) -> str:
     current = survey_dict
     for key in field_names:
         current = current.get(key)
         if not current:
-            raise InvalidDataException(f'Missing field {key} from response!')
+            raise DataError(f'Missing field {key} from response!')
     return current
 
 
