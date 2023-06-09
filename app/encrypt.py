@@ -19,4 +19,4 @@ def encrypt_output(data_bytes: bytes) -> str:
     #     logger.error(encrypted_data.status)
     #
     # return str(encrypted_data)
-    return data_bytes.decode()
+    return data_bytes.decode("latin1")
