@@ -1,7 +1,10 @@
 import unittest
 from unittest.mock import patch, MagicMock
 from app import routes
-from app.routes import SUBMISSION_FILE, TRANSFORMED_FILE, ZIP_FILE, SEFT_FILE, METADATA_FILE, VERSION, V2, FILE_NAME, ADHOC
+from app.routes import SUBMISSION_FILE, TRANSFORMED_FILE, ZIP_FILE, SEFT_FILE, METADATA_FILE, VERSION, V2, FILE_NAME, \
+    ADHOC
+
+FAKE_TX_ID = '123'
 
 
 class FakeFileBytes:
@@ -28,7 +31,7 @@ class TestRoutes(unittest.TestCase):
         mock_file_bytes = FakeFileBytes(submission_bytes)
         mock_request.files = {SUBMISSION_FILE: mock_file_bytes}
 
-        routes.deliver_dap(mock_request)
+        routes.deliver_dap(mock_request, FAKE_TX_ID)
 
         mock_deliver.assert_called()
         mock_jsonify.assert_called_with(success=True)
@@ -50,7 +53,7 @@ class TestRoutes(unittest.TestCase):
         mock_file_bytes = FakeFileBytes(submission_bytes)
         mock_request.files = {SUBMISSION_FILE: mock_file_bytes}
 
-        routes.deliver_dap(mock_request)
+        routes.deliver_dap(mock_request, FAKE_TX_ID)
 
         mock_deliver.assert_called()
         mock_jsonify.assert_called_with(success=True)
@@ -72,7 +75,7 @@ class TestRoutes(unittest.TestCase):
         mock_file_bytes = FakeFileBytes(submission_bytes)
         mock_request.files = {SUBMISSION_FILE: mock_file_bytes}
 
-        routes.deliver_dap(mock_request)
+        routes.deliver_dap(mock_request, FAKE_TX_ID)
 
         mock_deliver.assert_called()
         mock_jsonify.assert_called_with(success=True)
@@ -91,7 +94,7 @@ class TestRoutes(unittest.TestCase):
         mock_file_bytes = FakeFileBytes(submission_bytes)
         mock_request.files = {TRANSFORMED_FILE: mock_file_bytes, SUBMISSION_FILE: mock_file_bytes}
 
-        routes.deliver_legacy(mock_request)
+        routes.deliver_legacy(mock_request, FAKE_TX_ID)
 
         mock_deliver.assert_called()
         mock_jsonify.assert_called_with(success=True)
@@ -110,7 +113,7 @@ class TestRoutes(unittest.TestCase):
         mock_file_bytes = FakeFileBytes(submission_bytes)
         mock_request.files = {TRANSFORMED_FILE: mock_file_bytes, SUBMISSION_FILE: mock_file_bytes}
 
-        routes.deliver_hybrid(mock_request)
+        routes.deliver_hybrid(mock_request, FAKE_TX_ID)
 
         mock_deliver.assert_called()
         mock_jsonify.assert_called_with(success=True)
@@ -129,7 +132,7 @@ class TestRoutes(unittest.TestCase):
         mock_file_bytes = FakeFileBytes(submission_bytes)
         mock_request.files = {SUBMISSION_FILE: mock_file_bytes}
 
-        routes.deliver_feedback(mock_request)
+        routes.deliver_feedback(mock_request, FAKE_TX_ID)
 
         mock_deliver.assert_called()
         mock_jsonify.assert_called_with(success=True)
@@ -148,7 +151,7 @@ class TestRoutes(unittest.TestCase):
         mock_file_bytes = FakeFileBytes(submission_bytes)
         mock_request.files = {ZIP_FILE: mock_file_bytes}
 
-        routes.deliver_comments(mock_request)
+        routes.deliver_comments(mock_request, FAKE_TX_ID)
 
         mock_deliver.assert_called()
         mock_jsonify.assert_called_with(success=True)
@@ -167,7 +170,7 @@ class TestRoutes(unittest.TestCase):
         mock_file_bytes = FakeFileBytes(submission_bytes)
         mock_request.files = {METADATA_FILE: mock_file_bytes, SEFT_FILE: mock_file_bytes}
 
-        routes.deliver_seft(mock_request)
+        routes.deliver_seft(mock_request, FAKE_TX_ID)
 
         mock_deliver.assert_called()
         mock_jsonify.assert_called_with(success=True)
