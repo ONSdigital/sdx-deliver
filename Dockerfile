@@ -1,4 +1,4 @@
-FROM eu.gcr.io/ons-sdx-ci/sdx-gcp:1.2.3
+FROM eu.gcr.io/ons-sdx-ci/sdx-gcp:1.3.2
 RUN apt-get update && apt-get install -y gnupg
 COPY . /app
 WORKDIR /app
