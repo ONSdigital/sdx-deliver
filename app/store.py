@@ -14,12 +14,12 @@ dir_dict = {OutputType.DAP: "dap",
             OutputType.SEFT: "seft"}
 
 
-def write_to_bucket(data: str, filename: str, output_type: OutputType) -> str:
+def write_to_bucket(data: str, filename: str, output_type: OutputType, sub_dir: str) -> str:
     """
     Uploads a string submission to the correct folder within the GCP outputs bucket.
     """
     logger.info("Uploading to bucket")
-    directory = dir_dict.get(output_type)
+    directory = f'{dir_dict.get(output_type)}/{sub_dir}'
     # remove destination suffix if it exists
     name = filename.split(":")[0]
     return sdx_app.gcs_write(data, name, CONFIG.BUCKET_NAME, directory)
