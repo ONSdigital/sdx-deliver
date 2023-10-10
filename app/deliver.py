@@ -28,7 +28,10 @@ def deliver(meta_data: MetaWrapper, data_bytes: bytes):
             logger.info("Storing to bucket")
             path = ""
             for fileinfo in zf.infolist():
-                data: str = zf.read(fileinfo).decode()
+                try:
+                    data: str = zf.read(fileinfo).decode()
+                except Exception:
+                    logger.info(f"Unable to decode: {fileinfo.filename}")
                 path = write_to_bucket(data,
                                        filename=fileinfo.filename,
                                        output_type=meta_data.output_type,
