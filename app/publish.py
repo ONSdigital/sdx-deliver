@@ -1,6 +1,6 @@
 from sdx_gcp.app import get_logger
 
-from app import CONFIG, sdx_app
+from app import CONFIG
 import json
 from datetime import datetime
 from app.meta_wrapper import MetaWrapper
@@ -9,12 +9,12 @@ from app.output_type import OutputType
 logger = get_logger()
 
 
-def send_message(meta_data: MetaWrapper, path: str):
+def get_message(meta_data: MetaWrapper, path: str) -> str:
     """
-    Sends notification to DAP, based on the Metawrapper data
+    Get the Pubsub message, based on the Metawrapper data
     """
     message_str = create_message_data(meta_data)
-    publish_data(message_str, meta_data.tx_id, path)
+    return publish_data(message_str, meta_data.tx_id, path)
 
 
 def create_message_data(meta_data: MetaWrapper) -> str:
@@ -72,7 +72,7 @@ def get_formatted_current_utc():
     return f"{date_time.strftime('%Y-%m-%dT%H:%M:%S')}.{milliseconds}Z"
 
 
-def publish_data(message_str: str, tx_id: str, path: str):
+def publish_data(message_str: str, tx_id: str, path: str) -> str:
     """
     Publishes message to DAP
     """
@@ -84,6 +84,4 @@ def publish_data(message_str: str, tx_id: str, path: str):
         'tx_id': tx_id
     }
 
-    sdx_app.publish_to_pubsub(CONFIG.DAP_TOPIC_ID, message_str, attributes)
-
-    logger.info("Published message to DAP topic", gcs_key=key)
+    return json.dumps({"data": message_str, "attributes": attributes})
