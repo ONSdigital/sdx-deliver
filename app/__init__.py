@@ -9,6 +9,8 @@ logger = get_logger()
 project_id = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
 data_sensitivity = os.getenv('DATA_SENSITIVITY', 'High')
 data_recipient = os.getenv('DATA_RECIPIENT', 'dap@ons.gov.uk')
+prepop_recipient = "sdx_dev@ons.gov.uk"
+nifi_bucket = f'{project_id}-nifi'
 
 
 class Config:
@@ -19,6 +21,8 @@ class Config:
         self.GPG = None
         self.DATA_SENSITIVITY = data_sensitivity
         self.RECIPIENTS = [data_recipient]
+        self.PREPOP_RECIPIENTS = [prepop_recipient]
+        self.NIFI_BUCKET_NAME = nifi_bucket
 
 
 CONFIG = Config(project_id)

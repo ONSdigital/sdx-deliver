@@ -1,4 +1,5 @@
 from app import setup_keys, sdx_app
+from app.prepop import process, generate_tx_id
 from app.routes import deliver_dap, deliver_legacy, deliver_hybrid, deliver_feedback, deliver_comments, deliver_seft
 
 if __name__ == '__main__':
@@ -10,5 +11,6 @@ if __name__ == '__main__':
     sdx_app.add_post_endpoint(deliver_feedback, rule="/deliver/feedback")
     sdx_app.add_post_endpoint(deliver_comments, rule="/deliver/comments")
     sdx_app.add_post_endpoint(deliver_seft, rule="/deliver/seft")
+    sdx_app.add_pubsub_endpoint(handler=process, tx_id_getter=generate_tx_id)
 
     sdx_app.run(port=5000)
