@@ -29,6 +29,6 @@ def process(message: Message, _tx_id: TX_ID):
 
     prepop_data: str = str(encrypted_data)
 
-    sdx_app.gcs_write(prepop_data, filename, CONFIG.NIFI_BUCKET_NAME)
+    sdx_app.gcs_write(prepop_data, filename, CONFIG.SDS_INPUT_BUCKET_NAME)
 
     logger.info("Finished NIFI process!")

@@ -23,6 +23,7 @@ class Config:
         self.RECIPIENTS = [data_recipient]
         self.PREPOP_RECIPIENTS = [prepop_recipient]
         self.NIFI_BUCKET_NAME = nifi_bucket
+        self.SDS_INPUT_BUCKET_NAME: str = f"{proj_id}-prepop-data"
 
 
 CONFIG = Config(project_id)
