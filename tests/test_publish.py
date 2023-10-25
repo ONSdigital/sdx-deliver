@@ -140,6 +140,7 @@ class TestPublish(unittest.TestCase):
         self.meta_data = MetaWrapperAdhoc('test_file_name')
         self.meta_data.output_type = OutputType.DAP
         self.meta_data.survey_id = "739"
+        self.meta_data.original_id = "739"
         self.meta_data.period = None
         self.meta_data.ru_ref = None
         self.meta_data.sizeBytes = len(b"bytes")
@@ -162,6 +163,7 @@ class TestPublish(unittest.TestCase):
         self.meta_data = MetaWrapperAdhoc('test_file_name')
         self.meta_data.output_type = OutputType.DAP
         self.meta_data.survey_id = "739"
+        self.meta_data.original_id = "739"
         self.meta_data.period = None
         self.meta_data.ru_ref = None
         self.meta_data.sizeBytes = len(b"bytes")

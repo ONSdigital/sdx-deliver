@@ -27,7 +27,7 @@ class MetaWrapper:
     This class provides a common interface to the metadata associated with different types of survey submissions
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename: str):
         self.filename = filename
         self.tx_id = None
         self.survey_id = None
@@ -104,12 +104,30 @@ class MetaWrapperV2(MetaWrapper):
 
 
 class MetaWrapperAdhoc(MetaWrapper):
+    """MetaWrapper for adhoc surveys
+
+    The Winter Surveillance Survey is split into 2 surveys
+    (738 fuis, and 739 wcis) however NIFI has only one flow for each.
+    Therefore, submissions for fuis need to be changed to survey id 739.
+    To allow the end users to distinguish between the 2, the filename is
+    prefixed with the original survey id.
+    """
+    def __init__(self, filename: str):
+        super().__init__(filename)
+        self.original_id = None
 
     def _from_survey(self, survey_dict: dict):
         self.tx_id = _get_field(survey_dict, 'tx_id')
-        self.survey_id = _get_field(survey_dict, 'survey_metadata', 'survey_id')
+        survey_id = _get_field(survey_dict, 'survey_metadata', 'survey_id')
+        self.original_id = survey_id
+        if survey_id == "739":
+            self.filename = f'739-{self.filename}'
+        elif survey_id == "738":
+            self.filename = f'738-{self.filename}'
+            survey_id = "739"
+        self.survey_id = survey_id
         self.period = None
         self.ru_ref = None
 
     def get_description(self) -> str:
-        return f"{self.survey_id} survey response for adhoc survey"
+        return f"{self.original_id} survey response for adhoc survey"
