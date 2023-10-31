@@ -114,20 +114,17 @@ class MetaWrapperAdhoc(MetaWrapper):
     """
     def __init__(self, filename: str):
         super().__init__(filename)
-        self.original_id = None
 
     def _from_survey(self, survey_dict: dict):
         self.tx_id = _get_field(survey_dict, 'tx_id')
         survey_id = _get_field(survey_dict, 'survey_metadata', 'survey_id')
-        self.original_id = survey_id
         if survey_id == "739":
             self.filename = f'739-{self.filename}'
         elif survey_id == "738":
             self.filename = f'738-{self.filename}'
-            survey_id = "739"
         self.survey_id = survey_id
         self.period = None
         self.ru_ref = None
 
     def get_description(self) -> str:
-        return f"{self.original_id} survey response for adhoc survey"
+        return f"{self.survey_id} survey response for adhoc survey"

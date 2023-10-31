@@ -140,7 +140,6 @@ class TestPublish(unittest.TestCase):
         self.meta_data = MetaWrapperAdhoc('test_file_name')
         self.meta_data.output_type = OutputType.DAP
         self.meta_data.survey_id = "739"
-        self.meta_data.original_id = "739"
         self.meta_data.period = None
         self.meta_data.ru_ref = None
         self.meta_data.sizeBytes = len(b"bytes")
@@ -163,7 +162,6 @@ class TestPublish(unittest.TestCase):
         self.meta_data = MetaWrapperAdhoc('test_file_name')
         self.meta_data.output_type = OutputType.DAP
         self.meta_data.survey_id = "739"
-        self.meta_data.original_id = "739"
         self.meta_data.period = None
         self.meta_data.ru_ref = None
         self.meta_data.sizeBytes = len(b"bytes")
@@ -175,6 +173,50 @@ class TestPublish(unittest.TestCase):
         self.expected['description'] = "739 survey response for adhoc survey"
         self.expected['sensitivity'] = "Medium"
         self.expected['iterationL1'] = "test"
+
+        actual = create_message_data(self.meta_data)
+        self.assertEqual(json.dumps(self.expected), actual)
+
+    @patch('app.publish.get_formatted_current_utc', return_value="2021-10-10T08:42:24.737Z")
+    @patch('app.publish.CONFIG')
+    def test_create_message_for_wcis(self, mock_config, mock_time):
+        mock_config.PROJECT_ID = "ons-sdx-prod"
+        mock_config.DATA_SENSITIVITY = "High"
+        self.meta_data = MetaWrapperAdhoc('test_file_name')
+        self.meta_data.output_type = OutputType.DAP
+        self.meta_data.survey_id = "739"
+        self.meta_data.period = None
+        self.meta_data.ru_ref = None
+        self.meta_data.sizeBytes = len(b"bytes")
+        self.meta_data.md5sum = hashlib.md5(b"bytes").hexdigest()
+
+        self.expected['manifestCreated'] = mock_time.return_value
+        self.expected['sourceName'] = "ons"
+        self.expected['dataset'] = "covid_resp_inf_surv_response"
+        self.expected['description'] = "739 survey response for adhoc survey"
+        self.expected['iterationL1'] = "prod"
+
+        actual = create_message_data(self.meta_data)
+        self.assertEqual(json.dumps(self.expected), actual)
+
+    @patch('app.publish.get_formatted_current_utc', return_value="2021-10-10T08:42:24.737Z")
+    @patch('app.publish.CONFIG')
+    def test_create_message_for_fuis(self, mock_config, mock_time):
+        mock_config.PROJECT_ID = "ons-sdx-prod"
+        mock_config.DATA_SENSITIVITY = "High"
+        self.meta_data = MetaWrapperAdhoc('test_file_name')
+        self.meta_data.output_type = OutputType.DAP
+        self.meta_data.survey_id = "738"
+        self.meta_data.period = None
+        self.meta_data.ru_ref = None
+        self.meta_data.sizeBytes = len(b"bytes")
+        self.meta_data.md5sum = hashlib.md5(b"bytes").hexdigest()
+
+        self.expected['manifestCreated'] = mock_time.return_value
+        self.expected['sourceName'] = "ons"
+        self.expected['dataset'] = "covid_resp_inf_surv_response"
+        self.expected['description'] = "738 survey response for adhoc survey"
+        self.expected['iterationL1'] = "prod"
 
         actual = create_message_data(self.meta_data)
         self.assertEqual(json.dumps(self.expected), actual)
