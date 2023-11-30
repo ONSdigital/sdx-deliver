@@ -27,7 +27,7 @@ def create_message_data(meta_data: MetaWrapper) -> str:
     if meta_data.output_type == OutputType.COMMENTS:
         dataset = "sdx_comments"
         iteration1 = None
-    elif meta_data.survey_id == "739" or meta_data.survey_id == "738":
+    elif meta_data.output_type == OutputType.DAP and (meta_data.survey_id == "739" or meta_data.survey_id == "738"):
         dataset = "covid_resp_inf_surv_response"
         source_name = "ons"
         iteration1 = "prod" if CONFIG.PROJECT_ID == "ons-sdx-prod" else "test"
