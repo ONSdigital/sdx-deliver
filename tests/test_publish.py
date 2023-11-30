@@ -220,3 +220,25 @@ class TestPublish(unittest.TestCase):
 
         actual = create_message_data(self.meta_data)
         self.assertEqual(json.dumps(self.expected), actual)
+
+    @patch('app.publish.get_formatted_current_utc', return_value="2021-10-10T08:42:24.737Z")
+    @patch('app.publish.CONFIG')
+    def test_create_message_for_wcis_feedback(self, mock_config, mock_time):
+        mock_config.PROJECT_ID = "ons-sdx-prod"
+        mock_config.DATA_SENSITIVITY = "High"
+        self.meta_data = MetaWrapperAdhoc('test_file_name')
+        self.meta_data.output_type = OutputType.FEEDBACK
+        self.meta_data.survey_id = "739"
+        self.meta_data.period = "2305"
+        self.meta_data.ru_ref = None
+        self.meta_data.sizeBytes = len(b"bytes")
+        self.meta_data.md5sum = hashlib.md5(b"bytes").hexdigest()
+
+        self.expected['manifestCreated'] = mock_time.return_value
+        self.expected['sourceName'] = "ons-sdx-prod"
+        self.expected['dataset'] = "739"
+        self.expected["iterationL1"] = "2305"
+        self.expected['description'] = "739 feedback response for adhoc survey"
+
+        actual = create_message_data(self.meta_data)
+        self.assertEqual(json.dumps(self.expected), actual)
