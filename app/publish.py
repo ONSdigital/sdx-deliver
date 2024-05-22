@@ -24,15 +24,19 @@ def create_message_data(meta_data: MetaWrapper) -> str:
     source_name = CONFIG.PROJECT_ID
     sensitivity = CONFIG.DATA_SENSITIVITY
 
+    iteration2 = None
+
     if meta_data.output_type == OutputType.COMMENTS:
         dataset = "sdx_comments"
         iteration1 = None
-    elif meta_data.output_type == OutputType.DAP and (meta_data.survey_id == "739" or meta_data.survey_id == "738"):
+    elif meta_data.output_type == OutputType.DAP and (meta_data.survey_id == "739" or meta_data.survey_id == "738" or meta_data.survey_id == "740"):
         dataset = "covid_resp_inf_surv_response"
         source_name = "ons"
         iteration1 = "prod" if CONFIG.PROJECT_ID == "ons-sdx-prod" else "test"
         if iteration1 != "prod":
             sensitivity = "Medium"
+        if meta_data.survey_id == "740":
+            iteration2 = "phm_740_health_insights_2024"
     else:
         dataset = meta_data.survey_id
         iteration1 = meta_data.period if meta_data.period else None
@@ -54,6 +58,9 @@ def create_message_data(meta_data: MetaWrapper) -> str:
 
     if iteration1 is not None:
         message_data['iterationL1'] = iteration1
+
+    if iteration2 is not None:
+        message_data['iterationL2'] = iteration2
 
     logger.info("Created pubsub message")
     str_dap_message = json.dumps(message_data)

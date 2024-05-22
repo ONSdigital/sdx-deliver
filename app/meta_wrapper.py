@@ -111,6 +111,8 @@ class MetaWrapperAdhoc(MetaWrapper):
     Therefore, submissions for fuis need to be changed to survey id 739.
     To allow the end users to distinguish between the 2, the filename is
     prefixed with the original survey id.
+
+    Updated to include PHM survey (740)
     """
     def __init__(self, filename: str):
         super().__init__(filename)
@@ -123,6 +125,8 @@ class MetaWrapperAdhoc(MetaWrapper):
                 self.filename = f'739-{self.filename}'
             elif survey_id == "738":
                 self.filename = f'738-{self.filename}'
+            elif survey_id == "740":
+                self.filename = f'740-{self.filename}'
         self.survey_id = survey_id
         self.period = None
         self.ru_ref = None
