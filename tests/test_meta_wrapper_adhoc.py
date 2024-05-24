@@ -81,3 +81,14 @@ class TestMetaWrapperAdhoc(unittest.TestCase):
         actual = meta_data.get_description()
         self.assertEqual(expected, actual)
         self.assertEqual(f'738-{filename}.json:dap', meta_data.filename)
+
+    def test_phm(self):
+        filename = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
+        expected = "740 survey response for adhoc survey"
+        meta_data = MetaWrapperAdhoc(filename)
+        test_adhoc = self.test_adhoc
+        test_adhoc["survey_metadata"]["survey_id"] = "740"
+        meta_data.set_dap(test_adhoc)
+        actual = meta_data.get_description()
+        self.assertEqual(expected, actual)
+        self.assertEqual(f'740-{filename}.json:dap', meta_data.filename)
