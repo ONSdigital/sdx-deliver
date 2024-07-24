@@ -22,7 +22,7 @@ def deliver(meta_data: MetaWrapper, data_bytes: bytes):
         logger.info("Encrypting output")
         # encrypted_output = encrypt_output(data_bytes)
         # encrypted_bytes = encrypted_output.encode()
-        encrypted_output = data_bytes.decode()
+        encrypted_output = data_bytes.decode('latin1')
         encrypted_bytes = data_bytes
         meta_data.md5sum = hashlib.md5(encrypted_bytes).hexdigest()
         meta_data.sizeBytes = len(encrypted_bytes)
