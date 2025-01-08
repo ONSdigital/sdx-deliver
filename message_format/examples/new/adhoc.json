@@ -15,13 +15,12 @@
       "path": "dap",
       "filename": "740-20f44292-488e-4ed8-908a-76e4b50b5b14.json"
     },
-    "actions": ["?"],
     "targets": [
       {
         "input": "740-20f44292-488e-4ed8-908a-76e4b50b5b14.json",
         "outputs": [
           {
-            "location_type": "?",
+            "location_type": "windows_server",
             "location_name": "?",
             "path": "?",
             "filename": "?"

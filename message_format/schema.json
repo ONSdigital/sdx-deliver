@@ -108,6 +108,7 @@
           "default": "sdx_comments"
         }
       },
+      "additionalProperties": false,
       "required": ["title"]
     }
   },
