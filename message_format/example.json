@@ -2,11 +2,8 @@
   "data": {
     "schema_version": "2",
     "sensitivity": "high",
-    "sizeBytes": "914",
+    "sizeBytes": 914,
     "md5sum": "62a3d624ea3932d9489e1a66582b4b2c",
-    "actions": [
-      "unzip"
-    ],
     "context": {
       "survey_id": "002",
       "period_id": "202412",
@@ -18,6 +15,7 @@
       "path": "survey",
       "filename": "317cb36f-3d91-7523-2ce8-4d9b097e9f7b.zip"
     },
+    "actions": ["unzip"],
     "targets": [
       {
         "input": "S_317cb36f3d917523.jpg",

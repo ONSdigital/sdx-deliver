@@ -1,0 +1,38 @@
+{
+  "data": {
+    "schema_version": "2",
+    "sensitivity": "Low",
+    "sizeBytes": 2691342,
+    "md5sum": "f6e217c6f99dcf79ce54937f766f20f9",
+    "context": {
+      "survey_id": "141",
+      "period_id": "202501",
+      "ru_ref": "14100000135A"
+    },
+    "source": {
+      "location_type": "gcs",
+      "location_name": "ons-sdx-preprod-outputs",
+      "path": "seft",
+      "filename": "14100000135_202501_141_20250123072928.xlsx.gpg"
+    },
+    "actions": ["decrypt"],
+    "targets": [
+      {
+        "input": "14100000135_202501_141_20250123072928.xlsx",
+        "outputs": [
+          {
+            "location_type": "windows_server",
+            "location_name": "NP123456",
+            "path": "SDX_PREPROD/EDC_Submissions/141",
+            "filename": "14100000135_202501_141_20250123072928.xlsx"
+          }
+        ]
+      }
+    ]
+  },
+  "attributes": {
+    "tx_id": "20f44292-488e-4ed8-908a-76e4b50b5b14"
+  },
+  "messageId": 123456789,
+  "publishTime": 16110739932
+}

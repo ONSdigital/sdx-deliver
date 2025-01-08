@@ -1,0 +1,37 @@
+{
+  "data": {
+    "schema_version": "2",
+    "sensitivity": "Low",
+    "sizeBytes": 1081,
+    "md5sum": "935259ef7751068fd046dcd47d24dd3c",
+    "context": {
+      "survey_id": "139",
+      "period_id": "1706",
+      "ru_ref": "11110000002H"
+    },
+    "source": {
+      "location_type": "gcs",
+      "location_name": "ons-sdx-preprod-outputs",
+      "path": "feedback",
+      "filename": "a35b2951-d942-4429-98c3-b8e3bf6e2e73-fb-16-35-14_08-01-2025"
+    },
+    "targets": [
+      {
+        "input": "a35b2951-d942-4429-98c3-b8e3bf6e2e73-fb-16-35-14_08-01-2025",
+        "outputs": [
+          {
+            "location_type": "windows_server",
+            "location_name": "NP123456",
+            "path": "SDX_PREPROD/EDC_QFeedback",
+            "filename": "a35b2951-d942-4429-98c3-b8e3bf6e2e73-fb-16-35-14_08-01-2025"
+          }
+        ]
+      }
+    ]
+  },
+  "attributes": {
+    "tx_id": "a35b2951-d942-4429-98c3-b8e3bf6e2e73"
+  },
+  "messageId": 123456789,
+  "publishTime": 16110739932
+}

@@ -126,20 +126,12 @@
           "enum": ["High", "Medium", "Low"]
         },
         "sizeBytes": {
-          "type": "string",
+          "type": "integer",
           "description": "the size of the source file in bytes"
         },
         "md5sum": {
           "type": "string",
           "description": "the md5sum of the source file"
-        },
-        "actions": {
-          "type": "array",
-          "description": "an optional list of actions to be performed on the source file",
-          "items": {
-            "type": "string",
-            "enum": ["unzip"]
-          }
         },
         "context": {
           "type": "object",
@@ -152,6 +144,14 @@
         },
         "source": {
           "$ref": "#/definitions/location"
+        },
+        "actions": {
+          "type": "array",
+          "description": "an optional list of actions to be performed on the source file",
+          "items": {
+            "type": "string",
+            "enum": ["unzip", "decrypt"]
+          }
         },
         "targets": {
           "type": "array",
