@@ -1,0 +1,182 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "definitions": {
+    "location": {
+      "type": "object",
+      "description": "the location of an existing or new file",
+      "properties": {
+        "location_type": {
+          "type": "string",
+          "description": "the type of location",
+          "enum": ["windows_server", "gcs", "s3"]
+        },
+        "location_name": {
+          "type": "string",
+          "description": "the name of the server/bucket etc",
+          "examples": ["NP123456789", "ons-sdx-prod-outputs", "spp-bucket-name"]
+        },
+        "path": {
+          "type": "string",
+          "description": "the absolute file path to the file not including the filename",
+          "examples": ["SDX_PREPROD/ImageFolder/Images", "response/002"]
+        },
+        "filename": {
+          "type": "string",
+          "description": "the name of the file including its extension",
+          "examples": ["317cb36f-3d91-7523-2ce8-4d9b097e9f7b.zip", "S_317cb36f3d917523.jpg"]
+        }
+      },
+      "required": ["location_type", "location_name", "path", "filename"]
+    },
+    "target": {
+      "type": "object",
+      "properties": {
+        "input": {
+          "type": "string",
+          "description": "the name of the input file",
+          "examples": ["317cb36f-3d91-7523-2ce8-4d9b097e9f7b.json", "S_317cb36f3d917523.jpg"]
+        },
+        "outputs": {
+          "type": "array",
+          "description": "a list of locations",
+          "items": {
+            "$ref": "#/definitions/location"
+          }
+        }
+      },
+      "required": ["input", "outputs"]
+    },
+    "business_survey": {
+      "type": "object",
+      "description": "metadata about a business survey",
+      "properties": {
+        "survey_id": {
+          "type": "string",
+          "description": "The survey id",
+          "pattern": "^[0-9]{3}$",
+          "examples": ["009", "147"]
+        },
+        "period_id": {
+          "type": "string",
+          "description": "A string representing the time period for the collection exercise.",
+          "examples": ["2019", "JAN2019"]
+        },
+        "ru_ref": {
+          "type": "string",
+          "description": "The reporting unit reference with check letter.",
+          "minLength": 12,
+          "pattern": "^[a-zA-Z0-9]+[A-Za-z]+$",
+          "examples": ["12345678910A"]
+        }
+      },
+      "required": ["survey_id", "period_id", "ru_ref"]
+    },
+    "adhoc_survey": {
+      "type": "object",
+      "description": "metadata about an adhoc survey",
+      "properties": {
+        "survey_id": {
+          "type": "string",
+          "description": "The survey id",
+          "pattern": "^[0-9]{3}$",
+          "examples": [
+            "009",
+            "147"
+          ]
+        },
+        "title": {
+          "type": "string",
+          "description": "The name of the survey",
+          "examples": ["covid_resp_inf_surv_response"]
+        },
+        "label": {
+          "type": "string",
+          "description": "A label for the iteration",
+          "examples": ["phm_740_health_insights_2024"]
+        }
+      },
+      "required": ["survey_id", "title", "label"]
+    },
+    "comments_file": {
+      "type": "object",
+      "description": "metadata about a comments file",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "The title of the comments file",
+          "default": "sdx_comments"
+        }
+      },
+      "required": ["title"]
+    }
+  },
+  "properties": {
+    "data": {
+      "type": "object",
+      "properties": {
+        "schema_version": {
+          "type": "string",
+          "description": "the version of the schema",
+          "default": "2"
+        },
+        "sensitivity": {
+          "type": "string",
+          "description": "the sensitivity of the data; high for production, low for non-production",
+          "enum": ["high", "low"]
+        },
+        "sizeBytes": {
+          "type": "string",
+          "description": "the size of the source file in bytes"
+        },
+        "md5sum": {
+          "type": "string",
+          "description": "the md5sum of the source file"
+        },
+        "actions": {
+          "type": "array",
+          "description": "an optional list of actions to be performed on the source file",
+          "items": {
+            "type": "string",
+            "enum": ["unzip"]
+          }
+        },
+        "context": {
+          "type": "object",
+          "description": "metadata about the survey",
+          "oneOf": [
+            {"$ref": "#/definitions/business_survey"},
+            {"$ref": "#/definitions/adhoc_survey"},
+            {"$ref": "#/definitions/comments_file"}
+          ]
+        },
+        "source": {
+          "$ref": "#/definitions/location"
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/target"
+          }
+        }
+      },
+      "required": ["schema_version", "sensitivity", "sizeBytes", "md5sum", "context", "source", "targets"]
+    },
+    "attributes": {
+      "type": "object",
+      "properties": {
+        "tx_id": {
+          "type": "string"
+        }
+      },
+      "required": ["tx_id"]
+    },
+    "messageId": {
+      "type": "integer"
+    },
+    "publishTime": {
+      "type": "integer"
+    }
+  },
+  "required": ["data", "attributes", "messageId", "publishTime"]
+}

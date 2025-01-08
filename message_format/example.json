@@ -1,0 +1,57 @@
+{
+  "data": {
+    "schema_version": "2",
+    "sensitivity": "high",
+    "sizeBytes": "914",
+    "md5sum": "62a3d624ea3932d9489e1a66582b4b2c",
+    "actions": [
+      "unzip"
+    ],
+    "context": {
+      "survey_id": "002",
+      "period_id": "202412",
+      "ru_ref": "12345678910A"
+    },
+    "source": {
+      "location_type": "gcs",
+      "location_name": "ons-sdx-prod-outputs",
+      "path": "survey",
+      "filename": "317cb36f-3d91-7523-2ce8-4d9b097e9f7b.zip"
+    },
+    "targets": [
+      {
+        "input": "S_317cb36f3d917523.jpg",
+        "outputs": [
+          {
+            "location_type": "windows_server",
+            "location_name": "NP123456",
+            "path": "SDX_PREPROD/ImagesFolder/Images",
+            "filename": "S_317cb36f3d917523.jpg"
+          }
+        ]
+      },
+      {
+        "input": "317cb36f-3d91-7523-2ce8-4d9b097e9f7b.json",
+        "outputs": [
+          {
+            "location_type": "s3",
+            "location_name": "spp-bucket-name",
+            "path": "response/002",
+            "filename": "002_SDC_317cb36f-3d91-7523-2ce8-4d9b097e9f7b.json"
+          },
+          {
+            "location_type": "windows_server",
+            "location_name": "NP123456",
+            "path": "SDX_PREPROD/json_dir",
+            "filename": "317cb36f-3d91-7523-2ce8-4d9b097e9f7b.json"
+          }
+        ]
+      }
+    ]
+  },
+  "attributes": {
+    "tx_id": "317cb36f-3d91-7523-2ce8-4d9b097e9f7b"
+  },
+  "messageId": 123456789,
+  "publishTime": 16110739932
+}
