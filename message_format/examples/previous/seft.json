@@ -1,0 +1,26 @@
+{
+  "data": {
+    "version": "1",
+    "files": [
+      {
+        "name": "14100000135_202501_141_20250123072928.xlsx.gpg:ftp",
+        "sizeBytes": 2691342,
+        "md5sum": "f6e217c6f99dcf79ce54937f766f20f9"
+      }
+    ],
+    "sensitivity": "Low",
+    "sourceName": "ons-sdx-preprod",
+    "manifestCreated": "2025-01-08T16:18:06.893Z",
+    "description": "141 seft response for period 202501 sample unit 12346789012A",
+    "dataset": "141",
+    "schemaversion": "1",
+    "iterationL1": "202501"
+  },
+  "attributes": {
+    "gcs.bucket" : "ons-sdx-preprod-outputs",
+    "gcs.key": "seft|14100000135_202501_141_20250123072928.xlsx.gpg",
+    "tx_id": "9010576d-f3df-4011-aa41-adecd9bee011"
+  },
+  "messageId": 123456789,
+  "publishTime": 16110739932
+}

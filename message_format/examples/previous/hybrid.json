@@ -1,0 +1,26 @@
+{
+  "data": {
+    "version": "1",
+    "files": [
+      {
+        "name": "e10e8f37-e119-4d1f-83b5-2220fefa2ab9:hybrid",
+        "sizeBytes": 8442343,
+        "md5sum": "05d2c9c307b19e32a4943c5c2df43b07"
+      }
+    ],
+    "sensitivity": "Low",
+    "sourceName": "ons-sdx-preprod",
+    "manifestCreated": "2025-01-08T16:10:30.588Z",
+    "description": "002 survey response for period 201605 sample unit 12346789012A",
+    "dataset": "002",
+    "schemaversion": "1",
+    "iterationL1": "201605"
+  },
+  "attributes": {
+    "gcs.bucket" : "ons-sdx-preprod-outputs",
+    "gcs.key": "survey|e10e8f37-e119-4d1f-83b5-2220fefa2ab9",
+    "tx_id": "e10e8f37-e119-4d1f-83b5-2220fefa2ab9"
+  },
+  "messageId": 123456789,
+  "publishTime": 16110739932
+}

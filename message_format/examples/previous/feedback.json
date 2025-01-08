@@ -1,0 +1,26 @@
+{
+  "data": {
+    "version": "1",
+    "files": [
+      {
+        "name": "a35b2951-d942-4429-98c3-b8e3bf6e2e73-fb-16-35-14_08-01-2025:ftp",
+        "sizeBytes": 1081,
+        "md5sum": "935259ef7751068fd046dcd47d24dd3c"
+      }
+    ],
+    "sensitivity": "Low",
+    "sourceName": "ons-sdx-preprod",
+    "manifestCreated": "2025-01-08T16:35:15.118Z",
+    "description": "139 feedback response for period 1706 sample unit 11110000002H",
+    "dataset": "139",
+    "schemaversion": "1",
+    "iterationL1": "1706"
+  },
+  "attributes": {
+    "gcs.bucket" : "ons-sdx-preprod-outputs",
+    "gcs.key": "feedback|a35b2951-d942-4429-98c3-b8e3bf6e2e73-fb-16-35-14_08-01-2025",
+    "tx_id": "e10e8f37-e119-4d1f-83b5-2220fefa2ab9"
+  },
+  "messageId": 123456789,
+  "publishTime": 16110739932
+}

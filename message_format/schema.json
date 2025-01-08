@@ -123,7 +123,7 @@
         "sensitivity": {
           "type": "string",
           "description": "the sensitivity of the data; high for production, low for non-production",
-          "enum": ["high", "low"]
+          "enum": ["High", "Medium", "Low"]
         },
         "sizeBytes": {
           "type": "string",

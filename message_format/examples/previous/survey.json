@@ -1,0 +1,26 @@
+{
+  "data": {
+    "version": "1",
+    "files": [
+      {
+        "name": "7f64de49-07da-4065-8b07-5a6fd2cf9586:ftp",
+        "sizeBytes": 2691342,
+        "md5sum": "f6e217c6f99dcf79ce54937f766f20f9"
+      }
+    ],
+    "sensitivity": "Low",
+    "sourceName": "ons-sdx-preprod",
+    "manifestCreated": "2025-01-08T16:18:06.893Z",
+    "description": "202 survey response for period 23 sample unit 12346789012A",
+    "dataset": "202",
+    "schemaversion": "1",
+    "iterationL1": "23"
+  },
+  "attributes": {
+    "gcs.bucket" : "ons-sdx-preprod-outputs",
+    "gcs.key": "survey|7f64de49-07da-4065-8b07-5a6fd2cf9586",
+    "tx_id": "7f64de49-07da-4065-8b07-5a6fd2cf9586"
+  },
+  "messageId": 123456789,
+  "publishTime": 16110739932
+}
