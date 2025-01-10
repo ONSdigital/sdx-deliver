@@ -21,6 +21,6 @@
     "gcs.key": "survey|e10e8f37-e119-4d1f-83b5-2220fefa2ab9",
     "tx_id": "e10e8f37-e119-4d1f-83b5-2220fefa2ab9"
   },
-  "messageId": 123456789,
-  "publishTime": 16110739932
+  "messageId": "123456789101112",
+  "publishTime": "2014-10-02T15:01:23Z"
 }

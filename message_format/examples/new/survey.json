@@ -77,6 +77,6 @@
   "attributes": {
     "tx_id": "a35b2951-d942-4429-98c3-b8e3bf6e2e73"
   },
-  "messageId": 123456789,
-  "publishTime": 16110739932
+  "messageId": "123456789101112",
+  "publishTime": "2014-10-02T15:01:23Z"
 }

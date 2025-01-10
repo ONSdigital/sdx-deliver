@@ -30,6 +30,6 @@
   "attributes": {
     "tx_id": "20f44292-488e-4ed8-908a-76e4b50b5b14"
   },
-  "messageId": 123456789,
-  "publishTime": 16110739932
+  "messageId": "123456789101112",
+  "publishTime": "2014-10-02T15:01:23Z"
 }

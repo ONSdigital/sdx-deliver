@@ -167,16 +167,21 @@
       "type": "object",
       "properties": {
         "tx_id": {
-          "type": "string"
+          "type": "string",
+          "description": "the transaction id"
         }
       },
       "required": ["tx_id"]
     },
     "messageId": {
-      "type": "integer"
+      "type": "string",
+      "description": "a unique id assigned by pubsub to this message",
+      "examples": ["123456789101112"]
     },
     "publishTime": {
-      "type": "integer"
+      "type": "string",
+      "description": "the time at which the message was published in RFC3339 UTC Zulu format",
+      "examples": ["2014-10-02T15:01:23Z"]
     }
   },
   "required": ["data", "attributes", "messageId", "publishTime"]

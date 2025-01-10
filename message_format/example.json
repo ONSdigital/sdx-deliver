@@ -1,7 +1,7 @@
 {
   "data": {
     "schema_version": "2",
-    "sensitivity": "high",
+    "sensitivity": "High",
     "sizeBytes": 914,
     "md5sum": "62a3d624ea3932d9489e1a66582b4b2c",
     "context": {
@@ -50,6 +50,6 @@
   "attributes": {
     "tx_id": "317cb36f-3d91-7523-2ce8-4d9b097e9f7b"
   },
-  "messageId": 123456789,
-  "publishTime": 16110739932
+  "messageId": "123456789101112",
+  "publishTime": "2014-10-02T15:01:23Z"
 }
