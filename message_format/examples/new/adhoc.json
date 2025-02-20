@@ -5,6 +5,7 @@
     "sizeBytes": 1398,
     "md5sum": "fb27bec4baff5a5ec62dd27b05eed7fc",
     "context": {
+      "context_type": "adhoc_survey",
       "survey_id": "740",
       "title": "covid_resp_inf_surv_response",
       "label": "phm_740_health_insights_2024"

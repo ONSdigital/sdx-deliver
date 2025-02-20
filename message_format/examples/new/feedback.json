@@ -5,6 +5,7 @@
     "sizeBytes": 1081,
     "md5sum": "935259ef7751068fd046dcd47d24dd3c",
     "context": {
+      "context_type": "business_survey",
       "survey_id": "139",
       "period_id": "1706",
       "ru_ref": "11110000002H"

@@ -9,7 +9,7 @@
         "location_type": {
           "type": "string",
           "description": "the type of location",
-          "enum": ["windows_server", "gcs", "s3"]
+          "enum": ["windows_server", "gcs", "s3", "cdp"]
         },
         "location_name": {
           "type": "string",
@@ -47,10 +47,18 @@
       },
       "required": ["input", "outputs"]
     },
+    "context_type": {
+      "type": "string",
+      "description": "the type of context",
+      "enum": ["business_survey", "adhoc_survey", "comments_file"]
+    },
     "business_survey": {
       "type": "object",
       "description": "metadata about a business survey",
       "properties": {
+        "context_type":{
+            "$ref": "#/definitions/context_type"
+        },
         "survey_id": {
           "type": "string",
           "description": "The survey id",
@@ -70,12 +78,15 @@
           "examples": ["12345678910A"]
         }
       },
-      "required": ["survey_id", "period_id", "ru_ref"]
+      "required": ["context_type", "survey_id", "period_id", "ru_ref"]
     },
     "adhoc_survey": {
       "type": "object",
       "description": "metadata about an adhoc survey",
       "properties": {
+        "context_type":{
+            "$ref": "#/definitions/context_type"
+        },
         "survey_id": {
           "type": "string",
           "description": "The survey id",
@@ -96,12 +107,15 @@
           "examples": ["phm_740_health_insights_2024"]
         }
       },
-      "required": ["survey_id", "title", "label"]
+      "required": ["context_type", "survey_id", "title", "label"]
     },
     "comments_file": {
       "type": "object",
       "description": "metadata about a comments file",
       "properties": {
+        "context_type":{
+            "$ref": "#/definitions/context_type"
+        },
         "title": {
           "type": "string",
           "description": "The title of the comments file",
@@ -109,7 +123,7 @@
         }
       },
       "additionalProperties": false,
-      "required": ["title"]
+      "required": ["context_type", "title"]
     }
   },
   "properties": {
