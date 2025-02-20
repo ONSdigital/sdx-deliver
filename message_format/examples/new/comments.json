@@ -1,0 +1,35 @@
+{
+  "data": {
+    "schema_version": "2",
+    "sensitivity": "Low",
+    "sizeBytes": 1398,
+    "md5sum": "fb27bec4baff5a5ec62dd27b05eed7fc",
+    "context": {
+      "title": "sdx_comments"
+    },
+    "source": {
+      "location_type": "gcs",
+      "location_name": "ons-sdx-preprod-outputs",
+      "path": "comments",
+      "filename": "2025-01-08_16-14-22.zip"
+    },
+    "targets": [
+      {
+        "input": "2025-01-08_16-14-22.zip",
+        "outputs": [
+          {
+            "location_type": "windows_server",
+            "location_name": "NP123456",
+            "path": "SDX_PREPROD/EDC_Submissions/Coments",
+            "filename": "2025-01-08_16-14-22.zip"
+          }
+        ]
+      }
+    ]
+  },
+  "attributes": {
+    "tx_id": "20f44292-488e-4ed8-908a-76e4b50b5b14"
+  },
+  "messageId": "123456789101112",
+  "publishTime": "2014-10-02T15:01:23Z"
+}
