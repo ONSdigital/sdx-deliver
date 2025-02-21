@@ -1,4 +1,4 @@
-from models import Location, Filetype
+from app.v2.models.message_schema import Location, Filetype
 
 
 class LocationRepository:

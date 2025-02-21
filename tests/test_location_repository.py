@@ -1,6 +1,6 @@
 import unittest
 
-from app.models import Location, Filetype
+from app.v2.models.message_schema import Location, Filetype
 from app.location_repository import LocationRepository
 
 
