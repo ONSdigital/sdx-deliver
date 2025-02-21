@@ -1,8 +1,11 @@
 import unittest
-from app.v2.models.config_schema import ConfigSchema
+
 from app.v2.config_lookup import ConfigLookup
+from app.v2.models.config_schema import ConfigSchema
+
 
 class TestConfigLookup(unittest.TestCase):
+
     def setUp(self):
         self._config_schema: ConfigSchema = {
             "locations": {
@@ -15,7 +18,7 @@ class TestConfigLookup(unittest.TestCase):
                     "location_name": "server2-name"
                 }
             },
-            "submission_type": {
+            "submission_types": {
                 "type1": {
                     "actions": ["decrypt"],
                     "source": {
@@ -59,7 +62,7 @@ class TestConfigLookup(unittest.TestCase):
     def test_get_source(self):
         submission_type = "type1"
         filename = "test-file-1"
-        
+
         actual = self._config_lookup.get_source(submission_type=submission_type, filename=filename)
         expected = {
             "location_type": "server2",
@@ -70,7 +73,43 @@ class TestConfigLookup(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_get_actions(self):
-        pass
+        submission_type = "type2"
 
-    def test_get_outputs(self):
-        pass
+        actual = self._config_lookup.get_actions(submission_type=submission_type)
+        expected = ["decrypt", "unzip"]
+        self.assertEqual(actual, expected)
+
+    def test_get_single_output(self):
+        submission_type = "type1"
+        filename = "test-file-1"
+        output_type = "output1"
+
+        actual = self._config_lookup.get_outputs(submission_type=submission_type, output_type=output_type, filename=filename)
+        expected = [{
+            "location_type": "server1",
+            "location_name": "server1-name",
+            "path": "test-path-2",
+            "filename": "test-file-1"
+        }]
+        self.assertEqual(actual, expected)
+
+    def test_get_multiple_output(self):
+        submission_type = "type2"
+        filename = "test-file-1"
+        output_type = "output2"
+
+        actual = self._config_lookup.get_outputs(submission_type=submission_type, output_type=output_type, filename=filename)
+        expected = [{
+                "location_type": "server1",
+                "location_name": "server1-name",
+                "path": "test-path-5",
+                "filename": "test-file-1"
+            },
+            {
+                "location_type": "server2",
+                "location_name": "server2-name",
+                "path": "test-path-6",
+                "filename": "test-file-1"
+            }
+        ]
+        self.assertEqual(actual, expected)

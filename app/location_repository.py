@@ -2,9 +2,9 @@ from app.v2.models.message_schema import Location, Filetype
 
 
 class LocationRepository:
-    def __init__(self, path_mapping: dict[Filetype, str] ):
-        self._path_mapping = path_mapping
 
+    def __init__(self, path_mapping: dict[Filetype, str]):
+        self._path_mapping = path_mapping
 
     def get_ftp_server(self, file_type: Filetype, filename: str) -> Location:
         return Location(
@@ -13,7 +13,6 @@ class LocationRepository:
             path=self._path_mapping[file_type],
             filename=filename
         )
-    
 
     def get_spp_landing_zone(self, survey_id: str, filename: str) -> Location:
         return Location(
@@ -23,7 +22,6 @@ class LocationRepository:
             filename=filename
         )
         pass
-
 
     def get_dap(self) -> Location:
         pass

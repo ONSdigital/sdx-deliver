@@ -1,12 +1,9 @@
 from typing import TypedDict
 
 
-class Location(TypedDict):
+class LocationDetails(TypedDict):
     location_type: str
     location_name: str
-
-
-class Actions: list[str]
 
 
 class File(TypedDict):
@@ -17,9 +14,9 @@ class File(TypedDict):
 class SubmissionType(TypedDict):
     actions: list[str]
     source: File
-    outputs: list[dict[str, File]]
+    outputs: dict[str, list[File]]
 
 
 class ConfigSchema(TypedDict):
-    locations: dict[str, Location]
-    submission_type: dict[str, SubmissionType]
+    locations: dict[str, LocationDetails]
+    submission_types: dict[str, SubmissionType]

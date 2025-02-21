@@ -1,6 +1,7 @@
 from typing import TypedDict
 from enum import Enum
 
+
 class Location(TypedDict):
     location_type: str
     location_name: str
