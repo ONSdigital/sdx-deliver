@@ -99,7 +99,8 @@ class TestConfigLookup(unittest.TestCase):
         output_type = "output2"
 
         actual = self._config_lookup.get_outputs(submission_type=submission_type, output_type=output_type, filename=filename)
-        expected = [{
+        expected = [
+            {
                 "location_type": "server1",
                 "location_name": "server1-name",
                 "path": "test-path-5",

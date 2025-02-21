@@ -25,7 +25,7 @@ class TestMessageFormat(unittest.TestCase):
             self.validate_json(json_data)
 
     def test_new_examples(self):
-        directory = 'message_format/examples/new'
+        directory = 'message_format/examples/v2'
 
         for filename in os.listdir(directory):
             if filename.endswith('.json'):
