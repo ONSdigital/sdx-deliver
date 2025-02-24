@@ -10,8 +10,3 @@ class SubmissionTypeMapperBase(ABC):
         pass
 
 
-class SubmissionTypeMapper(SubmissionTypeMapperBase):
-
-    def get_submission_type(self, output_type: OutputType) -> str:
-        if output_type.SEFT:
-            return "seft_survey"

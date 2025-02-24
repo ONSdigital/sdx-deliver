@@ -1,11 +1,11 @@
 import unittest
 
-from app.v2.filename_mapper import FileNameMapperBase
+from app.v2.definitions.filename_mapper import FileNameMapperBase
 from app.v2.message_constructor import MessageConstructor
-from app.v2.models.config_schema import ConfigSchema
+from app.v2.definitions.config_schema import ConfigSchema
 from app.meta_wrapper import MetaWrapperV2, MetaWrapperAdhoc
 from app.output_type import OutputType
-from app.v2.submission_type_mapper import SubmissionTypeMapperBase
+from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
 
 
 class MockMetaWrapper(MetaWrapperV2):

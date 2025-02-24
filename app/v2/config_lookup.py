@@ -1,7 +1,7 @@
 from typing import Final
 
-from app.v2.models.config_schema import ConfigSchema, File, LocationDetails
-from app.v2.models.message_schema import Location
+from app.v2.definitions.config_schema import ConfigSchema, File, LocationDetails
+from app.v2.definitions.message_schema import Location
 
 
 LOCATION_TYPE: Final[str] = "location_type"

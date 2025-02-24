@@ -1,11 +1,11 @@
 from app import CONFIG
 from app.v2.config_lookup import ConfigLookup
-from app.v2.filename_mapper import FileNameMapperBase
-from app.v2.models.config_schema import ConfigSchema
-from app.v2.models.message_schema import SchemaDataV2, Target, Location
+from app.v2.definitions.filename_mapper import FileNameMapperBase
+from app.v2.definitions.config_schema import ConfigSchema
+from app.v2.definitions.message_schema import SchemaDataV2, Target, Location
 from app.meta_wrapper import MetaWrapper, MetaWrapperAdhoc
 from app.output_type import OutputType
-from app.v2.submission_type_mapper import SubmissionTypeMapperBase
+from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
 
 
 class MessageConstructor:

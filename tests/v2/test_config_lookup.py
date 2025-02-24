@@ -1,7 +1,7 @@
 import unittest
 
 from app.v2.config_lookup import ConfigLookup
-from app.v2.models.config_schema import ConfigSchema
+from app.v2.definitions.config_schema import ConfigSchema
 
 
 class TestConfigLookup(unittest.TestCase):
