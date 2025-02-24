@@ -11,7 +11,8 @@ dir_dict = {OutputType.DAP: "dap",
             OutputType.HYBRID: "survey",
             OutputType.FEEDBACK: "feedback",
             OutputType.COMMENTS: "comments",
-            OutputType.SEFT: "seft"}
+            OutputType.SEFT: "seft",
+            OutputType.SPP: "survey"}
 
 
 def write_to_bucket(data: str, filename: str, output_type: OutputType) -> str:

@@ -11,3 +11,4 @@ class OutputType(Enum):
     FEEDBACK = 4
     COMMENTS = 5
     SEFT = 6
+    SPP = 7

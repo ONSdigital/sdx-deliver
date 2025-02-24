@@ -3,6 +3,22 @@ import unittest
 from app.v2.filename_mapper import FileNameMapperBase
 from app.v2.message_constructor import MessageConstructor
 from app.v2.models.config_schema import ConfigSchema
+from app.meta_wrapper import MetaWrapperV2, MetaWrapperAdhoc
+from app.output_type import OutputType
+
+
+class TestMetaWrapper(MetaWrapperV2):
+    
+    def __init__(self, filename: str, output_type: OutputType):
+        super().__init__(filename=filename)
+        self.filename = filename
+        self.tx_id = "123"
+        self.survey_id = "101"
+        self.period = "202101"
+        self.ru_ref = "10550"
+        self.md5sum = "51252"
+        self.sizeBytes = 100
+        self.output_type = output_type
 
 
 class TestFileMapper(FileNameMapperBase):
@@ -72,7 +88,19 @@ class TestMessageConstructor(unittest.TestCase):
         pass
 
     def test_get_source(self):
-        pass
+        filename = "file1"
+        submission_type = "type2"
+        source = self.message_constructor.get_source(filename, submission_type)
+
+        expected = {
+            "location_type": "server2",
+            "location_name": "server2-name",
+            "path": "test-path-3",
+            "filename": "file1"
+        }
+
+        self.assertEqual(expected, source)
+
 
     def test_get_target(self):
         filename_list = ["file1", "file2"]
@@ -111,3 +139,55 @@ class TestMessageConstructor(unittest.TestCase):
         ]
 
         self.assertEqual(expected, target_list)
+
+    def test_get_action(self):
+        submission_type = "type2"
+        actions = self.message_constructor.get_action(submission_type)
+
+        expected = ["decrypt", "unzip"]
+        self.assertEqual(expected, actions)
+
+    def test_get_business_survey_context(self):
+        meta_data = TestMetaWrapper(filename="file1", output_type=OutputType.SPP)
+        context = self.message_constructor.get_context(meta_data)
+
+        expected = {
+            "survey_id": "101",
+            "period": "202101",
+            "ru_ref": "10550"
+        }
+
+        self.assertEqual(expected, context)
+
+    def test_get_comments_context(self):
+        meta_data = TestMetaWrapper(filename="file1", output_type=OutputType.COMMENTS)
+        context = self.message_constructor.get_context(meta_data)
+
+        expected = {
+            "title": "Comments.zip"
+        }
+
+        self.assertEqual(expected, context)
+
+    def test_get_adhoc_context(self):
+        class TestMetaWrapperAdhoc(MetaWrapperAdhoc):
+            def __init__(self, filename: str, output_type: OutputType):
+                super().__init__(filename=filename)
+                self.filename = filename
+                self.tx_id = "123"
+                self.survey_id = "101"
+                self.period = "202101"
+                self.ru_ref = "10550"
+                self.md5sum = "51252"
+                self.sizeBytes = 100
+                self.output_type = output_type
+
+        meta_data = TestMetaWrapperAdhoc(filename="file1", output_type=OutputType.SPP)
+        context = self.message_constructor.get_context(meta_data)
+
+        expected = {
+            "survey_id": "101",
+            "title": "101 survey response for adhoc survey"
+        }
+
+        self.assertEqual(expected, context)
