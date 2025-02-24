@@ -5,10 +5,11 @@ from app.v2.message_constructor import MessageConstructor
 from app.v2.models.config_schema import ConfigSchema
 from app.meta_wrapper import MetaWrapperV2, MetaWrapperAdhoc
 from app.output_type import OutputType
+from app.v2.submission_type_mapper import SubmissionTypeMapperBase
 
 
-class TestMetaWrapper(MetaWrapperV2):
-    
+class MockMetaWrapper(MetaWrapperV2):
+
     def __init__(self, filename: str, output_type: OutputType):
         super().__init__(filename=filename)
         self.filename = filename
@@ -21,12 +22,20 @@ class TestMetaWrapper(MetaWrapperV2):
         self.output_type = output_type
 
 
-class TestFileMapper(FileNameMapperBase):
+class MockFileMapper(FileNameMapperBase):
 
     def get_output_type(self, filename: str) -> str:
         if filename == "file1":
             return "output1"
         return "output2"
+
+
+class MockSubmissionTypeMapper(SubmissionTypeMapperBase):
+
+    def get_submission_type(self, output_type: OutputType) -> str:
+        if output_type == OutputType.SPP:
+            return "type2"
+        return "type1"
 
 
 class TestMessageConstructor(unittest.TestCase):
@@ -82,10 +91,11 @@ class TestMessageConstructor(unittest.TestCase):
                 }
             }
         }
-        self.message_constructor = MessageConstructor(config_schema=_config_schema, file_name_mapper=TestFileMapper())
-
-    def test_build_message(self):
-        pass
+        self.message_constructor = MessageConstructor(
+            config_schema=_config_schema,
+            file_name_mapper=MockFileMapper(),
+            submission_mapper=MockSubmissionTypeMapper()
+        )
 
     def test_get_source(self):
         filename = "file1"
@@ -101,11 +111,10 @@ class TestMessageConstructor(unittest.TestCase):
 
         self.assertEqual(expected, source)
 
-
     def test_get_target(self):
         filename_list = ["file1", "file2"]
         submission_type = "type2"
-        target_list = self.message_constructor.get_target(filename_list, submission_type)
+        target_list = self.message_constructor.get_targets(filename_list, submission_type)
 
         expected = [
             {
@@ -142,25 +151,25 @@ class TestMessageConstructor(unittest.TestCase):
 
     def test_get_action(self):
         submission_type = "type2"
-        actions = self.message_constructor.get_action(submission_type)
+        actions = self.message_constructor.get_actions(submission_type)
 
         expected = ["decrypt", "unzip"]
         self.assertEqual(expected, actions)
 
     def test_get_business_survey_context(self):
-        meta_data = TestMetaWrapper(filename="file1", output_type=OutputType.SPP)
+        meta_data = MockMetaWrapper(filename="file1", output_type=OutputType.SPP)
         context = self.message_constructor.get_context(meta_data)
 
         expected = {
             "survey_id": "101",
-            "period": "202101",
+            "period_id": "202101",
             "ru_ref": "10550"
         }
 
         self.assertEqual(expected, context)
 
     def test_get_comments_context(self):
-        meta_data = TestMetaWrapper(filename="file1", output_type=OutputType.COMMENTS)
+        meta_data = MockMetaWrapper(filename="file1", output_type=OutputType.COMMENTS)
         context = self.message_constructor.get_context(meta_data)
 
         expected = {
@@ -191,3 +200,61 @@ class TestMessageConstructor(unittest.TestCase):
         }
 
         self.assertEqual(expected, context)
+
+    def test_build_message(self):
+        input_filename = "input_file"
+        filenames = ["file1", "file2"]
+
+        meta_data = MockMetaWrapper(filename=input_filename, output_type=OutputType.SPP)
+        actual = self.message_constructor.build_message(filenames, meta_data)
+
+        expected = {
+            "schema_version": "2",
+            "sensitivity": "High",
+            "sizeBytes": 100,
+            "md5sum": "51252",
+            "context": {
+                "survey_id": "101",
+                "period_id": "202101",
+                "ru_ref": "10550"
+            },
+            "source": {
+                "location_type": "server2",
+                "location_name": "server2-name",
+                "path": "test-path-3",
+                "filename": input_filename
+            },
+            "actions": ["decrypt", "unzip"],
+            "targets": [
+                {
+                    "input": "file1",
+                    "outputs": [
+                        {
+                            "location_type": "server1",
+                            "location_name": "server1-name",
+                            "path": "test-path-4",
+                            "filename": "file1"
+                        }
+                    ]
+                },
+                {
+                    "input": "file2",
+                    "outputs": [
+                        {
+                            "location_type": "server1",
+                            "location_name": "server1-name",
+                            "path": "test-path-5",
+                            "filename": "file2"
+                        },
+                        {
+                            "location_type": "server2",
+                            "location_name": "server2-name",
+                            "path": "test-path-6",
+                            "filename": "file2"
+                        }
+                    ]
+                }
+            ]
+        }
+
+        self.assertEqual(expected, actual)
