@@ -5,6 +5,7 @@ import json
 from datetime import datetime
 from app.meta_wrapper import MetaWrapper
 from app.output_type import OutputType
+from app.v2.definitions.message_schema import SchemaDataV2
 
 logger = get_logger()
 
@@ -94,3 +95,11 @@ def publish_data(message_str: str, tx_id: str, path: str):
     sdx_app.publish_to_pubsub(CONFIG.DAP_TOPIC_ID, message_str, attributes)
 
     logger.info("Published message to DAP topic", gcs_key=key)
+
+
+def publish_v2_schema(message: SchemaDataV2, tx_id : str):
+    attributes = {
+        'tx_id': tx_id
+    }
+
+    sdx_app.publish_to_pubsub(CONFIG.DAP_TOPIC_ID, json.dumps(message), attributes)
