@@ -3,7 +3,7 @@ import unittest
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
 from app.v2.message_config import MessageConfig, FTP, WINDOWS_SERVER, SDX, SPP, DAP, SEFT_SURVEY, DECRYPT, SEFT, \
     LEGACY_SURVEY, UNZIP, PCK, IMAGE, INDEX, RECEIPT, JSON, SPP_SURVEY, DAP_SURVEY, COMMENTS, FEEDBACK, \
-    SPP_AND_DAP_SURVEY, GCS, S3, CDP
+    SPP_AND_DAP_SURVEY, GCS, S3, CDP, ZIP
 
 
 class MockLocationNameRepository(LocationNameRepositoryBase):
@@ -114,7 +114,7 @@ class TestMessageConfig(unittest.TestCase):
                             "location": FTP,
                             "path": "SDX_PREPROD/EDC_QReceipts"
                         }],
-                        "spp_data": [
+                        JSON: [
                             {
                                 "location": SPP,
                                 "path": f"sdc-response/{survey_id}/"
@@ -142,7 +142,7 @@ class TestMessageConfig(unittest.TestCase):
                         "path": "comments"
                     },
                     "outputs": {
-                        JSON: [{
+                        ZIP: [{
                             "location": FTP,
                             "path": f"{environment_capitalised}/EDC_Submissions/Comments"
                         }],
@@ -180,7 +180,7 @@ class TestMessageConfig(unittest.TestCase):
                             "location": FTP,
                             "path": f"{environment_capitalised}/EDC_QReceipts"
                         }],
-                        "spp_data": [
+                        JSON: [
                             {
                                 "location": SPP,
                                 "path": f"sdc-response/{survey_id}/"
@@ -286,7 +286,7 @@ class TestMessageConfig(unittest.TestCase):
                             "location": FTP,
                             "path": "SDX_PREPROD/EDC_QReceipts"
                         }],
-                        "spp_data": [
+                        JSON: [
                             {
                                 "location": SPP,
                                 "path": f"sdc-response/{survey_id}/"
@@ -314,7 +314,7 @@ class TestMessageConfig(unittest.TestCase):
                         "path": "comments"
                     },
                     "outputs": {
-                        JSON: [{
+                        ZIP: [{
                             "location": FTP,
                             "path": f"{environment_capitalised}/EDC_Submissions/Comments"
                         }],
@@ -352,7 +352,7 @@ class TestMessageConfig(unittest.TestCase):
                             "location": FTP,
                             "path": f"{environment_capitalised}/EDC_QReceipts"
                         }],
-                        "spp_data": [
+                        JSON: [
                             {
                                 "location": SPP,
                                 "path": f"sdc-response/{survey_id}/"
