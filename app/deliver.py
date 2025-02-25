@@ -37,7 +37,7 @@ def deliver(meta_data: MetaWrapper, data_bytes: bytes, v2_message_schema: bool =
     logger.info("Sending DAP notification")
     if v2_message_schema:
         message_config = MessageConfig(meta_data.survey_id).get_config()
-        message_constructor = MessageConstructor(config_schema= message_config,
+        message_constructor = MessageConstructor(config_schema=message_config,
                                                  file_name_mapper=FileExtensionMapper(),
                                                  submission_mapper=SubmissionTypeMapper())
 
