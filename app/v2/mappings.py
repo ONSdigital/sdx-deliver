@@ -1,21 +1,8 @@
-from typing import Final
-
 from app.output_type import OutputType
 from app.v2.definitions.filename_mapper import FileNameMapperBase
 from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
-
-PCK: Final[str] = "pck"
-JPG: Final[str] = "jpg"
-IMAGE: Final[str] = "image"
-CSV: Final[str] = "csv"
-INDEX: Final[str] = "index"
-DAT: Final[str] = "dat"
-RECEIPT: Final[str] = "receipt"
-JSON: Final[str] = "json"
-
-SEFT_SURVEY: Final[str] = "seft_survey"
-SPP_SURVEY: Final[str] = "spp_survey"
-LEGACY_SURVEY: Final[str] = "legacy_survey"
+from app.v2.message_config import PCK, JPG, IMAGE, CSV, INDEX, DAT, RECEIPT, JSON, SEFT_SURVEY, SPP_SURVEY, \
+    LEGACY_SURVEY
 
 
 class FileExtensionMapper(FileNameMapperBase):
