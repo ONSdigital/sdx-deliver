@@ -11,6 +11,7 @@ from app.store import write_to_bucket
 from app.v2.definitions.config_schema import ConfigSchema
 from app.v2.definitions.message_schema import SchemaDataV2
 from app.v2.mappings import FileExtensionMapper, SubmissionTypeMapper
+from app.v2.message_config import MessageConfig
 from app.v2.message_constructor import MessageConstructor
 
 logger = get_logger()
@@ -35,7 +36,8 @@ def deliver(meta_data: MetaWrapper, data_bytes: bytes, v2_message_schema: bool =
 
     logger.info("Sending DAP notification")
     if v2_message_schema:
-        message_constructor = MessageConstructor(config_schema=ConfigSchema(),
+        message_config = MessageConfig(meta_data.survey_id).get_config()
+        message_constructor = MessageConstructor(config_schema= message_config,
                                                  file_name_mapper=FileExtensionMapper(),
                                                  submission_mapper=SubmissionTypeMapper())
 
