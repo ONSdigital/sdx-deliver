@@ -19,6 +19,7 @@ PCK: Final[str] = "pck"
 JPG: Final[str] = "jpg"
 IMAGE: Final[str] = "image"
 CSV: Final[str] = "csv"
+ZIP: Final[str] = "zip"
 INDEX: Final[str] = "index"
 DAT: Final[str] = "dat"
 RECEIPT: Final[str] = "receipt"
@@ -130,7 +131,7 @@ class MessageConfig:
                             "location": FTP,
                             "path": "SDX_PREPROD/EDC_QReceipts"
                         }],
-                        "spp_data": [
+                        JSON: [
                             {
                                 "location": SPP,
                                 "path": f"sdc-response/{survey_id}/"
@@ -158,7 +159,7 @@ class MessageConfig:
                         "path": "comments"
                     },
                     "outputs": {
-                        JSON: [{
+                        ZIP: [{
                             "location": FTP,
                             "path": f"{environment_capitalised}/EDC_Submissions/Comments"
                         }],
@@ -196,7 +197,7 @@ class MessageConfig:
                             "location": FTP,
                             "path": f"{environment_capitalised}/EDC_QReceipts"
                         }],
-                        "spp_data": [
+                        JSON: [
                             {
                                 "location": SPP,
                                 "path": f"sdc-response/{survey_id}/"
