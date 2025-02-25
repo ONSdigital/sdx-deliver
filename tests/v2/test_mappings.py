@@ -1,7 +1,9 @@
 import unittest
 
 from app.output_type import OutputType
-from app.v2.mappings import FileExtensionMapper, SubmissionTypeMapper, IMAGE, INDEX, PCK, SEFT_SURVEY, SPP_SURVEY, LEGACY_SURVEY
+from app.v2.mappings import FileExtensionMapper, SubmissionTypeMapper, LocationNameMapper, IMAGE, INDEX, PCK, SEFT_SURVEY, SPP_SURVEY, LEGACY_SURVEY, FTP, SDX, SPP, DAP
+from unittest.mock import patch
+
 
 
 class FileExtensionMapperTest(unittest.TestCase):
@@ -62,4 +64,16 @@ class SubmissionTypeMapperTest(unittest.TestCase):
         expected = LEGACY_SURVEY
 
         actual = submission_type_mapper.get_submission_type(output_type)
+        self.assertEqual(expected, actual)
+
+
+class LocationNameMapperTest(unittest.TestCase):
+
+    @patch('app.v2.mappings.sdx_app.secrets_get', return_value=["ftp"])
+    def test_get_location_name_for_ftp(self, mock_secrets_get):
+        location_name_mapper = LocationNameMapper()
+
+        expected = "ftp"
+        location_name_mapper.load_location_values()
+        actual = location_name_mapper.get_location_name(FTP)
         self.assertEqual(expected, actual)

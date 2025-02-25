@@ -7,6 +7,8 @@ from app.v2.message_config import MessageConfig, FTP, WINDOWS_SERVER, SDX, SPP, 
 
 
 class MockLocationNameRepository(LocationNameRepositoryBase):
+    def load_location_values(self):
+        pass
 
     def get_location_name(self, key: str) -> str:
         if key == FTP:

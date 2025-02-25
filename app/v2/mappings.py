@@ -1,3 +1,5 @@
+from app import sdx_app
+from app import CONFIG
 from app.output_type import OutputType
 from app.v2.definitions.filename_mapper import FileNameMapperBase
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
@@ -5,6 +7,9 @@ from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
 from app.v2.message_config import PCK, JPG, IMAGE, CSV, INDEX, DAT, RECEIPT, JSON, SEFT_SURVEY, SPP_SURVEY, \
     LEGACY_SURVEY, FTP, SDX, SPP, DAP
 
+NIFI_LOCATION_FTP = "nifi-location-ftp"
+NIFI_LOCATION_SPP = "nifi-location-spp"
+NIFI_LOCATION_DAP = "nifi-location-dap"
 
 class FileExtensionMapper(FileNameMapperBase):
 
@@ -35,12 +40,17 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
 
 class LocationNameMapper(LocationNameRepositoryBase):
 
+    def __init__(self):
+        self.locations_mapping = None
+
     def get_location_name(self, key: str) -> str:
-        if key == FTP:
-            return "ftp"
-        if key == SDX:
-            return "sdx"
-        if key == SPP:
-            return "spp"
-        if key == DAP:
-            return "dap"
+        return self.locations_mapping[key]
+
+    def load_location_values(self):
+        if self.locations_mapping is None:
+            self.locations_mapping = {
+                FTP: sdx_app.secrets_get(NIFI_LOCATION_FTP)[0],
+                SDX: CONFIG.BUCKET_NAME,
+                SPP: sdx_app.secrets_get(NIFI_LOCATION_SPP)[0],
+                DAP: sdx_app.secrets_get(NIFI_LOCATION_DAP)[0]
+            }

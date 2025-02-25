@@ -6,6 +6,7 @@ from app.v2.definitions.location_name_repository import LocationNameRepositoryBa
 
 SDX_PROD: Final[str] = "sdx_prod"
 SDX_PREPROD: Final[str] = "sdx_preprod"
+SDX_PREPROD_ENV: Final[str] = "ons-sdx-preprod"
 SDX_PROD_ENV: Final[str] = "ons-sdx-prod"
 
 
