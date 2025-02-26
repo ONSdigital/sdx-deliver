@@ -1,7 +1,6 @@
 import hashlib
 
 from sdx_gcp.app import get_logger
-from app import CONFIG
 from app.encrypt import encrypt_output
 from app.meta_wrapper import MetaWrapper
 from app.output_type import OutputType
@@ -38,7 +37,7 @@ def deliver(meta_data: MetaWrapper, data_bytes: bytes, v2_message_schema: bool =
     logger.info("Sending DAP notification")
     if v2_message_schema:
         location_name_mapper.load_location_values()
-        message_config = MessageConfig(CONFIG.LOCATION_NAME_MAPPER).get_config(meta_data.survey_id)
+        message_config = MessageConfig(location_name_mapper).get_config(meta_data.survey_id)
         message_constructor = MessageConstructor(config_schema=message_config,
                                                  file_name_mapper=FileExtensionMapper(),
                                                  submission_mapper=SubmissionTypeMapper())

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from sdx_gcp.errors import DataError
 
@@ -28,14 +29,15 @@ class MetaWrapper:
     """
 
     def __init__(self, filename: str):
-        self.filename = filename
+        self.input_filename: str = filename
+        self.filename: str = filename
         self.tx_id = None
         self.survey_id = None
         self.period = None
         self.ru_ref = None
         self.md5sum = None
-        self.sizeBytes = 0
-        self.output_type = None
+        self.sizeBytes: int = 0
+        self.output_type: Optional[OutputType] = None
 
     def _from_survey(self, survey_dict: dict):
         self.tx_id = _get_field(survey_dict, 'tx_id')

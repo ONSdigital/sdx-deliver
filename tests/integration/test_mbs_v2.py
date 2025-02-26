@@ -2,6 +2,7 @@ import io
 import json
 import unittest
 import zipfile
+from typing import Final
 from unittest.mock import patch, Mock
 
 from sdx_gcp import Request
@@ -9,17 +10,24 @@ from sdx_gcp import Request
 from app import deliver
 from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, SUBMISSION_FILE, TRANSFORMED_FILE, deliver_legacy
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
+from app.v2.definitions.message_schema import SchemaDataV2
 from app.v2.message_config import FTP, SDX, SPP, DAP
 
 
+SDX_LOCATION_NAME: Final[str] = "sdx_location_name"
+FTP_LOCATION_NAME: Final[str] = "ftp_location_name"
+
 class MockLocationNameMapper(LocationNameRepositoryBase):
+    def __init__(self):
+        self.locations_mapping = None
+
     def get_location_name(self, key: str) -> str:
         return self.locations_mapping[key]
 
     def load_location_values(self):
         self.locations_mapping = {
-            FTP: "ftp_location_name",
-            SDX: "sdx_location_name",
+            FTP: FTP_LOCATION_NAME,
+            SDX: SDX_LOCATION_NAME,
             SPP: "spp_location_name",
             DAP: "dap_location_name"
         }
@@ -39,36 +47,45 @@ class TestMbsV2(unittest.TestCase):
     @patch('app.deliver.write_to_bucket')
     @patch('app.deliver.publish_v2_schema')
     @patch('app.deliver.encrypt_output')
-    def test_legacy_survey(self, mock_encrypt: Mock, mock_publish_v2_schema, mock_write_to_bucket: Mock):
+    @patch('app.routes.Flask.jsonify')
+    def test_legacy_survey(self,
+                           mock_jsonify: Mock,
+                           mock_encrypt: Mock,
+                           mock_publish_v2_schema: Mock,
+                           mock_write_to_bucket: Mock):
+
         deliver.location_name_mapper = MockLocationNameMapper()
         mock_encrypt.return_value = "My encrypted output"
         mock_write_to_bucket.return_value = "My fake bucket path"
+        mock_jsonify.return_value = {"success": True}
 
         tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
+        input_filename = tx_id
         tx_id_trunc = "c37a3efa-593c-4bab"
         survey_id = "009"
+        period_id = "201605"
         submission_date_str = "20210105"
         submission_date_dm = "0501"
-        data = {
-            FILE_NAME: tx_id,
-            "tx_id": tx_id,
-            VERSION: V2,
-            MESSAGE_SCHEMA: V2
-        }
+
+        pck_filename = tx_id
+        image_filename = f"S{tx_id_trunc}_1.JPG"
+        index_filename = f"EDC_{survey_id}_{submission_date_str}_{tx_id_trunc}.csv"
+        receipt_filename = f"REC{submission_date_dm}_{tx_id_trunc}.DAT"
+        json_filename = f"{survey_id}_{tx_id_trunc}.json"
+
+        # Create the input zipfile
         zip_buffer = io.BytesIO()
 
-        # Create a new zip file in the BytesIO object
         with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-            # Add files to the zip file
-            zip_file.writestr(tx_id, 'This is the content of the pck file.')
-            zip_file.writestr(f"S{tx_id_trunc}_1.JPG", 'This is the content of image file.')
-            zip_file.writestr(f"EDC_{survey_id}_{submission_date_str}_{tx_id_trunc}.csv", 'This is the content of index file.')
-            zip_file.writestr(f"REC{submission_date_dm}_{tx_id_trunc}.DAT", 'This is the content of the receipt file.')
-            zip_file.writestr(f"{survey_id}_{tx_id_trunc}.json", "This is the content of the json file.")
+            zip_file.writestr(pck_filename, 'This is the content of the pck file.')
+            zip_file.writestr(image_filename, 'This is the content of image file.')
+            zip_file.writestr(index_filename, 'This is the content of index file.')
+            zip_file.writestr(receipt_filename, 'This is the content of the receipt file.')
+            zip_file.writestr(json_filename, "This is the content of the json file.")
 
-        # Get the bytes of the zip file
         zip_bytes = zip_buffer.getvalue()
 
+        # Create the input submission file
         submission_file = {
             "case_id": "8fc3eb0b-2dd7-4acd-a354-5d4f69503233",
             "tx_id": tx_id,
@@ -83,7 +100,7 @@ class TestMbsV2(unittest.TestCase):
             "launch_language_code": "en",
             "survey_metadata": {
                 "survey_id": survey_id,
-                "period_id": "201605",
+                "period_id": period_id,
                 "ref_p_end_date": "2016-05-31",
                 "trad_as": "ESSENTIAL ENTERPRISE LTD.",
                 "ru_name": "ESSENTIAL ENTERPRISE LTD.",
@@ -100,20 +117,103 @@ class TestMbsV2(unittest.TestCase):
             "started_at": "2023-01-18T13:33:00.425419+00:00",
             "submission_language_code": "en"
         }
-        
+
+        # Create the fake Request object
+
         files_dict = {
             SUBMISSION_FILE: FileHolder(json.dumps(submission_file).encode("utf-8")),
             TRANSFORMED_FILE: FileHolder(zip_bytes)
         }
 
+        data = {
+            FILE_NAME: tx_id,
+            "tx_id": tx_id,
+            VERSION: V2,
+            MESSAGE_SCHEMA: V2
+        }
+
         class MockRequest(Request):
 
             files = files_dict
-            args = {
-                FILE_NAME: tx_id,
-                "tx_id": tx_id,
-                VERSION: V2,
-                MESSAGE_SCHEMA: V2
-            }
+            args = data
 
-        #response = deliver_legacy(MockRequest(data), tx_id)
+        response = deliver_legacy(MockRequest(data), tx_id)
+        self.assertTrue(response["success"])
+
+        expected_v2_message: SchemaDataV2 = {
+            "schema_version": "2",
+            "sensitivity": "High",
+            "sizeBytes": 19,
+            "md5sum": "3190f8a68aad6a9e33a624c318516ebb",
+            "context": {
+                "survey_id": survey_id,
+                "period_id": period_id,
+                "ru_ref": "12346789012A"
+            },
+            "source": {
+                "location_type": "gcs",
+                "location_name": SDX_LOCATION_NAME,
+                "path": "survey",
+                "filename": input_filename
+            },
+            "actions": ["decrypt", "unzip"],
+            "targets": [
+                {
+                    "input": pck_filename,
+                    "outputs": [
+                        {
+                            "location_type": "windows_server",
+                            "location_name": FTP_LOCATION_NAME,
+                            "path": "SDX_PREPROD/EDC_QData",
+                            "filename": pck_filename
+                        }
+                    ]
+                },
+                {
+                    "input": image_filename,
+                    "outputs": [
+                        {
+                            "location_type": "windows_server",
+                            "location_name": FTP_LOCATION_NAME,
+                            "path": "SDX_PREPROD/EDC_QImages/Images",
+                            "filename": image_filename
+                        }
+                    ]
+                },
+                {
+                    "input": index_filename,
+                    "outputs": [
+                        {
+                            "location_type": "windows_server",
+                            "location_name": FTP_LOCATION_NAME,
+                            "path": "SDX_PREPROD/EDC_QImages/Index",
+                            "filename": index_filename
+                        }
+                    ]
+                },
+                {
+                    "input": receipt_filename,
+                    "outputs": [
+                        {
+                            "location_type": "windows_server",
+                            "location_name": FTP_LOCATION_NAME,
+                            "path": "SDX_PREPROD/EDC_QReceipts",
+                            "filename": receipt_filename
+                        }
+                    ]
+                },
+                {
+                    "input": json_filename,
+                    "outputs": [
+                        {
+                            "location_type": "windows_server",
+                            "location_name": FTP_LOCATION_NAME,
+                            "path": "SDX_PREPROD/EDC_QJson",
+                            "filename": json_filename
+                        }
+                    ]
+                }
+            ]
+        }
+
+        mock_publish_v2_schema.assert_called_with(expected_v2_message, tx_id)

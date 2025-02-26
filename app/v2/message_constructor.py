@@ -25,7 +25,7 @@ class MessageConstructor:
             "sizeBytes": meta_data.sizeBytes,
             "md5sum": meta_data.md5sum,
             "context": self.get_context(meta_data),
-            "source": self.get_source(meta_data.filename, submission_type),
+            "source": self.get_source(meta_data.input_filename, submission_type),
             "actions": self.get_actions(submission_type),
             "targets": self.get_targets(filenames, submission_type)
         }

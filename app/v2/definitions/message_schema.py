@@ -14,16 +14,12 @@ class Target(TypedDict):
     outputs: list[Location]
 
 
-class Context(TypedDict):
-    context_type: str
-
-
 class SchemaDataV2(TypedDict):
     schema_version: str
     sensitivity: str
     sizeBytes: int
     md5sum: str
-    context: Context
+    context: dict[str, str]
     source: Location
     actions: list[str]
     targets: list[Target]

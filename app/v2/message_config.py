@@ -81,7 +81,7 @@ class MessageConfig:
                     "outputs": {
                         SEFT: [{
                             "location": FTP,
-                            "path": f"SDX_PREPROD/EDC_Submissions/{survey_id}"
+                            "path": f"{environment_capitalised}/EDC_Submissions/{survey_id}"
                         }]
                     }
                 },
