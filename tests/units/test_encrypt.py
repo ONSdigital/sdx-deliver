@@ -9,7 +9,7 @@ from app.encrypt import encrypt_output
 class TestInit(unittest.TestCase):
 
     def setUp(self):
-        with open('tests/test_key.txt', 'r') as file:
+        with open('tests/units/test_key.txt', 'r') as file:
             test_key = file.read()
         gpg = gnupg.GPG()
         gpg.import_keys(test_key)
