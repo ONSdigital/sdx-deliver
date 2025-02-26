@@ -123,15 +123,15 @@ class MessageConfig:
                     "outputs": {
                         IMAGE: [{
                             "location": FTP,
-                            "path": "SDX_PREPROD/EDC_QImages/Images"
+                            "path": f"{environment_capitalised}/EDC_QImages/Images"
                         }],
                         INDEX: [{
                             "location": FTP,
-                            "path": "SDX_PREPROD/EDC_QImages/Index"
+                            "path": f"{environment_capitalised}/EDC_QImages/Index"
                         }],
                         RECEIPT: [{
                             "location": FTP,
-                            "path": "SDX_PREPROD/EDC_QReceipts"
+                            "path": f"{environment_capitalised}/EDC_QReceipts"
                         }],
                         JSON: [
                             {
