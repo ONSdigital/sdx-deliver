@@ -5,7 +5,7 @@ from app.v2.definitions.filename_mapper import FileNameMapperBase
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
 from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
 from app.v2.message_config import PCK, JPG, IMAGE, CSV, INDEX, DAT, RECEIPT, JSON, SEFT_SURVEY, SPP_SURVEY, \
-    LEGACY_SURVEY, FTP, SDX, SPP, DAP, ZIP
+    LEGACY_SURVEY, FTP, SDX, SPP, DAP, ZIP, SEFT, GPG
 
 NIFI_LOCATION_FTP = "nifi-location-ftp"
 NIFI_LOCATION_SPP = "nifi-location-spp"
@@ -26,6 +26,8 @@ class FileExtensionMapper(FileNameMapperBase):
             return RECEIPT
         if extension == ZIP:
             return ZIP
+        if extension == GPG:
+            return SEFT
         return JSON
 
 

@@ -20,6 +20,8 @@ JPG: Final[str] = "jpg"
 IMAGE: Final[str] = "image"
 CSV: Final[str] = "csv"
 ZIP: Final[str] = "zip"
+GPG: Final[str] = "gpg"
+
 INDEX: Final[str] = "index"
 DAT: Final[str] = "dat"
 RECEIPT: Final[str] = "receipt"
