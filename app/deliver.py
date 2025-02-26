@@ -1,6 +1,4 @@
 import hashlib
-import zipfile
-from typing import io
 
 from sdx_gcp.app import get_logger
 from app import CONFIG
@@ -9,7 +7,6 @@ from app.meta_wrapper import MetaWrapper
 from app.output_type import OutputType
 from app.publish import send_message, publish_v2_schema
 from app.store import write_to_bucket
-from app.v2.definitions.config_schema import ConfigSchema
 from app.v2.definitions.message_schema import SchemaDataV2
 from app.v2.mappings import FileExtensionMapper, SubmissionTypeMapper, LocationNameMapper
 from app.v2.message_config import MessageConfig
@@ -19,6 +16,7 @@ from app.v2.zip import unzip
 
 logger = get_logger()
 location_name_mapper: LocationNameRepositoryBase = LocationNameMapper()
+
 
 def deliver(meta_data: MetaWrapper, data_bytes: bytes, v2_message_schema: bool = False):
     """

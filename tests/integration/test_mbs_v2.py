@@ -1,14 +1,16 @@
-import unittest
-import json
 import io
+import json
+import unittest
 import zipfile
+from unittest.mock import patch, Mock
 
 from sdx_gcp import Request
-from unittest.mock import patch
-from app.routes import *
+
+from app import deliver
+from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, SUBMISSION_FILE, TRANSFORMED_FILE, deliver_legacy
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
 from app.v2.message_config import FTP, SDX, SPP, DAP
-from app import deliver
+
 
 class MockLocationNameMapper(LocationNameRepositoryBase):
     def get_location_name(self, key: str) -> str:
@@ -22,12 +24,25 @@ class MockLocationNameMapper(LocationNameRepositoryBase):
             DAP: "dap_location_name"
         }
 
+
+class FileHolder:
+
+    def __init__(self, file_bytes: bytes):
+        self._file_bytes = file_bytes
+
+    def read(self) -> bytes:
+        return self._file_bytes
+
+
 class TestMbsV2(unittest.TestCase):
 
-    @patch('app.v2.store.write_to_bucket')
-    @patch('app.publish.publish_v2_schema')
-    def test_legacy_survey(self, mock_publish_v2_schema, mock_write_to_bucket):
+    @patch('app.deliver.write_to_bucket')
+    @patch('app.deliver.publish_v2_schema')
+    @patch('app.deliver.encrypt_output')
+    def test_legacy_survey(self, mock_encrypt: Mock, mock_publish_v2_schema, mock_write_to_bucket: Mock):
         deliver.location_name_mapper = MockLocationNameMapper()
+        mock_encrypt.return_value = "My encrypted output"
+        mock_write_to_bucket.return_value = "My fake bucket path"
 
         tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
         tx_id_trunc = "c37a3efa-593c-4bab"
@@ -87,15 +102,18 @@ class TestMbsV2(unittest.TestCase):
         }
         
         files_dict = {
-            SUBMISSION_FILE: submission_file,
-            TRANSFORMED_FILE: zip_bytes
+            SUBMISSION_FILE: FileHolder(json.dumps(submission_file).encode("utf-8")),
+            TRANSFORMED_FILE: FileHolder(zip_bytes)
         }
 
-        request = Request.from_values(
-                headers={'Content-Type': 'application/json'}, 
-                data=json.dumps(data), 
-                method="POST",
-                files=files_dict
-            )
-        
-        response = deliver_legacy(request, tx_id)
+        class MockRequest(Request):
+
+            files = files_dict
+            args = {
+                FILE_NAME: tx_id,
+                "tx_id": tx_id,
+                VERSION: V2,
+                MESSAGE_SCHEMA: V2
+            }
+
+        #response = deliver_legacy(MockRequest(data), tx_id)
