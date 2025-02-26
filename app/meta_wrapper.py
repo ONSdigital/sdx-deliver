@@ -22,6 +22,10 @@ def _get_field(survey_dict: dict, *field_names: str) -> str:
     return current
 
 
+def get_current_time() -> str:
+    return datetime.today().strftime('%H-%M-%S_%d-%m-%Y')
+
+
 class MetaWrapper:
 
     """
@@ -29,7 +33,7 @@ class MetaWrapper:
     """
 
     def __init__(self, filename: str):
-        self.input_filename: str = filename
+        self.output_filename: str = filename
         self.filename: str = filename
         self.tx_id = None
         self.survey_id = None
@@ -66,8 +70,9 @@ class MetaWrapper:
         self._from_survey(survey_dict)
 
     def set_feedback(self, survey_dict: dict):
-        postfix = datetime.today().strftime('%H-%M-%S_%d-%m-%Y')
+        postfix = get_current_time()
         tx_id = self.filename
+        self.output_filename = f'{self.filename}-fb-{postfix}'
         self.filename = f'{self.filename}-fb-{postfix}:{locations["FTP"]}'
         self.output_type = OutputType.FEEDBACK
         self._from_survey(survey_dict)

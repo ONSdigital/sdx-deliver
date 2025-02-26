@@ -24,7 +24,7 @@ class MockMetaWrapper(MetaWrapperV2):
 
 class MockFileMapper(FileNameMapperBase):
 
-    def get_output_type(self, filename: str) -> str:
+    def get_output_type(self, filename: str, submission_type: str) -> str:
         if filename == "file1":
             return "output1"
         return "output2"

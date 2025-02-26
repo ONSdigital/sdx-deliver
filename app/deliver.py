@@ -42,7 +42,10 @@ def deliver(meta_data: MetaWrapper, data_bytes: bytes, v2_message_schema: bool =
                                                  file_name_mapper=FileExtensionMapper(),
                                                  submission_mapper=SubmissionTypeMapper())
 
-        filenames = unzip(data_bytes)
+        if meta_data.output_type == OutputType.LEGACY or meta_data.output_type == OutputType.SPP:
+            filenames = unzip(data_bytes)
+        else:
+            filenames = [meta_data.output_filename]
 
         v2_message: SchemaDataV2 = message_constructor.build_message(filenames, meta_data)
         publish_v2_schema(v2_message, meta_data.tx_id)

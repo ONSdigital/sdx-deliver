@@ -1,9 +1,9 @@
 import unittest
 
 from app.output_type import OutputType
-from app.v2.mappings import FileExtensionMapper, SubmissionTypeMapper, LocationNameMapper, IMAGE, INDEX, PCK, SEFT_SURVEY, SPP_SURVEY, LEGACY_SURVEY, FTP, SDX, SPP, DAP
+from app.v2.mappings import (FileExtensionMapper, SubmissionTypeMapper, LocationNameMapper,
+                             IMAGE, INDEX, PCK, SEFT_SURVEY, SPP_SURVEY, LEGACY_SURVEY, FTP)
 from unittest.mock import patch
-
 
 
 class FileExtensionMapperTest(unittest.TestCase):
@@ -13,7 +13,7 @@ class FileExtensionMapperTest(unittest.TestCase):
         filename = "file.jpg"
         expected = IMAGE
 
-        actual = file_extension_mapper.get_output_type(filename)
+        actual = file_extension_mapper.get_output_type(filename, LEGACY_SURVEY)
         self.assertEqual(expected, actual)
 
     def test_get_output_type_for_image_capitals(self):
@@ -21,7 +21,7 @@ class FileExtensionMapperTest(unittest.TestCase):
         filename = "file.JPG"
         expected = IMAGE
 
-        actual = file_extension_mapper.get_output_type(filename)
+        actual = file_extension_mapper.get_output_type(filename, LEGACY_SURVEY)
         self.assertEqual(expected, actual)
 
     def test_get_output_type_for_index(self):
@@ -29,7 +29,7 @@ class FileExtensionMapperTest(unittest.TestCase):
         filename = "file.csv"
         expected = INDEX
 
-        actual = file_extension_mapper.get_output_type(filename)
+        actual = file_extension_mapper.get_output_type(filename, LEGACY_SURVEY)
         self.assertEqual(expected, actual)
 
     def test_get_output_type_for_pck(self):
@@ -37,7 +37,7 @@ class FileExtensionMapperTest(unittest.TestCase):
         filename = "file"
         expected = PCK
 
-        actual = file_extension_mapper.get_output_type(filename)
+        actual = file_extension_mapper.get_output_type(filename, LEGACY_SURVEY)
         self.assertEqual(expected, actual)
 
 

@@ -25,7 +25,7 @@ class MessageConstructor:
             "sizeBytes": meta_data.sizeBytes,
             "md5sum": meta_data.md5sum,
             "context": self.get_context(meta_data),
-            "source": self.get_source(meta_data.input_filename, submission_type),
+            "source": self.get_source(meta_data.output_filename, submission_type),
             "actions": self.get_actions(submission_type),
             "targets": self.get_targets(filenames, submission_type)
         }
@@ -38,7 +38,7 @@ class MessageConstructor:
     def get_targets(self, filenames: list[str], submission_type: str) -> list[Target]:
         target_list: list[Target] = []
         for file in filenames:
-            output_type = self.file_name_mapper.get_output_type(file)
+            output_type = self.file_name_mapper.get_output_type(file, submission_type)
             location_list = self.config_lookup.get_outputs(submission_type, output_type, file)
             outputs: list[Location] = []
             for location in location_list:

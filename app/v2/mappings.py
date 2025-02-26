@@ -5,15 +5,19 @@ from app.v2.definitions.filename_mapper import FileNameMapperBase
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
 from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
 from app.v2.message_config import PCK, JPG, IMAGE, CSV, INDEX, DAT, RECEIPT, JSON, SEFT_SURVEY, SPP_SURVEY, \
-    LEGACY_SURVEY, FTP, SDX, SPP, DAP, ZIP, SEFT, GPG
+    LEGACY_SURVEY, FTP, SDX, SPP, DAP, ZIP, SEFT, GPG, FEEDBACK
 
 NIFI_LOCATION_FTP = "nifi-location-ftp"
 NIFI_LOCATION_SPP = "nifi-location-spp"
 NIFI_LOCATION_DAP = "nifi-location-dap"
 
+
 class FileExtensionMapper(FileNameMapperBase):
 
-    def get_output_type(self, filename: str) -> str:
+    def get_output_type(self, filename: str, submission_type: str) -> str:
+        if submission_type == FEEDBACK:
+            return JSON
+
         split_string = filename.split(".")
         if len(split_string) == 1:
             return PCK
@@ -38,6 +42,8 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
             return SEFT_SURVEY
         elif output_type == output_type.SPP:
             return SPP_SURVEY
+        elif output_type == output_type.FEEDBACK:
+            return FEEDBACK
         else:
             return LEGACY_SURVEY
 
