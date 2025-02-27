@@ -1,5 +1,6 @@
 from app import setup_keys, sdx_app
-from app.routes import deliver_dap, deliver_legacy, deliver_hybrid, deliver_feedback, deliver_comments, deliver_seft
+from app.routes import deliver_dap, deliver_legacy, deliver_hybrid, deliver_feedback, deliver_comments, deliver_seft, \
+    deliver_spp
 
 if __name__ == '__main__':
     setup_keys()
@@ -10,5 +11,6 @@ if __name__ == '__main__':
     sdx_app.add_post_endpoint(deliver_feedback, rule="/deliver/feedback")
     sdx_app.add_post_endpoint(deliver_comments, rule="/deliver/comments")
     sdx_app.add_post_endpoint(deliver_seft, rule="/deliver/seft")
+    sdx_app.add_post_endpoint(deliver_spp, rule="/deliver/spp")
 
     sdx_app.run(port=5000)
