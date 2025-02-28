@@ -1,6 +1,7 @@
 from typing import Optional, Final
 
-from app.v2.definitions.config_schema import File, LocationKey
+from app.v2.definitions.config_schema import File
+from app.v2.definitions.location_key_lookup import LocationKey
 from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.message_schema import Location
 from app.v2.definitions.submission_type import UNZIP, DECRYPT

@@ -1,5 +1,4 @@
 from typing import TypedDict
-from enum import Enum
 
 
 class Location(TypedDict):
@@ -23,10 +22,3 @@ class SchemaDataV2(TypedDict):
     source: Location
     actions: list[str]
     targets: list[Target]
-
-
-class Filetype(Enum):
-    image = "image"
-    index = "index"
-    receipt = "receipt"
-    pck = "pck"

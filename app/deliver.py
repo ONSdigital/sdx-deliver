@@ -6,15 +6,17 @@ from app.meta_wrapper import MetaWrapper
 from app.output_type import OutputType
 from app.publish import send_message, publish_v2_schema
 from app.store import write_to_bucket
+from app.v2.definitions.location_key_lookup import LocationKeyLookupBase
 from app.v2.definitions.message_schema import SchemaDataV2
-from app.v2.mappings import FileExtensionMapper, SubmissionTypeMapper, LocationNameRepo
-from app.v2.message_config import MessageConfig
-from app.v2.message_constructor import MessageConstructor
+from app.v2.location_key_lookup import LocationKeyLookup
+from app.v2.submission_type_mapper import SubmissionTypeMapper
+from app.v2.location_name_repo import LocationNameRepo
+from app.v2.message_builder import MessageBuilder
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
 from app.v2.zip import unzip
 
 logger = get_logger()
-location_name_mapper: LocationNameRepositoryBase = LocationNameRepo()
+location_name_repo: LocationNameRepositoryBase = LocationNameRepo()
 
 
 def deliver(meta_data: MetaWrapper, data_bytes: bytes, v2_message_schema: bool = False):
@@ -36,11 +38,9 @@ def deliver(meta_data: MetaWrapper, data_bytes: bytes, v2_message_schema: bool =
 
     logger.info("Sending DAP notification")
     if v2_message_schema:
-        location_name_mapper.load_location_values()
-        message_config = MessageConfig(location_name_mapper).get_config(meta_data.survey_id)
-        message_constructor = MessageConstructor(config_schema=message_config,
-                                                 file_name_mapper=FileExtensionMapper(),
-                                                 submission_mapper=SubmissionTypeMapper())
+        location_name_repo.load_location_values()
+        location_key_lookup: LocationKeyLookupBase = LocationKeyLookup(location_name_repo)
+        message_constructor = MessageBuilder(submission_mapper=SubmissionTypeMapper(location_key_lookup))
 
         if meta_data.output_type == OutputType.LEGACY or meta_data.output_type == OutputType.SPP:
             filenames = unzip(data_bytes)

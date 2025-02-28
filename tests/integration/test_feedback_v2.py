@@ -8,9 +8,8 @@ from sdx_gcp import Request
 
 from app import deliver
 from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, SUBMISSION_FILE, deliver_feedback
-from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
+from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
 from app.v2.definitions.message_schema import SchemaDataV2
-from app.v2.location_key_lookup import FTP, SDX, SPP, DAP
 
 SDX_LOCATION_NAME: Final[str] = "sdx_location_name"
 FTP_LOCATION_NAME: Final[str] = "ftp_location_name"
@@ -22,15 +21,19 @@ class MockLocationNameMapper(LocationNameRepositoryBase):
     def __init__(self):
         self.locations_mapping = None
 
-    def get_location_name(self, key: str) -> str:
-        return self.locations_mapping[key]
+    def get_location_name(self, key: LookupKey) -> str:
+        return self.locations_mapping[key.value]
 
     def load_location_values(self):
+        ftp_key = LookupKey.FTP.value
+        sdx_key = LookupKey.SDX.value
+        spp_key = LookupKey.SPP.value
+        dap_key = LookupKey.DAP.value
         self.locations_mapping = {
-            FTP: FTP_LOCATION_NAME,
-            SDX: SDX_LOCATION_NAME,
-            SPP: SPP_LOCATION_NAME,
-            DAP: DAP_LOCATION_NAME
+            ftp_key: FTP_LOCATION_NAME,
+            sdx_key: SDX_LOCATION_NAME,
+            spp_key: SPP_LOCATION_NAME,
+            dap_key: DAP_LOCATION_NAME
         }
 
 
@@ -56,7 +59,7 @@ class TestFeedbackV2(unittest.TestCase):
                              mock_encrypt: Mock,
                              mock_publish_v2_schema: Mock,
                              mock_write_to_bucket: Mock):
-        deliver.location_name_mapper = MockLocationNameMapper()
+        deliver.location_name_repo = MockLocationNameMapper()
         mock_encrypt.return_value = "My encrypted output"
         mock_write_to_bucket.return_value = "My fake bucket path"
         mock_jsonify.return_value = {"success": True}

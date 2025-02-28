@@ -1,8 +1,8 @@
 import unittest
 
 from app.output_type import OutputType
-from app.v2.mappings import (FileExtensionMapper, SubmissionTypeMapper, LocationNameRepo,
-                             IMAGE, INDEX, PCK, SEFT_SURVEY, SPP_SURVEY, LEGACY_SURVEY)
+from app.v2.submission_type_mapper import (FileExtensionMapper, SubmissionTypeMapper, IMAGE, INDEX, PCK, SEFT_SURVEY, SPP_SURVEY, LEGACY_SURVEY)
+from app.v2.location_name_repo import LocationNameRepo
 from app.v2.location_key_lookup import FTP
 from unittest.mock import patch
 

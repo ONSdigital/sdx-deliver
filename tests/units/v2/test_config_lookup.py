@@ -1,8 +1,8 @@
 import unittest
 
 from app.v2.config_lookup import ConfigLookup
-from app.v2.definitions.config_schema import ConfigSchema, LocationKey
-from app.v2.definitions.location_key_lookup import LocationKeyLookupBase
+from app.v2.definitions.config_schema import ConfigSchema
+from app.v2.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
 from app.v2.definitions.location_name_repository import LookupKey
 
 

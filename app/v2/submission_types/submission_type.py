@@ -2,12 +2,14 @@ from abc import abstractmethod
 from typing import Optional
 
 from app import CONFIG
-from app.v2.definitions.config_schema import LocationKey, File
-from app.v2.definitions.location_key_lookup import LocationKeyLookupBase
+from app.v2.definitions.config_schema import File
+from app.v2.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
 from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.message_schema import Location
 from app.v2.definitions.submission_type import SubmissionTypeBase
-from app.v2.message_config import SDX_PREPROD, SDX_PROD_ENV, SDX_PROD
+
+SDX_PROD = "sdx-prod"
+SDX_PREPROD = "sdx-preprod"
 
 
 class SubmissionType(SubmissionTypeBase):
@@ -57,4 +59,4 @@ class SubmissionType(SubmissionTypeBase):
         }]
 
     def get_env_prefix(self) -> str:
-        return SDX_PROD if CONFIG.PROJECT_ID == SDX_PROD_ENV else SDX_PREPROD
+        return SDX_PROD if CONFIG.PROJECT_ID == SDX_PROD else SDX_PREPROD

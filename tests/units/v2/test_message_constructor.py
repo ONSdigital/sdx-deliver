@@ -1,7 +1,7 @@
 import unittest
 
 from app.v2.definitions.filename_mapper import FileNameMapperBase
-from app.v2.message_constructor import MessageConstructor
+from app.v2.message_builder import MessageBuilder
 from app.v2.definitions.config_schema import ConfigSchema
 from app.meta_wrapper import MetaWrapperV2, MetaWrapperAdhoc
 from app.output_type import OutputType
@@ -91,7 +91,7 @@ class TestMessageConstructor(unittest.TestCase):
                 }
             }
         }
-        self.message_constructor = MessageConstructor(
+        self.message_constructor = MessageBuilder(
             config_schema=_config_schema,
             file_name_mapper=MockFileMapper(),
             submission_mapper=MockSubmissionTypeMapper()
