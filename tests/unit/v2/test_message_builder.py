@@ -3,14 +3,12 @@ from typing import Optional
 
 from app.meta_wrapper import MetaWrapperV2, MetaWrapperAdhoc
 from app.output_type import OutputType
-from app.v2.definitions.config_schema import File
 from app.v2.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
 from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.message_schema import Location
 from app.v2.definitions.submission_type import DECRYPT, SubmissionTypeBase
+from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
 from app.v2.message_builder import MessageBuilder
-from app.v2.submission_type_mapper import SubmissionTypeMapper
-from app.v2.submission_types.submission_type import SubmissionType
 
 
 class MockMetaWrapper(MetaWrapperV2):
@@ -68,27 +66,38 @@ class MockSubmissionType(SubmissionTypeBase):
         }
 
     def get_actions(self) -> list[str]:
-        pass
+        return [DECRYPT]
 
     def get_outputs(self, filename: str, survey_id: Optional[str] = None) -> list[Location]:
-        pass
+        return [{
+            "location_type": "server2",
+            "location_name": "server2-name",
+            "path": "test-path-2",
+            "filename": filename
+        }]
+
+
+class MockSubmissionTypeMapper(SubmissionTypeMapperBase):
+
+    def get_submission_type(self, output_type: OutputType) -> SubmissionTypeBase:
+        return MockSubmissionType()
 
 
 class TestMessageConstructor(unittest.TestCase):
 
     def setUp(self):
         self.message_builder = MessageBuilder(
-            submission_mapper=SubmissionTypeMapper(MockLocationKeyLookup())
+            submission_mapper=MockSubmissionTypeMapper()
         )
 
     def test_get_source(self):
         filename = "file1"
-        source = self.message_builder.get_source(filename)
+        source = self.message_builder.get_source(filename, MockSubmissionType())
 
         expected = {
-            "location_type": "server2",
-            "location_name": "server2-name",
-            "path": "test-path-3",
+            "location_type": "server1",
+            "location_name": "server1-name",
+            "path": "test-path-1",
             "filename": "file1"
         }
 
@@ -96,17 +105,18 @@ class TestMessageConstructor(unittest.TestCase):
 
     def test_get_target(self):
         filename_list = ["file1", "file2"]
-        submission_type = "type2"
-        target_list = self.message_builder.get_targets(filename_list, submission_type)
+        target_list = self.message_builder.get_targets(filename_list,
+                                                       MockSubmissionType(),
+                                                       MockMetaWrapper("filename", output_type=OutputType.HYBRID))
 
         expected = [
             {
                 "input": "file1",
                 "outputs": [
                     {
-                        "location_type": "server1",
-                        "location_name": "server1-name",
-                        "path": "test-path-4",
+                        "location_type": "server2",
+                        "location_name": "server2-name",
+                        "path": "test-path-2",
                         "filename": "file1"
                     }
                 ]
@@ -115,17 +125,11 @@ class TestMessageConstructor(unittest.TestCase):
                 "input": "file2",
                 "outputs": [
                     {
-                        "location_type": "server1",
-                        "location_name": "server1-name",
-                        "path": "test-path-5",
-                        "filename": "file2"
-                    },
-                    {
                         "location_type": "server2",
                         "location_name": "server2-name",
-                        "path": "test-path-6",
+                        "path": "test-path-2",
                         "filename": "file2"
-                    }
+                    },
                 ]
             }
         ]
@@ -133,10 +137,9 @@ class TestMessageConstructor(unittest.TestCase):
         self.assertEqual(expected, target_list)
 
     def test_get_action(self):
-        submission_type = "type2"
-        actions = self.message_builder.get_actions(submission_type)
+        actions = self.message_builder.get_actions(MockSubmissionType())
 
-        expected = ["decrypt", "unzip"]
+        expected = ["decrypt"]
         self.assertEqual(expected, actions)
 
     def test_get_business_survey_context(self):
@@ -191,53 +194,25 @@ class TestMessageConstructor(unittest.TestCase):
         meta_data = MockMetaWrapper(filename=input_filename, output_type=OutputType.SPP)
         actual = self.message_builder.build_message(filenames, meta_data)
 
-        expected = {
-            "schema_version": "2",
-            "sensitivity": "High",
-            "sizeBytes": 100,
-            "md5sum": "51252",
-            "context": {
-                "survey_id": "101",
-                "period_id": "202101",
-                "ru_ref": "10550"
-            },
-            "source": {
-                "location_type": "server2",
-                "location_name": "server2-name",
-                "path": "test-path-3",
-                "filename": input_filename
-            },
-            "actions": ["decrypt", "unzip"],
-            "targets": [
-                {
-                    "input": "file1",
-                    "outputs": [
-                        {
-                            "location_type": "server1",
-                            "location_name": "server1-name",
-                            "path": "test-path-4",
-                            "filename": "file1"
-                        }
-                    ]
-                },
-                {
-                    "input": "file2",
-                    "outputs": [
-                        {
-                            "location_type": "server1",
-                            "location_name": "server1-name",
-                            "path": "test-path-5",
-                            "filename": "file2"
-                        },
-                        {
-                            "location_type": "server2",
-                            "location_name": "server2-name",
-                            "path": "test-path-6",
-                            "filename": "file2"
-                        }
-                    ]
-                }
-            ]
-        }
+        expected = {'actions': ['decrypt'],
+                    'context': {'period_id': '202101', 'ru_ref': '10550', 'survey_id': '101'},
+                    'md5sum': '51252',
+                    'schema_version': '2',
+                    'sensitivity': 'High',
+                    'sizeBytes': 100,
+                    'source': {'filename': 'input_file',
+                               'location_name': 'server1-name',
+                               'location_type': 'server1',
+                               'path': 'test-path-1'},
+                    'targets': [{'input': 'file1',
+                                 'outputs': [{'filename': 'file1',
+                                              'location_name': 'server2-name',
+                                              'location_type': 'server2',
+                                              'path': 'test-path-2'}]},
+                                {'input': 'file2',
+                                 'outputs': [{'filename': 'file2',
+                                              'location_name': 'server2-name',
+                                              'location_type': 'server2',
+                                              'path': 'test-path-2'}]}]}
 
         self.assertEqual(expected, actual)
