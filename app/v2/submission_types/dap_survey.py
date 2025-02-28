@@ -19,8 +19,8 @@ class DapSubmissionType(SubmissionType):
     def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, File]:
         return {
             _JSON: {
-                "location": LookupKey.FTP,
-                "path": f"landing_zone/{self.get_env_prefix()}/{survey_id}"
+                "location": LookupKey.DAP,
+                "path": f"landing_zone/{self.get_env_prefix(lowercase=True)}/{survey_id}"
             }
         }
 

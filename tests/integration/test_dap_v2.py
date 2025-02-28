@@ -52,10 +52,10 @@ class TestDapV2(unittest.TestCase):
     @patch('app.deliver.encrypt_output')
     @patch('app.routes.Flask.jsonify')
     def test_dap(self,
-                mock_jsonify: Mock,
-                mock_encrypt: Mock,
-                mock_publish_v2_schema: Mock,
-                mock_write_to_bucket: Mock):
+                 mock_jsonify: Mock,
+                 mock_encrypt: Mock,
+                 mock_publish_v2_schema: Mock,
+                 mock_write_to_bucket: Mock):
         deliver.location_name_repo = MockLocationNameMapper()
         mock_encrypt.return_value = "My encrypted output"
         mock_write_to_bucket.return_value = "My fake bucket path"
@@ -102,103 +102,103 @@ class TestDapV2(unittest.TestCase):
             },
             "data": {
                 "answers": [
-                {
-                    "answer_id": "first-name",
-                    "value": "John",
-                    "list_item_id": "zGBdpb"
-                },
-                {
-                    "answer_id": "last-name",
-                    "value": "Doe",
-                    "list_item_id": "zGBdpb"
-                },
-                {
-                    "answer_id": "first-name",
-                    "value": "Marie",
-                    "list_item_id": "cWGwcF"
-                },
-                {
-                    "answer_id": "last-name",
-                    "value": "Doe",
-                    "list_item_id": "cWGwcF"
-                },
-                {
-                    "answer_id": "anyone-else",
-                    "value": "No"
-                },
-                {
-                    "answer_id": "number-of-bedrooms-answer",
-                    "value": 4
-                },
-                {
-                    "answer_id": "date-of-birth-answer",
-                    "value": "1990-01-01",
-                    "list_item_id": "EINoLs"
-                },
-                {
-                    "answer_id": "internet-answer",
-                    "value": [
-                    "Broadband or WiFi",
-                    "A mobile phone network such as 3G, 4G or 5G",
-                    "Public WiFi hotspot"
-                    ]
-                },
-                {
-                    "answer_id": "business-type-answer",
-                    "value": "Enter Business type here!",
-                    "list_item_id": "EINoLs"
-                },
-                {
-                    "answer_id": "relationship-answer",
-                    "value": [
                     {
-                        "list_item_id": "zGBdpb",
-                        "to_list_item_id": "cWGwcF",
-                        "relationship": "Husband or Wife"
+                        "answer_id": "first-name",
+                        "value": "John",
+                        "list_item_id": "zGBdpb"
                     },
                     {
-                        "list_item_id": "nEMpwe",
-                        "to_list_item_id": "adNCSi",
-                        "relationship": "Son or daughter"
+                        "answer_id": "last-name",
+                        "value": "Doe",
+                        "list_item_id": "zGBdpb"
                     },
                     {
-                        "list_item_id": "ukGiCK",
-                        "to_list_item_id": "adNCSi",
-                        "relationship": "Mother or father"
+                        "answer_id": "first-name",
+                        "value": "Marie",
+                        "list_item_id": "cWGwcF"
+                    },
+                    {
+                        "answer_id": "last-name",
+                        "value": "Doe",
+                        "list_item_id": "cWGwcF"
+                    },
+                    {
+                        "answer_id": "anyone-else",
+                        "value": "No"
+                    },
+                    {
+                        "answer_id": "number-of-bedrooms-answer",
+                        "value": 4
+                    },
+                    {
+                        "answer_id": "date-of-birth-answer",
+                        "value": "1990-01-01",
+                        "list_item_id": "EINoLs"
+                    },
+                    {
+                        "answer_id": "internet-answer",
+                        "value": [
+                            "Broadband or WiFi",
+                            "A mobile phone network such as 3G, 4G or 5G",
+                            "Public WiFi hotspot"
+                        ]
+                    },
+                    {
+                        "answer_id": "business-type-answer",
+                        "value": "Enter Business type here!",
+                        "list_item_id": "EINoLs"
+                    },
+                    {
+                        "answer_id": "relationship-answer",
+                        "value": [
+                            {
+                                "list_item_id": "zGBdpb",
+                                "to_list_item_id": "cWGwcF",
+                                "relationship": "Husband or Wife"
+                            },
+                            {
+                                "list_item_id": "nEMpwe",
+                                "to_list_item_id": "adNCSi",
+                                "relationship": "Son or daughter"
+                            },
+                            {
+                                "list_item_id": "ukGiCK",
+                                "to_list_item_id": "adNCSi",
+                                "relationship": "Mother or father"
+                            }
+                        ]
+                    },
+                    {
+                        "answer_id": "other-address-uk-answer",
+                        "value": {
+                            "line1": "Address Line 1",
+                            "town": "Town",
+                            "postcode": "NP10 8XG",
+                            "uprn": "12345678912"
+                        },
+                        "list_item_id": "cWGwcF"
+                    },
+                    {
+                        "answer_id": "checkbox-answer",
+                        "value": ["Checkbox 1", "Checkbox 2"]
+                    },
+                    {
+                        "answer_id": "duration-answer",
+                        "value": {
+                            "years": 1,
+                            "months": 2
+                        }
                     }
-                    ]
-                },
-                {
-                    "answer_id": "other-address-uk-answer",
-                    "value": {
-                    "line1": "Address Line 1",
-                    "town": "Town",
-                    "postcode": "NP10 8XG",
-                    "uprn": "12345678912"
-                    },
-                    "list_item_id": "cWGwcF"
-                },
-                {
-                    "answer_id": "checkbox-answer",
-                    "value": ["Checkbox 1", "Checkbox 2"]
-                },
-                {
-                    "answer_id": "duration-answer",
-                    "value": {
-                    "years": 1,
-                    "months": 2
-                    }
-                }
                 ],
                 "lists": [
-                {
-                    "items": ["zGBdpb", "cWGwcF"],
-                    "name": "people"
-                }
+                    {
+                        "items": ["zGBdpb", "cWGwcF"],
+                        "name": "people"
+                    }
                 ]
             }
         }
-        
+
         # Create the fake Request object
 
         files_dict = {

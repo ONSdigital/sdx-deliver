@@ -10,6 +10,7 @@ from app import deliver
 from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, SUBMISSION_FILE, deliver_feedback
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
 from app.v2.definitions.message_schema import SchemaDataV2
+from app.v2.submission_types.submission_type import SDX_PREPROD
 
 SDX_LOCATION_NAME: Final[str] = "sdx_location_name"
 FTP_LOCATION_NAME: Final[str] = "ftp_location_name"
@@ -155,7 +156,7 @@ class TestFeedbackV2(unittest.TestCase):
                         {
                             "location_type": "windows_server",
                             "location_name": FTP_LOCATION_NAME,
-                            "path": f"SDX_PREPROD/EDC_QFeedback",
+                            "path": f"{SDX_PREPROD}/EDC_QFeedback",
                             "filename": output_filename
                         }
                     ]
