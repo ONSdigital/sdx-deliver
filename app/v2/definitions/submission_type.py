@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
-from typing import Optional
+from typing import Optional, Final
 
 from app.v2.definitions.message_schema import Location
+
+UNZIP: Final[str] = "unzip"
+DECRYPT: Final[str] = "decrypt"
 
 
 class SubmissionTypeBase(ABC):

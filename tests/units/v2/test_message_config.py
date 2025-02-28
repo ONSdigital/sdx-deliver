@@ -1,9 +1,10 @@
 import unittest
 
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
-from app.v2.message_config import MessageConfig, WINDOWS_SERVER, SEFT_SURVEY, DECRYPT, SEFT, \
-    LEGACY_SURVEY, UNZIP, PCK, IMAGE, INDEX, RECEIPT, JSON, SPP_SURVEY, DAP_SURVEY, COMMENTS, FEEDBACK, \
+from app.v2.message_config import MessageConfig, WINDOWS_SERVER, SEFT_SURVEY, SEFT, \
+    LEGACY_SURVEY, PCK, IMAGE, INDEX, RECEIPT, JSON, SPP_SURVEY, DAP_SURVEY, COMMENTS, FEEDBACK, \
     SPP_AND_DAP_SURVEY, GCS, S3, CDP, ZIP
+from app.v2.definitions.submission_type import UNZIP, DECRYPT
 from app.v2.location_key_lookup import FTP, SDX, SPP, DAP
 
 

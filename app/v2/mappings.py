@@ -6,7 +6,6 @@ from app.v2.definitions.location_name_repository import LocationNameRepositoryBa
 from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
 from app.v2.message_config import PCK, JPG, IMAGE, CSV, INDEX, DAT, RECEIPT, JSON, SEFT_SURVEY, SPP_SURVEY, \
     LEGACY_SURVEY, DAP_SURVEY, ZIP, SEFT, GPG, FEEDBACK, COMMENTS
-from app.v2.location_key_lookup import FTP, SDX, SPP, DAP
 
 NIFI_LOCATION_FTP = "nifi-location-ftp"
 NIFI_LOCATION_SPP = "nifi-location-spp"

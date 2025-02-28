@@ -1,7 +1,14 @@
+from typing import Final
+
 from app.v2.definitions.config_schema import LocationKey
 from app.v2.definitions.location_key_lookup import LocationKeyLookupBase
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
-from app.v2.message_config import WINDOWS_SERVER, GCS, S3, CDP
+
+# Location Types
+WINDOWS_SERVER: Final[str] = "windows_server"
+GCS: Final[str] = "gcs"
+S3: Final[str] = "s3"
+CDP: Final[str] = "cdp"
 
 
 class LocationKeyLookup(LocationKeyLookupBase):

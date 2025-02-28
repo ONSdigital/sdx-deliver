@@ -3,6 +3,7 @@ from typing import Final, Optional
 from app import CONFIG
 from app.v2.definitions.config_schema import ConfigSchema
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
+from app.v2.definitions.submission_type import UNZIP, DECRYPT
 
 SDX_PROD: Final[str] = "sdx_prod"
 SDX_PREPROD: Final[str] = "sdx_preprod"
@@ -34,9 +35,6 @@ SPP_AND_DAP_SURVEY: Final[str] = "spp_and_dap_survey"
 LEGACY_SURVEY: Final[str] = "legacy_survey"
 COMMENTS: Final[str] = "comments"
 FEEDBACK: Final[str] = "feedback"
-
-UNZIP: Final[str] = "unzip"
-DECRYPT: Final[str] = "decrypt"
 
 
 class MessageConfig:
