@@ -4,6 +4,7 @@ import io
 
 from app.v2.zip import unzip
 
+
 class TestUnzip(unittest.TestCase):
     def test_unzip(self):
         zip_buffer = io.BytesIO()

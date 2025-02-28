@@ -1,11 +1,16 @@
 import unittest
+from typing import Optional
 
-from app.v2.definitions.filename_mapper import FileNameMapperBase
-from app.v2.message_builder import MessageBuilder
-from app.v2.definitions.config_schema import ConfigSchema
 from app.meta_wrapper import MetaWrapperV2, MetaWrapperAdhoc
 from app.output_type import OutputType
-from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
+from app.v2.definitions.config_schema import File
+from app.v2.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
+from app.v2.definitions.location_name_repository import LookupKey
+from app.v2.definitions.message_schema import Location
+from app.v2.definitions.submission_type import DECRYPT, SubmissionTypeBase
+from app.v2.message_builder import MessageBuilder
+from app.v2.submission_type_mapper import SubmissionTypeMapper
+from app.v2.submission_types.submission_type import SubmissionType
 
 
 class MockMetaWrapper(MetaWrapperV2):
@@ -22,85 +27,63 @@ class MockMetaWrapper(MetaWrapperV2):
         self.output_type = output_type
 
 
-class MockFileMapper(FileNameMapperBase):
+class MockLocationKeyLookup(LocationKeyLookupBase):
 
-    def get_output_type(self, filename: str, submission_type: str) -> str:
-        if filename == "file1":
-            return "output1"
-        return "output2"
+    def __init__(self):
+        ftp_key = LookupKey.FTP.value
+        sdx_key = LookupKey.SDX.value
+        spp_key = LookupKey.SPP.value
+        dap_key = LookupKey.DAP.value
+        self._location_keys = {
+            ftp_key: {
+                "location_type": "server1",
+                "location_name": "server1_name"
+            },
+            sdx_key: {
+                "location_type": "server2",
+                "location_name": "server2_name"
+            },
+            spp_key: {
+                "location_type": "server3",
+                "location_name": "server3_name"
+            },
+            dap_key: {
+                "location_type": "server4",
+                "location_name": "server4_name"
+            }
+        }
+
+    def get_location_key(self, lookup_key: LookupKey) -> LocationKey:
+        return self._location_keys[lookup_key.value]
 
 
-class MockSubmissionTypeMapper(SubmissionTypeMapperBase):
+class MockSubmissionType(SubmissionTypeBase):
 
-    def get_submission_type(self, output_type: OutputType) -> str:
-        if output_type == OutputType.SPP:
-            return "type2"
-        return "type1"
+    def get_source(self, filename: str) -> Location:
+        return {
+            "location_type": "server1",
+            "location_name": "server1-name",
+            "path": "test-path-1",
+            "filename": filename
+        }
+
+    def get_actions(self) -> list[str]:
+        pass
+
+    def get_outputs(self, filename: str, survey_id: Optional[str] = None) -> list[Location]:
+        pass
 
 
 class TestMessageConstructor(unittest.TestCase):
 
     def setUp(self):
-        _config_schema: ConfigSchema = {
-            "locations": {
-                "loc1": {
-                    "location_type": "server1",
-                    "location_name": "server1-name"
-                },
-                "loc2": {
-                    "location_type": "server2",
-                    "location_name": "server2-name"
-                }
-            },
-            "submission_types": {
-                "type1": {
-                    "actions": ["decrypt"],
-                    "source": {
-                        "location": "loc2",
-                        "path": "test-path-1"
-                    },
-                    "outputs": {
-                        "output1": [{
-                            "location": "loc1",
-                            "path": "test-path-2"
-                        }]
-                    }
-                },
-                "type2": {
-                    "actions": ["decrypt", "unzip"],
-                    "source": {
-                        "location": "loc2",
-                        "path": "test-path-3"
-                    },
-                    "outputs": {
-                        "output1": [{
-                            "location": "loc1",
-                            "path": "test-path-4"
-                        }],
-                        "output2": [
-                            {
-                                "location": "loc1",
-                                "path": "test-path-5"
-                            },
-                            {
-                                "location": "loc2",
-                                "path": "test-path-6"
-                            }
-                        ]
-                    }
-                }
-            }
-        }
-        self.message_constructor = MessageBuilder(
-            config_schema=_config_schema,
-            file_name_mapper=MockFileMapper(),
-            submission_mapper=MockSubmissionTypeMapper()
+        self.message_builder = MessageBuilder(
+            submission_mapper=SubmissionTypeMapper(MockLocationKeyLookup())
         )
 
     def test_get_source(self):
         filename = "file1"
-        submission_type = "type2"
-        source = self.message_constructor.get_source(filename, submission_type)
+        source = self.message_builder.get_source(filename)
 
         expected = {
             "location_type": "server2",
@@ -114,7 +97,7 @@ class TestMessageConstructor(unittest.TestCase):
     def test_get_target(self):
         filename_list = ["file1", "file2"]
         submission_type = "type2"
-        target_list = self.message_constructor.get_targets(filename_list, submission_type)
+        target_list = self.message_builder.get_targets(filename_list, submission_type)
 
         expected = [
             {
@@ -151,14 +134,14 @@ class TestMessageConstructor(unittest.TestCase):
 
     def test_get_action(self):
         submission_type = "type2"
-        actions = self.message_constructor.get_actions(submission_type)
+        actions = self.message_builder.get_actions(submission_type)
 
         expected = ["decrypt", "unzip"]
         self.assertEqual(expected, actions)
 
     def test_get_business_survey_context(self):
         meta_data = MockMetaWrapper(filename="file1", output_type=OutputType.SPP)
-        context = self.message_constructor.get_context(meta_data)
+        context = self.message_builder.get_context(meta_data)
 
         expected = {
             "survey_id": "101",
@@ -170,7 +153,7 @@ class TestMessageConstructor(unittest.TestCase):
 
     def test_get_comments_context(self):
         meta_data = MockMetaWrapper(filename="file1", output_type=OutputType.COMMENTS)
-        context = self.message_constructor.get_context(meta_data)
+        context = self.message_builder.get_context(meta_data)
 
         expected = {
             "title": "Comments.zip"
@@ -192,7 +175,7 @@ class TestMessageConstructor(unittest.TestCase):
                 self.output_type = output_type
 
         meta_data = TestMetaWrapperAdhoc(filename="file1", output_type=OutputType.SPP)
-        context = self.message_constructor.get_context(meta_data)
+        context = self.message_builder.get_context(meta_data)
 
         expected = {
             "survey_id": "101",
@@ -206,7 +189,7 @@ class TestMessageConstructor(unittest.TestCase):
         filenames = ["file1", "file2"]
 
         meta_data = MockMetaWrapper(filename=input_filename, output_type=OutputType.SPP)
-        actual = self.message_constructor.build_message(filenames, meta_data)
+        actual = self.message_builder.build_message(filenames, meta_data)
 
         expected = {
             "schema_version": "2",
