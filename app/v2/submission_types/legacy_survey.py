@@ -1,9 +1,7 @@
 from typing import Optional, Final
 
-from app.v2.definitions.config_schema import LocationKey, File
-from app.v2.definitions.location_key_lookup import LocationKeyLookupBase
+from app.v2.definitions.config_schema import File
 from app.v2.definitions.location_name_repository import LookupKey
-from app.v2.definitions.message_schema import Location
 from app.v2.message_config import DECRYPT, UNZIP
 from app.v2.submission_types.submission_type import SubmissionType
 
@@ -20,6 +18,12 @@ _JSON: Final[str] = "json"
 
 
 class LegacySubmissionType(SubmissionType):
+
+    def get_source_path(self) -> str:
+        return "survey"
+
+    def get_actions(self) -> list[str]:
+        return [DECRYPT, UNZIP]
 
     def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, File]:
         return {
@@ -45,13 +49,7 @@ class LegacySubmissionType(SubmissionType):
             }
         }
 
-    def get_source_path(self) -> str:
-        return "survey"
-
-    def get_actions(self) -> list[str]:
-        return [DECRYPT, UNZIP]
-
-    def _get_mapping(self, filename) -> str:
+    def get_mapping(self, filename) -> str:
         split_string = filename.split(".")
         if len(split_string) == 1:
             return _PCK
