@@ -1,13 +1,15 @@
 from typing import TypedDict
 
+from app.v2.definitions.location_name_repository import LookupKey
 
-class LocationDetails(TypedDict):
+
+class LocationKey(TypedDict):
     location_type: str
     location_name: str
 
 
 class File(TypedDict):
-    location: str
+    location: LookupKey
     path: str
 
 
@@ -18,5 +20,4 @@ class SubmissionType(TypedDict):
 
 
 class ConfigSchema(TypedDict):
-    locations: dict[str, LocationDetails]
     submission_types: dict[str, SubmissionType]

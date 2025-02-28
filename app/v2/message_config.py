@@ -2,18 +2,12 @@ from typing import Final, Optional
 
 from app import CONFIG
 from app.v2.definitions.config_schema import ConfigSchema
-from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
+from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
 
 SDX_PROD: Final[str] = "sdx_prod"
 SDX_PREPROD: Final[str] = "sdx_preprod"
 SDX_PREPROD_ENV: Final[str] = "ons-sdx-preprod"
 SDX_PROD_ENV: Final[str] = "ons-sdx-prod"
-
-
-FTP: Final[str] = "ftp"
-SDX: Final[str] = "sdx"
-SPP: Final[str] = "spp"
-DAP: Final[str] = "dap"
 
 PCK: Final[str] = "pck"
 JPG: Final[str] = "jpg"
@@ -53,34 +47,16 @@ class MessageConfig:
         environment = SDX_PROD if CONFIG.PROJECT_ID == SDX_PROD_ENV else SDX_PREPROD
         environment_capitalised = environment.upper()
         return {
-            "locations": {
-                FTP: {
-                    "location_type": WINDOWS_SERVER,
-                    "location_name": self._location_name_repo.get_location_name(FTP)
-                },
-                SDX: {
-                    "location_type": GCS,
-                    "location_name": self._location_name_repo.get_location_name(SDX)
-                },
-                SPP: {
-                    "location_type": S3,
-                    "location_name": self._location_name_repo.get_location_name(SPP)
-                },
-                DAP: {
-                    "location_type": CDP,
-                    "location_name": self._location_name_repo.get_location_name(DAP)
-                }
-            },
             "submission_types": {
                 SEFT_SURVEY: {
                     "actions": [DECRYPT],
                     "source": {
-                        "location": SDX,
+                        "location": LookupKey.SDX,
                         "path": "seft"
                     },
                     "outputs": {
                         SEFT: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_Submissions/{survey_id}"
                         }]
                     }
@@ -88,28 +64,28 @@ class MessageConfig:
                 LEGACY_SURVEY: {
                     "actions": [DECRYPT, UNZIP],
                     "source": {
-                        "location": SDX,
+                        "location": LookupKey.SDX,
                         "path": "survey"
                     },
                     "outputs": {
                         PCK: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_QData"
                         }],
                         IMAGE: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_QImages/Images"
                         }],
                         INDEX: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_QImages/Index"
                         }],
                         RECEIPT: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_QReceipts"
                         }],
                         JSON: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_QJson"
                         }]
                     }
@@ -117,25 +93,25 @@ class MessageConfig:
                 SPP_SURVEY: {
                     "actions": [DECRYPT, UNZIP],
                     "source": {
-                        "location": SDX,
+                        "location": LookupKey.SDX,
                         "path": "survey"
                     },
                     "outputs": {
                         IMAGE: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_QImages/Images"
                         }],
                         INDEX: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_QImages/Index"
                         }],
                         RECEIPT: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_QReceipts"
                         }],
                         JSON: [
                             {
-                                "location": SPP,
+                                "location": LookupKey.SPP,
                                 "path": f"sdc-response/{survey_id}/"
                             }
                         ]
@@ -144,12 +120,12 @@ class MessageConfig:
                 DAP_SURVEY: {
                     "actions": [DECRYPT],
                     "source": {
-                        "location": SDX,
+                        "location": LookupKey.SDX,
                         "path": "dap"
                     },
                     "outputs": {
                         JSON: [{
-                            "location": DAP,
+                            "location": LookupKey.DAP,
                             "path": f"landing_zone/{environment}/{survey_id}"
                         }],
                     }
@@ -157,12 +133,12 @@ class MessageConfig:
                 COMMENTS: {
                     "actions": [DECRYPT],
                     "source": {
-                        "location": SDX,
+                        "location": LookupKey.SDX,
                         "path": "comments"
                     },
                     "outputs": {
                         ZIP: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_Submissions/Comments"
                         }],
                     }
@@ -170,12 +146,12 @@ class MessageConfig:
                 FEEDBACK: {
                     "actions": [DECRYPT],
                     "source": {
-                        "location": SDX,
+                        "location": LookupKey.SDX,
                         "path": "feedback"
                     },
                     "outputs": {
                         JSON: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_QFeedback"
                         }],
                     }
@@ -183,29 +159,29 @@ class MessageConfig:
                 SPP_AND_DAP_SURVEY: {
                     "actions": [DECRYPT, UNZIP],
                     "source": {
-                        "location": SDX,
+                        "location": LookupKey.SDX,
                         "path": "survey"
                     },
                     "outputs": {
                         IMAGE: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_QImages/Images"
                         }],
                         INDEX: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_QImages/Index"
                         }],
                         RECEIPT: [{
-                            "location": FTP,
+                            "location": LookupKey.FTP,
                             "path": f"{environment_capitalised}/EDC_QReceipts"
                         }],
                         JSON: [
                             {
-                                "location": SPP,
+                                "location": LookupKey.SPP,
                                 "path": f"sdc-response/{survey_id}/"
                             },
                             {
-                                "location": DAP,
+                                "location": LookupKey.DAP,
                                 "path": f"landing_zone/{environment}/{survey_id}"
                             }
                         ]

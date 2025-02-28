@@ -2,10 +2,11 @@ from app import sdx_app
 from app import CONFIG
 from app.output_type import OutputType
 from app.v2.definitions.filename_mapper import FileNameMapperBase
-from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
+from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
 from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
 from app.v2.message_config import PCK, JPG, IMAGE, CSV, INDEX, DAT, RECEIPT, JSON, SEFT_SURVEY, SPP_SURVEY, \
-    LEGACY_SURVEY, DAP_SURVEY, FTP, SDX, SPP, DAP, ZIP, SEFT, GPG, FEEDBACK, COMMENTS
+    LEGACY_SURVEY, DAP_SURVEY, ZIP, SEFT, GPG, FEEDBACK, COMMENTS
+from app.v2.location_key_lookup import FTP, SDX, SPP, DAP
 
 NIFI_LOCATION_FTP = "nifi-location-ftp"
 NIFI_LOCATION_SPP = "nifi-location-spp"
@@ -58,19 +59,24 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
             return LEGACY_SURVEY
 
 
-class LocationNameMapper(LocationNameRepositoryBase):
+class LocationNameRepo(LocationNameRepositoryBase):
 
     def __init__(self):
         self.locations_mapping = None
 
-    def get_location_name(self, key: str) -> str:
-        return self.locations_mapping[key]
+    def get_location_name(self, key: LookupKey) -> str:
+        return self.locations_mapping[key.value()]
 
     def load_location_values(self):
         if self.locations_mapping is None:
+            ftp_key = LookupKey.FTP.value
+            sdx_key = LookupKey.FTP.value
+            spp_key = LookupKey.FTP.value
+            dap_key = LookupKey.FTP.value
+
             self.locations_mapping = {
-                FTP: sdx_app.secrets_get(NIFI_LOCATION_FTP)[0],
-                SDX: CONFIG.BUCKET_NAME,
-                SPP: sdx_app.secrets_get(NIFI_LOCATION_SPP)[0],
-                DAP: sdx_app.secrets_get(NIFI_LOCATION_DAP)[0]
+                ftp_key: sdx_app.secrets_get(NIFI_LOCATION_FTP)[0],
+                sdx_key: CONFIG.BUCKET_NAME,
+                spp_key: sdx_app.secrets_get(NIFI_LOCATION_SPP)[0],
+                dap_key: sdx_app.secrets_get(NIFI_LOCATION_DAP)[0]
             }

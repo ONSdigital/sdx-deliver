@@ -1,8 +1,9 @@
 from typing import Final
 
-from app.v2.definitions.config_schema import ConfigSchema, File, LocationDetails
+from app.v2.definitions.config_schema import ConfigSchema, File, LocationKey
+from app.v2.definitions.location_key_lookup import LocationKeyLookupBase
+from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.message_schema import Location
-
 
 LOCATION_TYPE: Final[str] = "location_type"
 LOCATION_NAME: Final[str] = "location_name"
@@ -12,8 +13,9 @@ SUBMISSION_TYPES: Final[str] = "submission_types"
 
 class ConfigLookup:
 
-    def __init__(self, config_schema: ConfigSchema):
+    def __init__(self, config_schema: ConfigSchema, location_key_lookup: LocationKeyLookupBase):
         self._config_schema = config_schema
+        self._location_key_lookup = location_key_lookup
 
     def get_source(self, submission_type: str, filename: str) -> Location:
         source = self._config_schema[SUBMISSION_TYPES][submission_type]["source"]
@@ -46,7 +48,7 @@ class ConfigLookup:
 
         return results
 
-    def _get_location_details(self, file: File) -> LocationDetails:
-        location = file["location"]
-        return self._config_schema[LOCATIONS][location]
+    def _get_location_details(self, file: File) -> LocationKey:
+        lookup_key: LookupKey = file["location"]
+        return self._location_key_lookup.get_location_key(lookup_key)
     

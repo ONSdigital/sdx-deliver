@@ -1,8 +1,9 @@
 import unittest
 
 from app.output_type import OutputType
-from app.v2.mappings import (FileExtensionMapper, SubmissionTypeMapper, LocationNameMapper,
-                             IMAGE, INDEX, PCK, SEFT_SURVEY, SPP_SURVEY, LEGACY_SURVEY, FTP)
+from app.v2.mappings import (FileExtensionMapper, SubmissionTypeMapper, LocationNameRepo,
+                             IMAGE, INDEX, PCK, SEFT_SURVEY, SPP_SURVEY, LEGACY_SURVEY)
+from app.v2.location_key_lookup import FTP
 from unittest.mock import patch
 
 
@@ -71,7 +72,7 @@ class LocationNameMapperTest(unittest.TestCase):
 
     @patch('app.v2.mappings.sdx_app.secrets_get', return_value=["ftp"])
     def test_get_location_name_for_ftp(self, mock_secrets_get):
-        location_name_mapper = LocationNameMapper()
+        location_name_mapper = LocationNameRepo()
 
         expected = "ftp"
         location_name_mapper.load_location_values()

@@ -1,9 +1,10 @@
 import unittest
 
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
-from app.v2.message_config import MessageConfig, FTP, WINDOWS_SERVER, SDX, SPP, DAP, SEFT_SURVEY, DECRYPT, SEFT, \
+from app.v2.message_config import MessageConfig, WINDOWS_SERVER, SEFT_SURVEY, DECRYPT, SEFT, \
     LEGACY_SURVEY, UNZIP, PCK, IMAGE, INDEX, RECEIPT, JSON, SPP_SURVEY, DAP_SURVEY, COMMENTS, FEEDBACK, \
     SPP_AND_DAP_SURVEY, GCS, S3, CDP, ZIP
+from app.v2.location_key_lookup import FTP, SDX, SPP, DAP
 
 
 class MockLocationNameRepository(LocationNameRepositoryBase):

@@ -10,7 +10,7 @@ from app import deliver
 from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, ZIP_FILE, deliver_comments
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
 from app.v2.definitions.message_schema import SchemaDataV2
-from app.v2.message_config import FTP, SDX, SPP, DAP
+from app.v2.location_key_lookup import FTP, SDX, SPP, DAP
 
 SDX_LOCATION_NAME: Final[str] = "sdx_location_name"
 FTP_LOCATION_NAME: Final[str] = "ftp_location_name"
