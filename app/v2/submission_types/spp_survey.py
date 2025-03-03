@@ -1,5 +1,7 @@
 from typing import Optional, Final
 
+from sdx_gcp.errors import DataError
+
 from app.v2.definitions.config_schema import File
 from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.submission_type import UNZIP, DECRYPT
@@ -48,6 +50,8 @@ class SppSubmissionType(SubmissionType):
 
     def get_mapping(self, filename) -> str:
         split_string = filename.split(".")
+        if len(split_string) < 2:
+            raise DataError("All filenames to SPP should have a file extension!")
         extension = split_string[1].lower()
         if extension == _JPG:
             return _IMAGE
