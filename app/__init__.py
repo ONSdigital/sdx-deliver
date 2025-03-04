@@ -8,7 +8,7 @@ logger = get_logger()
 
 project_id = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
 data_sensitivity = os.getenv('DATA_SENSITIVITY', 'High')
-data_recipient = os.getenv('DATA_RECIPIENT', 'dap@ons.gov.uk')
+data_recipient = "cia@ons.gov.uk"
 
 
 class Config:
