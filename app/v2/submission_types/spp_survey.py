@@ -22,6 +22,9 @@ _DAT: Final[str] = "dat"
 
 
 def is_spp_json_filename(filename: str) -> bool:
+    """
+    Returns True if the filename follows the SPP format
+    """
     if filename[3:8] == "_SDC_" and filename[-5:] == ".json":
         return True
     return False
@@ -60,6 +63,13 @@ class SppSubmissionType(SubmissionType):
         }
 
     def get_mapping(self, filename) -> str:
+        """
+        For SPP submissions the Files can  mostly be
+        determined by the file extension.
+        However, there are 2 json files and these
+        have to be worked out by checking if the file
+        conforms to the SPP format
+        """
         split_string = filename.split(".")
         if len(split_string) < 2:
             raise DataError("All filenames to SPP should have a file extension!")

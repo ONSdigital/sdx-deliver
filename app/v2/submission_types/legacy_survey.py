@@ -51,6 +51,10 @@ class LegacySubmissionType(SubmissionType):
         }
 
     def get_mapping(self, filename) -> str:
+        """
+        For Legacy submissions the Files can be
+        determined by the file extension alone.
+        """
         split_string = filename.split(".")
         if len(split_string) == 1:
             return _PCK

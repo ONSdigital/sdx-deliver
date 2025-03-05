@@ -18,3 +18,8 @@ class TestSppSubmissionType(unittest.TestCase):
         spp_filename = "123_SDC_2021-01-01T01-01-01_c37a3efa-593c-4bab-b49c-bee0613c4fb2.jpg"
 
         self.assertFalse(is_spp_json_filename(spp_filename))
+
+    def test_short_filename(self):
+        spp_filename = "c37a3"
+
+        self.assertFalse(is_spp_json_filename(spp_filename))
