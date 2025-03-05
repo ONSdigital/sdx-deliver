@@ -12,6 +12,7 @@ _PCK: Final[str] = "pck"
 _INDEX: Final[str] = "index"
 _RECEIPT: Final[str] = "receipt"
 _JSON: Final[str] = "json"
+_SPP: Final[str] = "spp"
 
 # file extensions
 _JPG: Final[str] = "jpg"
@@ -19,6 +20,11 @@ _IMAGE: Final[str] = "image"
 _CSV: Final[str] = "csv"
 _DAT: Final[str] = "dat"
 
+
+def is_spp_json_filename(filename: str) -> bool:
+    if filename[3:8] == "_SDC_" and filename[-5:] == ".json":
+        return True
+    return False
 
 class SppSubmissionType(SubmissionType):
 
@@ -43,6 +49,10 @@ class SppSubmissionType(SubmissionType):
                 "path": f"{self.get_env_prefix()}/EDC_QReceipts"
             },
             _JSON: {
+                "location": LookupKey.FTP,
+                "path": f"{self.get_env_prefix()}/EDC_QJson"
+            },
+            _SPP: {
                 "location": LookupKey.SPP,
                 "path": f"sdc-response/{survey_id}/"
             }
@@ -52,6 +62,8 @@ class SppSubmissionType(SubmissionType):
         split_string = filename.split(".")
         if len(split_string) < 2:
             raise DataError("All filenames to SPP should have a file extension!")
+        if is_spp_json_filename(filename):
+            return _SPP
         extension = split_string[1].lower()
         if extension == _JPG:
             return _IMAGE

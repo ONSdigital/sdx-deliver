@@ -75,7 +75,8 @@ class TestSppV2(unittest.TestCase):
         image_filename = f"S{tx_id_trunc}_1.JPG"
         index_filename = f"EDC_{survey_id}_{submission_date_str}_{tx_id_trunc}.csv"
         receipt_filename = f"REC{submission_date_dm}_{tx_id_trunc}.DAT"
-        spp_filename = f"{survey_id}_{submission_date_str}_{tx_id}.json"
+        spp_filename = f"{survey_id}_SDC_{submission_date_str}_{tx_id}.json"
+        json_filename = f"{tx_id}.json"
 
         # Create the input zipfile
         zip_buffer = io.BytesIO()
@@ -85,6 +86,7 @@ class TestSppV2(unittest.TestCase):
             zip_file.writestr(index_filename, 'This is the content of index file.')
             zip_file.writestr(receipt_filename, 'This is the content of the receipt file.')
             zip_file.writestr(spp_filename, "This is the content of the spp json file.")
+            zip_file.writestr(json_filename, "This is the content of the json file.")
 
         zip_bytes = zip_buffer.getvalue()
 
@@ -203,6 +205,17 @@ class TestSppV2(unittest.TestCase):
                             "location_name": SPP_LOCATION_NAME,
                             "path": f"sdc-response/{survey_id}/",
                             "filename": spp_filename
+                        }
+                    ]
+                },
+                {
+                    "input": json_filename,
+                    "outputs": [
+                        {
+                            "location_type": "windows_server",
+                            "location_name": FTP_LOCATION_NAME,
+                            "path": f"SDX_PREPROD/EDC_QJson",
+                            "filename": json_filename
                         }
                     ]
                 }
