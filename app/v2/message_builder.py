@@ -43,16 +43,19 @@ class MessageBuilder:
     def get_context(self, meta_data: MetaWrapper) -> dict[str, str]:
         if meta_data.output_type == OutputType.COMMENTS:
             return {
+                "context_type": "comments_file",
                 "title": "Comments.zip"
             }
         
         if isinstance(meta_data, MetaWrapperAdhoc):
             return {
+                "context_type": "adhoc_survey",
                 "survey_id": meta_data.survey_id,
                 "title": meta_data.get_description()
             }
 
         return {
+            "context_type": "business_survey",
             "survey_id": meta_data.survey_id,
             "period_id": meta_data.period,
             "ru_ref": meta_data.ru_ref,
