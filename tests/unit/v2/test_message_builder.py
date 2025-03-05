@@ -8,7 +8,7 @@ from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.message_schema import Location
 from app.v2.definitions.submission_type import DECRYPT, SubmissionTypeBase
 from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
-from app.v2.message_builder import MessageBuilder
+from app.v2.message_builder import MessageBuilder, BUSINESS_CONTEXT, ADHOC_CONTEXT, COMMENTS_CONTEXT
 
 
 class MockMetaWrapper(MetaWrapperV2):
@@ -147,6 +147,7 @@ class TestMessageConstructor(unittest.TestCase):
         context = self.message_builder.get_context(meta_data)
 
         expected = {
+            "context_type": BUSINESS_CONTEXT,
             "survey_id": "101",
             "period_id": "202101",
             "ru_ref": "10550"
@@ -159,6 +160,7 @@ class TestMessageConstructor(unittest.TestCase):
         context = self.message_builder.get_context(meta_data)
 
         expected = {
+            "context_type": COMMENTS_CONTEXT,
             "title": "Comments.zip"
         }
 
@@ -181,6 +183,7 @@ class TestMessageConstructor(unittest.TestCase):
         context = self.message_builder.get_context(meta_data)
 
         expected = {
+            "context_type": ADHOC_CONTEXT,
             "survey_id": "101",
             "title": "101 survey response for adhoc survey"
         }
@@ -195,7 +198,7 @@ class TestMessageConstructor(unittest.TestCase):
         actual = self.message_builder.build_message(filenames, meta_data)
 
         expected = {'actions': ['decrypt'],
-                    'context': {'period_id': '202101', 'ru_ref': '10550', 'survey_id': '101'},
+                    'context': {'context_type': BUSINESS_CONTEXT, 'period_id': '202101', 'ru_ref': '10550', 'survey_id': '101'},
                     'md5sum': '51252',
                     'schema_version': '2',
                     'sensitivity': 'High',

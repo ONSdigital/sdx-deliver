@@ -1,3 +1,5 @@
+from typing import Final
+
 from app import CONFIG
 from app.meta_wrapper import MetaWrapper, MetaWrapperAdhoc
 from app.output_type import OutputType
@@ -5,6 +7,9 @@ from app.v2.definitions.message_schema import SchemaDataV2, Target, Location
 from app.v2.definitions.submission_type import SubmissionTypeBase
 from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
 
+BUSINESS_CONTEXT: Final[str] = "business_survey"
+ADHOC_CONTEXT: Final[str] = "adhoc_survey"
+COMMENTS_CONTEXT: Final[str] = "comments_file"
 
 class MessageBuilder:
 
@@ -43,19 +48,19 @@ class MessageBuilder:
     def get_context(self, meta_data: MetaWrapper) -> dict[str, str]:
         if meta_data.output_type == OutputType.COMMENTS:
             return {
-                "context_type": "comments_file",
+                "context_type": COMMENTS_CONTEXT,
                 "title": "Comments.zip"
             }
         
         if isinstance(meta_data, MetaWrapperAdhoc):
             return {
-                "context_type": "adhoc_survey",
+                "context_type": ADHOC_CONTEXT,
                 "survey_id": meta_data.survey_id,
                 "title": meta_data.get_description()
             }
 
         return {
-            "context_type": "business_survey",
+            "context_type": BUSINESS_CONTEXT,
             "survey_id": meta_data.survey_id,
             "period_id": meta_data.period,
             "ru_ref": meta_data.ru_ref,

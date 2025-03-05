@@ -11,6 +11,7 @@ from app import deliver
 from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, SUBMISSION_FILE, TRANSFORMED_FILE, deliver_legacy
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
 from app.v2.definitions.message_schema import SchemaDataV2
+from app.v2.message_builder import BUSINESS_CONTEXT
 
 SDX_LOCATION_NAME: Final[str] = "sdx_location_name"
 FTP_LOCATION_NAME: Final[str] = "ftp_location_name"
@@ -151,6 +152,7 @@ class TestLegacyV2(unittest.TestCase):
             "sizeBytes": 19,
             "md5sum": "3190f8a68aad6a9e33a624c318516ebb",
             "context": {
+                'context_type': BUSINESS_CONTEXT,
                 "survey_id": survey_id,
                 "period_id": period_id,
                 "ru_ref": "12346789012A"
