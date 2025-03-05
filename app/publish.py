@@ -97,7 +97,7 @@ def publish_data(message_str: str, tx_id: str, path: str):
     logger.info("Published message to DAP topic", gcs_key=key)
 
 
-def publish_v2_schema(message: SchemaDataV2, tx_id : str):
+def publish_v2_schema(message: SchemaDataV2, tx_id: str):
     attributes = {
         'tx_id': tx_id
     }

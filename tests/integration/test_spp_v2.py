@@ -214,7 +214,7 @@ class TestSppV2(unittest.TestCase):
                         {
                             "location_type": "windows_server",
                             "location_name": FTP_LOCATION_NAME,
-                            "path": f"SDX_PREPROD/EDC_QJson",
+                            "path": "SDX_PREPROD/EDC_QJson",
                             "filename": json_filename
                         }
                     ]

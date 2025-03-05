@@ -26,6 +26,7 @@ def is_spp_json_filename(filename: str) -> bool:
         return True
     return False
 
+
 class SppSubmissionType(SubmissionType):
 
     def get_source_path(self) -> str:

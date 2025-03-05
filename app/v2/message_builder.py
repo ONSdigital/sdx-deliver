@@ -11,6 +11,7 @@ BUSINESS_CONTEXT: Final[str] = "business_survey"
 ADHOC_CONTEXT: Final[str] = "adhoc_survey"
 COMMENTS_CONTEXT: Final[str] = "comments_file"
 
+
 class MessageBuilder:
 
     def __init__(self, submission_mapper: SubmissionTypeMapperBase):
@@ -44,14 +45,14 @@ class MessageBuilder:
 
     def get_actions(self, submission_type: SubmissionTypeBase) -> list[str]:
         return submission_type.get_actions()
-    
+
     def get_context(self, meta_data: MetaWrapper) -> dict[str, str]:
         if meta_data.output_type == OutputType.COMMENTS:
             return {
                 "context_type": COMMENTS_CONTEXT,
                 "title": "Comments.zip"
             }
-        
+
         if isinstance(meta_data, MetaWrapperAdhoc):
             return {
                 "context_type": ADHOC_CONTEXT,
