@@ -1,4 +1,5 @@
 import hashlib
+import json
 
 from sdx_gcp.app import get_logger
 from app.encrypt import encrypt_output
@@ -42,12 +43,13 @@ def deliver(meta_data: MetaWrapper, data_bytes: bytes, v2_message_schema: bool =
         location_key_lookup: LocationKeyLookupBase = LocationKeyLookup(location_name_repo)
         message_constructor = MessageBuilder(submission_mapper=SubmissionTypeMapper(location_key_lookup))
 
-        if meta_data.output_type == OutputType.LEGACY or meta_data.output_type == OutputType.SPP:
+        if meta_data.output_type == OutputType.LEGACY or meta_data.output_type == OutputType.SPP or meta_data.output_type == OutputType.DYNAMIC:
             filenames = unzip(data_bytes)
         else:
             filenames = [meta_data.output_filename]
 
         v2_message: SchemaDataV2 = message_constructor.build_message(filenames, meta_data)
+        print(json.dumps(v2_message))
         publish_v2_schema(v2_message, meta_data.tx_id)
 
     else:

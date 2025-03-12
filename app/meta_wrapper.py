@@ -59,6 +59,14 @@ class MetaWrapper:
         self.output_type = OutputType.SPP
         self._from_survey(survey_dict)
 
+    def set_dynamic(self):
+        self.filename = self.filename
+        self.output_type = OutputType.DYNAMIC
+        self.tx_id = "1234-5678-8765-4321"
+        self.survey_id = "666"
+        self.period = "2504"
+        self.ru_ref = "12346789012A"
+
     def set_hybrid(self, survey_dict: dict):
         self.filename = f'{self.filename}:{locations["HYBRID"]}'
         self.output_type = OutputType.HYBRID

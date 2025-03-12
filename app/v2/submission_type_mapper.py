@@ -4,6 +4,7 @@ from app.v2.definitions.submission_type import SubmissionTypeBase
 from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
 from app.v2.submission_types.comments import CommentsSubmissionType
 from app.v2.submission_types.dap_survey import DapSubmissionType
+from app.v2.submission_types.dynamic_survey import DynamicSubmissionType
 from app.v2.submission_types.feedback import FeedbackSubmissionType
 from app.v2.submission_types.legacy_survey import LegacySubmissionType
 from app.v2.submission_types.seft_survey import SeftSubmissionType
@@ -16,7 +17,9 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
         self._location_key_lookup = location_key_lookup
 
     def get_submission_type(self, output_type: OutputType) -> SubmissionTypeBase:
-        if output_type == output_type.SEFT:
+        if output_type == output_type.DYNAMIC:
+            return DynamicSubmissionType(self._location_key_lookup)
+        elif output_type == output_type.SEFT:
             return SeftSubmissionType(self._location_key_lookup)
         elif output_type == output_type.SPP:
             return SppSubmissionType(self._location_key_lookup)

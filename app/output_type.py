@@ -12,3 +12,4 @@ class OutputType(Enum):
     COMMENTS = 5
     SEFT = 6
     SPP = 7
+    DYNAMIC = 8

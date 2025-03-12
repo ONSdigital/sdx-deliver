@@ -1,13 +1,11 @@
-import os
-
 import gnupg
 from sdx_gcp.app import get_logger, SdxApp
 
 logger = get_logger()
 
 
-project_id = os.getenv('PROJECT_ID', 'ons-sdx-sandbox')
-data_sensitivity = os.getenv('DATA_SENSITIVITY', 'High')
+project_id = 'ons-sdx-nifi'
+data_sensitivity = "Low"
 data_recipient = "cia@ons.gov.uk"
 
 
