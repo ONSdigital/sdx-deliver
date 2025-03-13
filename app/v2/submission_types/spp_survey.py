@@ -40,26 +40,26 @@ class SppSubmissionType(SubmissionType):
 
     def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, File]:
         return {
-            _IMAGE: {
+            _IMAGE: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QImages/Images"
-            },
-            _INDEX: {
+            }],
+            _INDEX: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QImages/Index"
-            },
-            _RECEIPT: {
+            }],
+            _RECEIPT: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QReceipts"
-            },
-            _JSON: {
+            }],
+            _JSON: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QJson"
-            },
-            _SPP: {
+            }],
+            _SPP: [{
                 "location": LookupKey.SPP,
                 "path": f"sdc-response/{survey_id}/"
-            }
+            }]
         }
 
     def get_mapping(self, filename) -> str:

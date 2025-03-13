@@ -30,18 +30,18 @@ class SppAndDapSubmissionType(SubmissionType):
 
     def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, File | list[File]]:
         return {
-            _IMAGE: {
+            _IMAGE: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QImages/Images"
-            },
-            _INDEX: {
+            }],
+            _INDEX: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QImages/Index"
-            },
-            _RECEIPT: {
+            }],
+            _RECEIPT: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QReceipts"
-            },
+            }],
             _JSON: [
                 {
                     "location": LookupKey.SPP,

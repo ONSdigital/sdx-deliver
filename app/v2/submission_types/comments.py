@@ -18,10 +18,10 @@ class CommentsSubmissionType(SubmissionType):
 
     def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, File]:
         return {
-            _ZIP: {
+            _ZIP: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_Submissions/Comments"
-            }
+            }]
         }
 
     def get_mapping(self, filename) -> str:

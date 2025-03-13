@@ -31,19 +31,10 @@ def deliver_dynamic(zip_name: str, files: dict[str, bytes]):
     deliver(meta, data_bytes, True)
 
 
-class TestDynamic(unittest.TestCase):
+class TestDynamicLogic(unittest.TestCase):
 
     def setUp(self):
         setup_keys()
-
-    def test_1(self):
-        files: dict[str, bytes] = {
-            "spp_file.json": b"spp_file",
-            "data_file": b"data_file",
-            "index_file.csv": b"index_file"
-        }
-
-        deliver_dynamic("test_1.zip", files)
 
     @patch('app.deliver.write_to_bucket')
     @patch('app.deliver.publish_v2_schema')
@@ -67,6 +58,32 @@ class TestDynamic(unittest.TestCase):
                              mock_write_to_bucket: Mock):
         mock_write_to_bucket.return_value = "My fake bucket path"
 
+        files: dict[str, bytes] = {
+            "spp_json_file.json": b"spp_json_file",
+            "data_image_index": b"data_image_index",
+            "receipt.dat": b"receipt",
+            "json_file": b"json",
+        }
+
+        deliver_dynamic("test_2.zip", files)
+
+
+# This is an integration test. It will data to Nifi!!!
+class TestDynamicNifi(unittest.TestCase):
+
+    def setUp(self):
+        setup_keys()
+
+    def test_1(self):
+        files: dict[str, bytes] = {
+            "spp_file.json": b"spp_file",
+            "data_file": b"data_file",
+            "index_file.csv": b"index_file"
+        }
+
+        deliver_dynamic("test_1.zip", files)
+
+    def test_2(self):
         files: dict[str, bytes] = {
             "spp_json_file.json": b"spp_json_file",
             "data_image_index": b"data_image_index",

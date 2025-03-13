@@ -24,12 +24,12 @@ class DynamicSubmissionType(SubmissionType):
     def get_actions(self) -> list[str]:
         return [DECRYPT, UNZIP]
 
-    def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, File]:
+    def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, list[File]]:
         return {
-            _SPP: {
+            _SPP: [{
                 "location": LookupKey.SPP,
                 "path": f"sdc-response/{survey_id}/"
-            },
+            }],
             _SPP_JSON: [
                 {
                     "location": LookupKey.SPP,
@@ -40,26 +40,26 @@ class DynamicSubmissionType(SubmissionType):
                     "path": f"{self.get_env_prefix()}/EDC_QJson"
                 }
             ],
-            _DATA: {
+            _DATA: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QData"
-            },
-            _IMAGE: {
+            }],
+            _IMAGE: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QImages/Images"
-            },
-            _INDEX: {
+            }],
+            _INDEX: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QImages/Index"
-            },
-            _RECEIPT: {
+            }],
+            _RECEIPT: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QReceipts"
-            },
-            _JSON: {
+            }],
+            _JSON: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QJson"
-            },
+            }],
             _DATA_IMAGE_INDEX: [
                 {
                     "location": LookupKey.FTP,
@@ -81,7 +81,7 @@ class DynamicSubmissionType(SubmissionType):
         For Legacy submissions the Files can be
         determined by the file extension alone.
         """
-        for f in [_SPP, _SPP_JSON, _DATA, _IMAGE, _INDEX, _RECEIPT, _JSON, _DATA_IMAGE_INDEX]:
+        for f in [_DATA_IMAGE_INDEX, _SPP_JSON, _SPP, _DATA, _IMAGE, _INDEX, _RECEIPT, _JSON]:
             if f in filename:
                 return f
 

@@ -18,10 +18,10 @@ class FeedbackSubmissionType(SubmissionType):
 
     def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, File]:
         return {
-            _JSON: {
+            _JSON: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QFeedback"
-            }
+            }]
         }
 
     def get_mapping(self, filename) -> str:
