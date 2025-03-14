@@ -5,13 +5,13 @@ from sdx_gcp.errors import DataError
 from app.v2.definitions.config_schema import File
 from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.submission_type import UNZIP, DECRYPT
-from app.v2.submission_types.submission_type import SubmissionType
+from app.v2.submission_types.bases.survey_type import SurveyType
 
 # file types
 _PCK: Final[str] = "pck"
 _INDEX: Final[str] = "index"
 _RECEIPT: Final[str] = "receipt"
-_JSON: Final[str] = "json"
+_SPP: Final[str] = "spp"
 
 # file extensions
 _JPG: Final[str] = "jpg"
@@ -20,7 +20,7 @@ _CSV: Final[str] = "csv"
 _DAT: Final[str] = "dat"
 
 
-class SppSubmissionType(SubmissionType):
+class SppSubmissionType(SurveyType):
 
     def get_source_path(self) -> str:
         return "survey"
@@ -30,19 +30,10 @@ class SppSubmissionType(SubmissionType):
 
     def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, File]:
         return {
-            _IMAGE: {
-                "location": LookupKey.FTP,
-                "path": f"{self.get_env_prefix()}/EDC_QImages/Images"
-            },
-            _INDEX: {
-                "location": LookupKey.FTP,
-                "path": f"{self.get_env_prefix()}/EDC_QImages/Index"
-            },
-            _RECEIPT: {
-                "location": LookupKey.FTP,
-                "path": f"{self.get_env_prefix()}/EDC_QReceipts"
-            },
-            _JSON: {
+            _IMAGE: self.get_ftp_image(),
+            _INDEX: self.get_ftp_index(),
+            _RECEIPT: self.get_ftp_receipt(),
+            _SPP: {
                 "location": LookupKey.SPP,
                 "path": f"sdc-response/{survey_id}/"
             }
@@ -59,4 +50,4 @@ class SppSubmissionType(SubmissionType):
             return _INDEX
         if extension == _DAT:
             return _RECEIPT
-        return _JSON
+        return _SPP

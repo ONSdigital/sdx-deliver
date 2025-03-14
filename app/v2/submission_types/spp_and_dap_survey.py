@@ -5,7 +5,7 @@ from app.v2.definitions.location_key_lookup import LocationKey
 from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.message_schema import Location
 from app.v2.definitions.submission_type import UNZIP, DECRYPT
-from app.v2.submission_types.submission_type import SubmissionType
+from app.v2.submission_types.bases.submission_type import SubmissionType
 
 # file types
 _PCK: Final[str] = "pck"

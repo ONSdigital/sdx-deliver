@@ -3,13 +3,13 @@ from typing import Optional, Final
 from app.v2.definitions.config_schema import File
 from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.submission_type import UNZIP, DECRYPT
-from app.v2.submission_types.submission_type import SubmissionType
+from app.v2.submission_types.bases.survey_type import SurveyType
 
 # file types
 _PCK: Final[str] = "pck"
 _INDEX: Final[str] = "index"
 _RECEIPT: Final[str] = "receipt"
-_JSON: Final[str] = "json"
+_EQ_JSON: Final[str] = "eq_json"
 
 # file extensions
 _JPG: Final[str] = "jpg"
@@ -18,7 +18,7 @@ _CSV: Final[str] = "csv"
 _DAT: Final[str] = "dat"
 
 
-class LegacySubmissionType(SubmissionType):
+class LegacySubmissionType(SurveyType):
 
     def get_source_path(self) -> str:
         return "survey"
@@ -32,22 +32,10 @@ class LegacySubmissionType(SubmissionType):
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QData"
             },
-            _IMAGE: {
-                "location": LookupKey.FTP,
-                "path": f"{self.get_env_prefix()}/EDC_QImages/Images"
-            },
-            _INDEX: {
-                "location": LookupKey.FTP,
-                "path": f"{self.get_env_prefix()}/EDC_QImages/Index"
-            },
-            _RECEIPT: {
-                "location": LookupKey.FTP,
-                "path": f"{self.get_env_prefix()}/EDC_QReceipts"
-            },
-            _JSON: {
-                "location": LookupKey.FTP,
-                "path": f"{self.get_env_prefix()}/EDC_QJson"
-            }
+            _IMAGE: self.get_ftp_image(),
+            _INDEX: self.get_ftp_index(),
+            _RECEIPT: self.get_ftp_receipt(),
+            _EQ_JSON: self.get_ftp_eq_json()
         }
 
     def get_mapping(self, filename) -> str:
@@ -61,4 +49,4 @@ class LegacySubmissionType(SubmissionType):
             return _INDEX
         if extension == _DAT:
             return _RECEIPT
-        return _JSON
+        return _EQ_JSON
