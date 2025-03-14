@@ -18,7 +18,7 @@ class SubmissionType(SubmissionTypeBase):
         self._location_key_lookup = location_key_lookup
 
     @abstractmethod
-    def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, File]:
+    def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, [File]]:
         pass
 
     @abstractmethod
@@ -46,17 +46,20 @@ class SubmissionType(SubmissionTypeBase):
 
     def get_outputs(self, filename: str, survey_id: Optional[str] = None) -> list[Location]:
         key: str = self.get_mapping(filename)
-        file: File = self.get_file_config(survey_id)[key]
+        filelist: list[File] = self.get_file_config(survey_id)[key]
 
-        lookup_key: LookupKey = file["location"]
-        location_key: LocationKey = self._location_key_lookup.get_location_key(lookup_key)
+        result: list[Location] = []
+        for file in filelist:
+            lookup_key: LookupKey = file["location"]
+            location_key: LocationKey = self._location_key_lookup.get_location_key(lookup_key)
+            result.append({
+                "location_type": location_key["location_type"],
+                "location_name": location_key["location_name"],
+                "path": file["path"],
+                "filename": filename
+            })
 
-        return [{
-            "location_type": location_key["location_type"],
-            "location_name": location_key["location_name"],
-            "path": file["path"],
-            "filename": filename
-        }]
+        return result
 
     def get_env_prefix(self, lowercase: Optional[bool] = False) -> str:
         result = SDX_PROD if CONFIG.PROJECT_ID == "ons-sdx-prod" else SDX_PREPROD

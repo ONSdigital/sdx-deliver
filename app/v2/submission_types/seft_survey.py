@@ -16,12 +16,12 @@ class SeftSubmissionType(SubmissionType):
     def get_actions(self) -> list[str]:
         return [DECRYPT]
 
-    def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, File]:
+    def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, [File]]:
         return {
-            _XLSX: {
+            _XLSX: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_Submissions/{survey_id}"
-            }
+            }]
         }
 
     def get_mapping(self, filename) -> str:

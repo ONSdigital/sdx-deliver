@@ -26,16 +26,16 @@ class LegacySubmissionType(SurveyType):
     def get_actions(self) -> list[str]:
         return [DECRYPT, UNZIP]
 
-    def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, File]:
+    def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, [File]]:
         return {
-            _PCK: {
+            _PCK: [{
                 "location": LookupKey.FTP,
                 "path": f"{self.get_env_prefix()}/EDC_QData"
-            },
-            _IMAGE: self.get_ftp_image(),
-            _INDEX: self.get_ftp_index(),
-            _RECEIPT: self.get_ftp_receipt(),
-            _EQ_JSON: self.get_ftp_eq_json()
+            }],
+            _IMAGE: [self.get_ftp_image()],
+            _INDEX: [self.get_ftp_index()],
+            _RECEIPT: [self.get_ftp_receipt()],
+            _EQ_JSON: [self.get_ftp_eq_json()]
         }
 
     def get_mapping(self, filename) -> str:

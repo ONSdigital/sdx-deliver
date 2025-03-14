@@ -28,15 +28,15 @@ class SppSubmissionType(SurveyType):
     def get_actions(self) -> list[str]:
         return [DECRYPT, UNZIP]
 
-    def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, File]:
+    def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, [File]]:
         return {
-            _IMAGE: self.get_ftp_image(),
-            _INDEX: self.get_ftp_index(),
-            _RECEIPT: self.get_ftp_receipt(),
-            _SPP: {
+            _IMAGE: [self.get_ftp_image()],
+            _INDEX: [self.get_ftp_index()],
+            _RECEIPT: [self.get_ftp_receipt()],
+            _SPP: [{
                 "location": LookupKey.SPP,
                 "path": f"sdc-response/{survey_id}/"
-            }
+            }]
         }
 
     def get_mapping(self, filename) -> str:
