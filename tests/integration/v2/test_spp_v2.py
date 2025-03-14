@@ -8,14 +8,14 @@ from sdx_gcp import Request
 
 from app import deliver
 from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, SUBMISSION_FILE, TRANSFORMED_FILE, deliver_spp
-from app.v2.definitions.message_schema import SchemaDataV2
+from app.v2.definitions.message_schema import MessageSchemaV2
 from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME, SPP_LOCATION_NAME
 
 
 class TestSppV2(unittest.TestCase):
 
     @patch('app.deliver.write_to_bucket')
-    @patch('app.deliver.publish_v2_schema')
+    @patch('app.deliver.publish_v2_message')
     @patch('app.deliver.encrypt_output')
     @patch('app.routes.Flask.jsonify')
     def test_spp_survey(self,
@@ -107,7 +107,7 @@ class TestSppV2(unittest.TestCase):
         response = deliver_spp(MockRequest(data), tx_id)
         self.assertTrue(response["success"])
 
-        expected_v2_message: SchemaDataV2 = {
+        expected_v2_message: MessageSchemaV2 = {
             "schema_version": "2",
             "sensitivity": "High",
             "sizeBytes": 19,

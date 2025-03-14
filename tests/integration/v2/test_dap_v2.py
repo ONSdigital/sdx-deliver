@@ -6,14 +6,14 @@ from sdx_gcp import Request
 
 from app import deliver
 from app.routes import FILE_NAME, VERSION, V2, SUBMISSION_FILE, MESSAGE_SCHEMA, deliver_dap
-from app.v2.definitions.message_schema import SchemaDataV2
+from app.v2.definitions.message_schema import MessageSchemaV2
 from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, DAP_LOCATION_NAME
 
 
 class TestDapV2(unittest.TestCase):
 
     @patch('app.deliver.write_to_bucket')
-    @patch('app.deliver.publish_v2_schema')
+    @patch('app.deliver.publish_v2_message')
     @patch('app.deliver.encrypt_output')
     @patch('app.routes.Flask.jsonify')
     def test_dap(self,
@@ -29,7 +29,7 @@ class TestDapV2(unittest.TestCase):
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
         input_filename = "016931f2-6230-4ca3-b84e-136e02e3f92b.json"
         output_filename = input_filename
-        survey_id = "009"
+        survey_id = "283"
         period_id = "202505"
         ruref = "49900000001A"
 
@@ -44,7 +44,7 @@ class TestDapV2(unittest.TestCase):
             "launch_language_code": "en",
             "submission_language_code": "en",
             "collection_exercise_sid": "9ced8dc9-f2f3-49f3-95af-2f3ca0b74ee3",
-            "schema_name": "mbs_0001",
+            "schema_name": "bics_0001",
             "started_at": "2016-05-21T16:33:30.665144",
             "case_id": "a386b2de-a615-42c8-a0f4-e274f9eb28ee",
             "region_code": "GB-ENG",
@@ -55,7 +55,7 @@ class TestDapV2(unittest.TestCase):
                 "case_type": "B",
                 "display_address": "ONS, Government Buildings, Cardiff Rd",
                 "employment_date": "2021-03-01",
-                "form_type": "0253",
+                "form_type": "0001",
                 "period_id": period_id,
                 "period_str": "January 2021",
                 "ref_p_end_date": "2021-06-01",
@@ -93,7 +93,7 @@ class TestDapV2(unittest.TestCase):
         response = deliver_dap(MockRequest(data), tx_id)
         self.assertTrue(response["success"])
 
-        expected_v2_message: SchemaDataV2 = {
+        expected_v2_message: MessageSchemaV2 = {
             "schema_version": "2",
             "sensitivity": "High",
             "sizeBytes": 19,

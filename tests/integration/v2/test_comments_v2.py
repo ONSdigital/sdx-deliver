@@ -1,22 +1,20 @@
 import io
 import unittest
 import zipfile
-from typing import Final
 from unittest.mock import patch, Mock
 
 from sdx_gcp import Request
 
 from app import deliver
 from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, ZIP_FILE, deliver_comments
-from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
-from app.v2.definitions.message_schema import SchemaDataV2
+from app.v2.definitions.message_schema import MessageSchemaV2
 from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME
 
 
 class TestCommentsV2(unittest.TestCase):
 
     @patch('app.deliver.write_to_bucket')
-    @patch('app.deliver.publish_v2_schema')
+    @patch('app.deliver.publish_v2_message')
     @patch('app.deliver.encrypt_output')
     @patch('app.routes.Flask.jsonify')
     def test_comments(self,
@@ -63,7 +61,7 @@ class TestCommentsV2(unittest.TestCase):
         response = deliver_comments(MockRequest(data), tx_id)
         self.assertTrue(response["success"])
 
-        expected_v2_message: SchemaDataV2 = {
+        expected_v2_message: MessageSchemaV2 = {
             "schema_version": "2",
             "sensitivity": "High",
             "sizeBytes": 19,

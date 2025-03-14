@@ -1,7 +1,7 @@
 from app import CONFIG
 from app.meta_wrapper import MetaWrapper, MetaWrapperAdhoc
 from app.output_type import OutputType
-from app.v2.definitions.message_schema import SchemaDataV2, Target, Location
+from app.v2.definitions.message_schema import MessageSchemaV2, Target, Location
 from app.v2.definitions.submission_type import SubmissionTypeBase
 from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
 
@@ -11,9 +11,9 @@ class MessageBuilder:
     def __init__(self, submission_mapper: SubmissionTypeMapperBase):
         self._submission_mapper = submission_mapper
 
-    def build_message(self, filenames: list[str], meta_data: MetaWrapper) -> SchemaDataV2:
+    def build_message(self, filenames: list[str], meta_data: MetaWrapper) -> MessageSchemaV2:
         submission_type: SubmissionTypeBase = self._submission_mapper.get_submission_type(meta_data.output_type)
-        message: SchemaDataV2 = {
+        message: MessageSchemaV2 = {
             "schema_version": "2",
             "sensitivity": CONFIG.DATA_SENSITIVITY,
             "sizeBytes": meta_data.sizeBytes,
