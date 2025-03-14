@@ -1,10 +1,12 @@
+from typing import Final
+
 from app import sdx_app, CONFIG
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
 
-NIFI_LOCATION_FTP = "nifi-location-ftp"
-NIFI_LOCATION_SPP = "nifi-location-spp"
-NIFI_LOCATION_DAP = "nifi-location-dap"
-NIFI_LOCATION_NS5 = "nifi-location-ns5"
+NIFI_LOCATION_FTP: Final[str] = "nifi-location-ftp"
+NIFI_LOCATION_SPP: Final[str] = "nifi-location-spp"
+NIFI_LOCATION_DAP: Final[str] = "nifi-location-dap"
+NIFI_LOCATION_NS5: Final[str] = "nifi-location-ns5"
 
 
 class LocationNameRepo(LocationNameRepositoryBase):

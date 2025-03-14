@@ -2,62 +2,27 @@ import io
 import json
 import unittest
 import zipfile
-from typing import Final
 from unittest.mock import patch, Mock
 
 from sdx_gcp import Request
 
 from app import deliver
-from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, SUBMISSION_FILE, TRANSFORMED_FILE, deliver_spp
-from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
+from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, SUBMISSION_FILE, TRANSFORMED_FILE, deliver_legacy
 from app.v2.definitions.message_schema import SchemaDataV2
-
-SDX_LOCATION_NAME: Final[str] = "sdx_location_name"
-FTP_LOCATION_NAME: Final[str] = "ftp_location_name"
-SPP_LOCATION_NAME: Final[str] = "spp_location_name"
-DAP_LOCATION_NAME: Final[str] = "dap_location_name"
+from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME
 
 
-class MockLocationNameMapper(LocationNameRepositoryBase):
-    def __init__(self):
-        self.locations_mapping = None
-
-    def get_location_name(self, key: LookupKey) -> str:
-        return self.locations_mapping[key.value]
-
-    def load_location_values(self):
-        ftp_key = LookupKey.FTP.value
-        sdx_key = LookupKey.SDX.value
-        spp_key = LookupKey.SPP.value
-        dap_key = LookupKey.DAP.value
-        self.locations_mapping = {
-            ftp_key: FTP_LOCATION_NAME,
-            sdx_key: SDX_LOCATION_NAME,
-            spp_key: SPP_LOCATION_NAME,
-            dap_key: DAP_LOCATION_NAME
-        }
-
-
-class FileHolder:
-
-    def __init__(self, file_bytes: bytes):
-        self._file_bytes = file_bytes
-
-    def read(self) -> bytes:
-        return self._file_bytes
-
-
-class TestSppV2(unittest.TestCase):
+class TestLegacyV2(unittest.TestCase):
 
     @patch('app.deliver.write_to_bucket')
     @patch('app.deliver.publish_v2_schema')
     @patch('app.deliver.encrypt_output')
     @patch('app.routes.Flask.jsonify')
-    def test_spp_survey(self,
-                        mock_jsonify: Mock,
-                        mock_encrypt: Mock,
-                        mock_publish_v2_schema: Mock,
-                        mock_write_to_bucket: Mock):
+    def test_legacy_survey(self,
+                           mock_jsonify: Mock,
+                           mock_encrypt: Mock,
+                           mock_publish_v2_schema: Mock,
+                           mock_write_to_bucket: Mock):
         deliver.location_name_repo = MockLocationNameMapper()
         mock_encrypt.return_value = "My encrypted output"
         mock_write_to_bucket.return_value = "My fake bucket path"
@@ -67,23 +32,25 @@ class TestSppV2(unittest.TestCase):
         input_filename = tx_id
         tx_id_trunc = "c37a3efa-593c-4bab"
         survey_id = "009"
-        period_id = "202505"
+        period_id = "201605"
         submission_date_str = "20210105"
         submission_date_dm = "0501"
 
+        pck_filename = tx_id
         image_filename = f"S{tx_id_trunc}_1.JPG"
         index_filename = f"EDC_{survey_id}_{submission_date_str}_{tx_id_trunc}.csv"
         receipt_filename = f"REC{submission_date_dm}_{tx_id_trunc}.DAT"
-        spp_filename = f"{survey_id}_{submission_date_str}_{tx_id}.json"
+        json_filename = f"{survey_id}_{tx_id_trunc}.json"
 
         # Create the input zipfile
         zip_buffer = io.BytesIO()
 
         with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            zip_file.writestr(pck_filename, 'This is the content of the pck file.')
             zip_file.writestr(image_filename, 'This is the content of image file.')
             zip_file.writestr(index_filename, 'This is the content of index file.')
             zip_file.writestr(receipt_filename, 'This is the content of the receipt file.')
-            zip_file.writestr(spp_filename, "This is the content of the spp json file.")
+            zip_file.writestr(json_filename, "This is the content of the json file.")
 
         zip_bytes = zip_buffer.getvalue()
 
@@ -139,7 +106,8 @@ class TestSppV2(unittest.TestCase):
             args = data
 
         # Call the endpoint
-        response = deliver_spp(MockRequest(data), tx_id)
+
+        response = deliver_legacy(MockRequest(data), tx_id)
         self.assertTrue(response["success"])
 
         expected_v2_message: SchemaDataV2 = {
@@ -160,6 +128,17 @@ class TestSppV2(unittest.TestCase):
             },
             "actions": ["decrypt", "unzip"],
             "targets": [
+                {
+                    "input": pck_filename,
+                    "outputs": [
+                        {
+                            "location_type": "windows_server",
+                            "location_name": FTP_LOCATION_NAME,
+                            "path": "SDX_PREPROD/EDC_QData",
+                            "filename": pck_filename
+                        }
+                    ]
+                },
                 {
                     "input": image_filename,
                     "outputs": [
@@ -194,13 +173,13 @@ class TestSppV2(unittest.TestCase):
                     ]
                 },
                 {
-                    "input": spp_filename,
+                    "input": json_filename,
                     "outputs": [
                         {
-                            "location_type": "s3",
-                            "location_name": SPP_LOCATION_NAME,
-                            "path": f"sdc-response/{survey_id}/",
-                            "filename": spp_filename
+                            "location_type": "windows_server",
+                            "location_name": FTP_LOCATION_NAME,
+                            "path": "SDX_PREPROD/EDC_QJson",
+                            "filename": json_filename
                         }
                     ]
                 }

@@ -10,40 +10,7 @@ from app import deliver
 from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, ZIP_FILE, deliver_comments
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
 from app.v2.definitions.message_schema import SchemaDataV2
-
-SDX_LOCATION_NAME: Final[str] = "sdx_location_name"
-FTP_LOCATION_NAME: Final[str] = "ftp_location_name"
-SPP_LOCATION_NAME: Final[str] = "spp_location_name"
-DAP_LOCATION_NAME: Final[str] = "dap_location_name"
-
-
-class MockLocationNameMapper(LocationNameRepositoryBase):
-    def __init__(self):
-        self.locations_mapping = None
-
-    def get_location_name(self, key: LookupKey) -> str:
-        return self.locations_mapping[key.value]
-
-    def load_location_values(self):
-        ftp_key = LookupKey.FTP.value
-        sdx_key = LookupKey.SDX.value
-        spp_key = LookupKey.SPP.value
-        dap_key = LookupKey.DAP.value
-        self.locations_mapping = {
-            ftp_key: FTP_LOCATION_NAME,
-            sdx_key: SDX_LOCATION_NAME,
-            spp_key: SPP_LOCATION_NAME,
-            dap_key: DAP_LOCATION_NAME
-        }
-
-
-class FileHolder:
-
-    def __init__(self, file_bytes: bytes):
-        self._file_bytes = file_bytes
-
-    def read(self) -> bytes:
-        return self._file_bytes
+from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME
 
 
 class TestCommentsV2(unittest.TestCase):
