@@ -16,5 +16,5 @@ class MessageSchema(TypedDict):
     description: str
     dataset: str
     schemaversion: str
-    iterationL1: str
+    iterationL1: NotRequired[str]
     iterationL2: NotRequired[str]

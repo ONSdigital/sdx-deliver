@@ -11,7 +11,7 @@ from app.routes import FILE_NAME, VERSION, V2, SUBMISSION_FILE, MESSAGE_SCHEMA, 
 from tests.integration.v1 import FileHolder
 
 
-class HybridTest(unittest.TestCase):
+class LegacyTest(unittest.TestCase):
 
     @patch('app.deliver.write_to_bucket')
     @patch('app.deliver.publish_message')
@@ -19,7 +19,7 @@ class HybridTest(unittest.TestCase):
     @patch('app.message.get_formatted_current_utc')
     @patch('app.message.CONFIG')
     @patch('app.routes.Flask.jsonify')
-    def test_hybrid(self,
+    def test_legacy(self,
                     mock_jsonify: Mock,
                     mock_config: Mock,
                     mock_time: Mock,

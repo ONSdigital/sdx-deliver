@@ -5,30 +5,34 @@ from unittest.mock import patch, Mock
 from sdx_gcp import Request
 
 from app.definitions import MessageSchema
-from app.routes import FILE_NAME, VERSION, V2, SUBMISSION_FILE, MESSAGE_SCHEMA, deliver_dap, V1
+from app.routes import FILE_NAME, VERSION, V2, SUBMISSION_FILE, MESSAGE_SCHEMA, V1, deliver_feedback
 from tests.integration.v1 import FileHolder
 
 
-class DapTest(unittest.TestCase):
+class FeedbackTest(unittest.TestCase):
 
     @patch('app.deliver.write_to_bucket')
     @patch('app.deliver.publish_message')
     @patch('app.deliver.encrypt_output')
     @patch('app.message.get_formatted_current_utc')
     @patch('app.message.CONFIG')
+    @patch('app.meta_wrapper.get_current_time')
     @patch('app.routes.Flask.jsonify')
-    def test_dap(self,
-                 mock_jsonify: Mock,
-                 mock_config: Mock,
-                 mock_time: Mock,
-                 mock_encrypt: Mock,
-                 mock_publish_message: Mock,
-                 mock_write_to_bucket: Mock):
-
+    def test_feedback(self,
+                      mock_jsonify: Mock,
+                      mock_current_time: Mock,
+                      mock_config: Mock,
+                      mock_time: Mock,
+                      mock_encrypt: Mock,
+                      mock_publish_message: Mock,
+                      mock_write_to_bucket: Mock):
         fake_path = "My fake bucket path"
         fake_time = "2021-10-10T08:42:24.737Z"
+        fake_current_time = "15-20-33_28_01_21"
         fake_project = "ons-sdx-fake"
+
         mock_time.return_value = fake_time
+        mock_current_time.return_value = fake_current_time
         mock_config.PROJECT_ID = fake_project
         mock_config.DATA_SENSITIVITY = "High"
         mock_encrypt.return_value = "My encrypted output"
@@ -37,14 +41,15 @@ class DapTest(unittest.TestCase):
 
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
         input_filename = "016931f2-6230-4ca3-b84e-136e02e3f92b"
-        output_filename = f'{input_filename}.json:dap'
-        survey_id = "283"
+
+        output_filename = f'{input_filename}-fb-{fake_current_time}:ftp'
+        survey_id = "009"
         period_id = "202505"
         ru_ref = "49900000001A"
 
         submission_file = {
             "tx_id": tx_id,
-            "type": "uk.gov.ons.edc.eq:surveyresponse",
+            "type": "uk.gov.ons.edc.eq:feedback",
             "version": "v2",
             "data_version": "0.0.3",
             "origin": "uk.gov.ons.edc.eq",
@@ -53,7 +58,7 @@ class DapTest(unittest.TestCase):
             "launch_language_code": "en",
             "submission_language_code": "en",
             "collection_exercise_sid": "9ced8dc9-f2f3-49f3-95af-2f3ca0b74ee3",
-            "schema_name": "bics_0001",
+            "schema_name": "mbs_0106",
             "started_at": "2016-05-21T16:33:30.665144",
             "case_id": "a386b2de-a615-42c8-a0f4-e274f9eb28ee",
             "region_code": "GB-ENG",
@@ -64,7 +69,7 @@ class DapTest(unittest.TestCase):
                 "case_type": "B",
                 "display_address": "ONS, Government Buildings, Cardiff Rd",
                 "employment_date": "2021-03-01",
-                "form_type": "0001",
+                "form_type": "0106",
                 "period_id": period_id,
                 "period_str": "January 2021",
                 "ref_p_end_date": "2021-06-01",
@@ -75,9 +80,8 @@ class DapTest(unittest.TestCase):
                 "user_id": "64389274239"
             },
             "data": {
-                "9999": "Yes, I can report for this period",
-                "40": "12000",
-                "146": "comment"
+                "feedback_rating": "Easy",
+                "feedback_text": "Page design feedback"
             }
         }
 
@@ -99,7 +103,7 @@ class DapTest(unittest.TestCase):
             args = data
 
         # Call the endpoint
-        response = deliver_dap(MockRequest(data), tx_id)
+        response = deliver_feedback(MockRequest(data), tx_id)
         self.assertTrue(response["success"])
 
         expected_message: MessageSchema = {
@@ -112,7 +116,7 @@ class DapTest(unittest.TestCase):
             'sensitivity': 'High',
             'sourceName': fake_project,
             'manifestCreated': fake_time,
-            'description': f"{survey_id} survey response for period {period_id} sample unit {ru_ref}",
+            'description': f"{survey_id} feedback response for period {period_id} sample unit {ru_ref}",
             'dataset': f'{survey_id}',
             'schemaversion': '1',
             'iterationL1': period_id
