@@ -32,7 +32,7 @@ class MessageBuilder:
     def get_targets(self, filenames: list[str], submission_type: SubmissionTypeBase, meta_data: MetaWrapper) -> list[Target]:
         target_list: list[Target] = []
         for filename in filenames:
-            outputs: list[Location] = submission_type.get_outputs(filename, meta_data.survey_id)
+            outputs: list[Location] = submission_type.get_outputs(filename, meta_data)
             target_list.append({"input": filename, "outputs": outputs})
 
         return target_list

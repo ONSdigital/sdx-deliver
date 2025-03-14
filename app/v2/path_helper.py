@@ -14,5 +14,5 @@ def get_dap_path() -> str:
     return "sdx_prod" if CONFIG.PROJECT_ID == PROD_PROJECT else "sdx_preprod"
 
 
-def get_v1_json_path() -> str:
+def get_ns5_path() -> str:
     return "prod" if CONFIG.PROJECT_ID == PROD_PROJECT else "preprod"

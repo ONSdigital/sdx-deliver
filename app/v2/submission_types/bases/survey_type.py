@@ -2,11 +2,18 @@ from abc import ABC
 
 from app.v2.definitions.config_schema import File
 from app.v2.definitions.location_name_repository import LookupKey
+from app.v2.definitions.submission_type import DECRYPT, UNZIP
 from app.v2.path_helper import get_ftp_path
 from app.v2.submission_types.bases.submission_type import SubmissionType
 
 
 class SurveyType(SubmissionType, ABC):
+
+    def get_source_path(self) -> str:
+        return "survey"
+
+    def get_actions(self) -> list[str]:
+        return [DECRYPT, UNZIP]
 
     def get_ftp_image(self) -> File:
         return {

@@ -1,7 +1,6 @@
 from abc import abstractmethod
-from typing import Optional
 
-from app import CONFIG
+from app.meta_wrapper import MetaWrapper
 from app.v2.definitions.config_schema import File
 from app.v2.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
 from app.v2.definitions.location_name_repository import LookupKey
@@ -15,7 +14,7 @@ class SubmissionType(SubmissionTypeBase):
         self._location_key_lookup = location_key_lookup
 
     @abstractmethod
-    def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, [File]]:
+    def get_file_config(self, metadata: MetaWrapper) -> dict[str, [File]]:
         pass
 
     @abstractmethod
@@ -41,9 +40,9 @@ class SubmissionType(SubmissionTypeBase):
             "filename": filename
         }
 
-    def get_outputs(self, filename: str, survey_id: Optional[str] = None) -> list[Location]:
+    def get_outputs(self, filename: str, metadata: MetaWrapper) -> list[Location]:
         key: str = self.get_mapping(filename)
-        filelist: list[File] = self.get_file_config(survey_id)[key]
+        filelist: list[File] = self.get_file_config(metadata)[key]
 
         result: list[Location] = []
         for file in filelist:

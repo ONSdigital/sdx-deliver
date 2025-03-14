@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Optional, Final
 
+from app.meta_wrapper import MetaWrapper
 from app.v2.definitions.message_schema import Location
 
 UNZIP: Final[str] = "unzip"
@@ -18,5 +19,5 @@ class SubmissionTypeBase(ABC):
         pass
 
     @abstractmethod
-    def get_outputs(self, filename: str, survey_id: Optional[str] = None) -> list[Location]:
+    def get_outputs(self, filename: str, metadata: MetaWrapper) -> list[Location]:
         pass

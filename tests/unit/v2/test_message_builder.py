@@ -1,7 +1,7 @@
 import unittest
 from typing import Optional
 
-from app.meta_wrapper import MetaWrapperV2, MetaWrapperAdhoc
+from app.meta_wrapper import MetaWrapperV2, MetaWrapperAdhoc, MetaWrapper
 from app.output_type import OutputType
 from app.v2.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
 from app.v2.definitions.location_name_repository import LookupKey
@@ -68,7 +68,7 @@ class MockSubmissionType(SubmissionTypeBase):
     def get_actions(self) -> list[str]:
         return [DECRYPT]
 
-    def get_outputs(self, filename: str, survey_id: Optional[str] = None) -> list[Location]:
+    def get_outputs(self, filename: str, metadata: MetaWrapper) -> list[Location]:
         return [{
             "location_type": "server2",
             "location_name": "server2-name",

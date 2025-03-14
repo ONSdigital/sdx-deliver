@@ -1,5 +1,6 @@
-from typing import Optional, Final
+from typing import Final
 
+from app.meta_wrapper import MetaWrapper
 from app.v2.definitions.config_schema import File
 from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.submission_type import DECRYPT
@@ -17,13 +18,13 @@ class SeftSubmissionType(SubmissionType):
     def get_actions(self) -> list[str]:
         return [DECRYPT]
 
-    def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, [File]]:
+    def get_file_config(self, metadata: MetaWrapper) -> dict[str, [File]]:
         return {
             _XLSX: [{
                 "location": LookupKey.FTP,
-                "path": f"{get_ftp_path()}/EDC_Submissions/{survey_id}"
+                "path": f"{get_ftp_path()}/EDC_Submissions/{metadata.survey_id}"
             }]
         }
 
-    def get_mapping(self, filename) -> str:
+    def get_mapping(self, filename: str) -> str:
         return _XLSX

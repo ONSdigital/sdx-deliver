@@ -4,6 +4,7 @@ from app.v2.definitions.location_name_repository import LocationNameRepositoryBa
 NIFI_LOCATION_FTP = "nifi-location-ftp"
 NIFI_LOCATION_SPP = "nifi-location-spp"
 NIFI_LOCATION_DAP = "nifi-location-dap"
+NIFI_LOCATION_NS5 = "nifi-location-ns5"
 
 
 class LocationNameRepo(LocationNameRepositoryBase):
@@ -20,10 +21,12 @@ class LocationNameRepo(LocationNameRepositoryBase):
             sdx_key = LookupKey.SDX.value
             spp_key = LookupKey.SPP.value
             dap_key = LookupKey.DAP.value
+            ns5_key = LookupKey.NS5.value
 
             self.locations_mapping = {
                 ftp_key: sdx_app.secrets_get(NIFI_LOCATION_FTP)[0],
                 sdx_key: CONFIG.BUCKET_NAME,
                 spp_key: sdx_app.secrets_get(NIFI_LOCATION_SPP)[0],
-                dap_key: sdx_app.secrets_get(NIFI_LOCATION_DAP)[0]
+                dap_key: sdx_app.secrets_get(NIFI_LOCATION_DAP)[0],
+                ns5_key: sdx_app.secrets_get(NIFI_LOCATION_NS5)[0]
             }
