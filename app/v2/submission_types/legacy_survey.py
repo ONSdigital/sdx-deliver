@@ -3,6 +3,7 @@ from typing import Optional, Final
 from app.v2.definitions.config_schema import File
 from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.submission_type import UNZIP, DECRYPT
+from app.v2.path_helper import get_ftp_path
 from app.v2.submission_types.bases.survey_type import SurveyType
 
 # file types
@@ -30,7 +31,7 @@ class LegacySubmissionType(SurveyType):
         return {
             _PCK: [{
                 "location": LookupKey.FTP,
-                "path": f"{self.get_env_prefix()}/EDC_QData"
+                "path": f"{get_ftp_path()}/EDC_QData"
             }],
             _IMAGE: [self.get_ftp_image()],
             _INDEX: [self.get_ftp_index()],

@@ -8,9 +8,6 @@ from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.message_schema import Location
 from app.v2.definitions.submission_type import SubmissionTypeBase
 
-SDX_PROD = "SDX_Prod"
-SDX_PREPROD = "SDX_PREPROD"
-
 
 class SubmissionType(SubmissionTypeBase):
 
@@ -60,10 +57,3 @@ class SubmissionType(SubmissionTypeBase):
             })
 
         return result
-
-    def get_env_prefix(self, lowercase: Optional[bool] = False) -> str:
-        result = SDX_PROD if CONFIG.PROJECT_ID == "ons-sdx-prod" else SDX_PREPROD
-        if lowercase:
-            return result.lower()
-        else:
-            return result
