@@ -77,18 +77,25 @@ class TestDynamicNifi(unittest.TestCase):
     def test_1(self):
         files: dict[str, bytes] = {
             "spp_file.json": b"spp_file",
-            "data_file": b"data_file",
-            "index_file.csv": b"index_file"
+            # "data_file": b"data_file",
+            # "index_file.csv": b"index_file"
         }
 
-        deliver_dynamic("test_1.zip", files)
+        deliver_dynamic("test_8.zip", files)
 
     def test_2(self):
         files: dict[str, bytes] = {
-            "spp_json_file.json": b"spp_json_file",
+            # "spp_json_file.json": b"spp_json_file",
             "data_image_index": b"data_image_index",
             "receipt.dat": b"receipt",
             "json_file": b"json",
         }
 
         deliver_dynamic("test_2.zip", files)
+
+    def test_3(self):
+        files: dict[str, bytes] = {
+            "test_file": b"test_file"
+        }
+
+        deliver_dynamic("test_4.zip", files)
