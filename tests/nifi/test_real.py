@@ -1,4 +1,4 @@
-
+import hashlib
 import io
 import json
 import unittest
@@ -8,7 +8,8 @@ import zipfile
 from sdx_gcp import Request
 
 from app import setup_keys
-from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, SUBMISSION_FILE, deliver_feedback, ZIP_FILE, deliver_comments
+from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, SUBMISSION_FILE, deliver_feedback, ZIP_FILE, deliver_comments, METADATA_FILE, SEFT_FILE, \
+    deliver_seft
 
 
 class FileHolder:
@@ -94,7 +95,7 @@ class TestRealV2(unittest.TestCase):
 
     def test_comments(self):
         tx_id = str(uuid.uuid4())
-        input_filename = "comments_test_2.zip"
+        input_filename = "comments_test_3.zip"
 
         # Create the input zipfile
         zip_buffer = io.BytesIO()
@@ -124,6 +125,45 @@ class TestRealV2(unittest.TestCase):
             args = data
 
         # Call the endpoint
-        response = deliver_comments(MockRequest(data), tx_id)
-        # self.assertTrue(response["success"])
+        deliver_comments(MockRequest(data), tx_id)
 
+    def test_seft(self):
+        tx_id = str(uuid.uuid4())
+        input_filename = "14112300153_202203_141_20220623072928.xlsx.gpg"
+
+        file_contents = b"seft_file_contents"
+        survey_id = "141"
+        period_id = "202203"
+        ruref = "14112300153"
+        size_bytes = len(file_contents)
+        md5sum = hashlib.md5(file_contents).hexdigest()
+
+        # Create the fake Request object
+        metadata = {
+            'filename': input_filename,
+            'md5sum': md5sum,
+            'period': period_id,
+            'ru_ref': ruref,
+            'sizeBytes': size_bytes,
+            'survey_id': survey_id,
+            'tx_id': tx_id
+        }
+
+        files_dict = {
+            METADATA_FILE: FileHolder(json.dumps(metadata).encode("utf-8")),
+            SEFT_FILE: FileHolder(file_contents),
+        }
+
+        data = {
+            FILE_NAME: input_filename,
+            "tx_id": tx_id,
+            MESSAGE_SCHEMA: V2
+        }
+
+        class MockRequest(Request):
+            files = files_dict
+            args = data
+
+        # Call the endpoint
+        response = deliver_seft(MockRequest(data), tx_id)
+        self.assertTrue(response["success"])

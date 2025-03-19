@@ -77,11 +77,11 @@ class TestDynamicNifi(unittest.TestCase):
     def test_1(self):
         files: dict[str, bytes] = {
             "spp_file.json": b"spp_file",
-            # "data_file": b"data_file",
-            # "index_file.csv": b"index_file"
+            "data_file": b"data_file",
+            "index_file.csv": b"index_file"
         }
 
-        deliver_dynamic("test_8.zip", files)
+        deliver_dynamic("test_9.zip", files)
 
     def test_2(self):
         files: dict[str, bytes] = {

@@ -26,10 +26,6 @@ class DynamicSubmissionType(SubmissionType):
 
     def get_file_config(self, survey_id: Optional[str] = None) -> dict[str, list[File]]:
         return {
-            "test": [{
-                "location": LookupKey.FTP,
-                "path": f"{self.get_env_prefix()}/EDC_Test"
-            }],
             _SPP: [{
                 "location": LookupKey.SPP,
                 "path": f"sdc-response/{survey_id}/"
