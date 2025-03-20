@@ -1,9 +1,17 @@
+from typing import TypedDict
+
 from app import CONFIG
 from app.meta_wrapper import MetaWrapper, MetaWrapperAdhoc
 from app.output_type import OutputType
+from app.routes_v2 import BusinessSurveyContext
 from app.v2.definitions.message_schema import MessageSchemaV2, Target, Location
 from app.v2.definitions.submission_type import SubmissionTypeBase
 from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
+
+
+class ZipDetails(TypedDict):
+    size_bytes: int
+    md5sum: str
 
 
 class MessageBuilder:
@@ -11,7 +19,7 @@ class MessageBuilder:
     def __init__(self, submission_mapper: SubmissionTypeMapperBase):
         self._submission_mapper = submission_mapper
 
-    def build_message(self, filenames: list[str], meta_data: MetaWrapper) -> MessageSchemaV2:
+    def build_message(self, filenames: list[str], zip_details: ZipDetails, context: BusinessSurveyContext) -> MessageSchemaV2:
         submission_type: SubmissionTypeBase = self._submission_mapper.get_submission_type(meta_data.output_type)
         message: MessageSchemaV2 = {
             "schema_version": "2",

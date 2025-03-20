@@ -28,7 +28,6 @@ class TestSeftV2(unittest.TestCase):
 
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
         input_filename = "14112300153_202203_141_20220623072928.xlsx.gpg"
-        output_filename = input_filename
         survey_id = "141"
         period_id = "202203"
         ruref = "14112300153"
