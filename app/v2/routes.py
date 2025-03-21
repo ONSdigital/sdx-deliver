@@ -52,7 +52,7 @@ def deliver_adhoc_survey(req: Request, _tx_id: TX_ID):
     return Flask.jsonify(success=True)
 
 
-def deliver_comments(req: Request, _tx_id: TX_ID):
+def deliver_comments_file(req: Request, _tx_id: TX_ID):
     """
     Endpoint for the comments file using the version 2 schema for the nifi message.
     """
@@ -66,7 +66,7 @@ def deliver_comments(req: Request, _tx_id: TX_ID):
     return Flask.jsonify(success=True)
 
 
-def deliver_seft(req: Request, _tx_id: TX_ID):
+def deliver_seft_submission(req: Request, _tx_id: TX_ID):
     """
     Endpoint for seft submissions that will use the version 2 schema for the nifi message.
     """

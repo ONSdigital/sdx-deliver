@@ -5,7 +5,7 @@ from unittest.mock import patch, Mock
 from sdx_gcp import Request
 
 from app.v2 import deliver
-from app.v2.routes import FILE_NAME, SEFT_FILE, deliver_seft, CONTEXT
+from app.v2.routes import FILE_NAME, SEFT_FILE, deliver_seft_submission, CONTEXT
 from app.v2.definitions.message_schema import MessageSchemaV2
 from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME
 
@@ -57,7 +57,7 @@ class TestSeftV2(unittest.TestCase):
             args = data
 
         # Call the endpoint
-        response = deliver_seft(MockRequest(data), tx_id)
+        response = deliver_seft_submission(MockRequest(data), tx_id)
         self.assertTrue(response["success"])
 
         expected_v2_message: MessageSchemaV2 = {
