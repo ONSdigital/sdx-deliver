@@ -2,10 +2,10 @@ from typing import Final
 
 from sdx_gcp.errors import DataError
 
-from app.meta_wrapper import MetaWrapper
 from app.v2.definitions.config_schema import File
 from app.v2.definitions.location_name_repository import LookupKey
-from app.v2.submission_types.bases.survey_type import SurveyType
+from app.v2.definitions.context import BusinessSurveyContext
+from app.v2.submission_types.bases.survey_submission import SurveySubmission
 
 # file types
 _PCK: Final[str] = "pck"
@@ -20,16 +20,16 @@ _CSV: Final[str] = "csv"
 _DAT: Final[str] = "dat"
 
 
-class SppSubmissionType(SurveyType):
+class SppSubmissionType(SurveySubmission):
 
-    def get_file_config(self, metadata: MetaWrapper) -> dict[str, [File]]:
+    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, [File]]:
         return {
             _IMAGE: [self.get_ftp_image()],
             _INDEX: [self.get_ftp_index()],
             _RECEIPT: [self.get_ftp_receipt()],
             _SPP: [{
                 "location": LookupKey.SPP,
-                "path": f"sdc-response/{metadata.survey_id}/"
+                "path": f"sdc-response/{context['survey_id']}/"
             }]
         }
 

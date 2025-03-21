@@ -1,5 +1,4 @@
 import unittest
-from typing import Optional
 
 from app.meta_wrapper import MetaWrapperV2, MetaWrapperAdhoc, MetaWrapper
 from app.output_type import OutputType
@@ -9,6 +8,7 @@ from app.v2.definitions.message_schema import Location
 from app.v2.definitions.submission_type import DECRYPT, SubmissionTypeBase
 from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
 from app.v2.message_builder import MessageBuilder
+from app.v2.definitions.survey_type import SurveyType
 
 
 class MockMetaWrapper(MetaWrapperV2):
@@ -79,7 +79,7 @@ class MockSubmissionType(SubmissionTypeBase):
 
 class MockSubmissionTypeMapper(SubmissionTypeMapperBase):
 
-    def get_submission_type(self, output_type: OutputType) -> SubmissionTypeBase:
+    def get_submission_type(self, survey_type: SurveyType) -> SubmissionTypeBase:
         return MockSubmissionType()
 
 

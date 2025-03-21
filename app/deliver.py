@@ -7,19 +7,10 @@ from app.encrypt import encrypt_output
 from app.message import create_message
 from app.meta_wrapper import MetaWrapper
 from app.output_type import OutputType
-from app.publish import publish_v2_message, publish_message
+from app.publish import publish_message
 from app.store import write_to_bucket
-from app.v2.definitions.location_key_lookup import LocationKeyLookupBase
-from app.v2.definitions.message_schema import MessageSchemaV2
-from app.v2.location_key_lookup import LocationKeyLookup
-from app.v2.submission_type_mapper import SubmissionTypeMapper
-from app.v2.location_name_repo import LocationNameRepo
-from app.v2.message_builder import MessageBuilder
-from app.v2.definitions.location_name_repository import LocationNameRepositoryBase
-from app.v2.zip import unzip
 
 logger = get_logger()
-location_name_repo: LocationNameRepositoryBase = LocationNameRepo()
 
 
 def deliver(meta_data: MetaWrapper, data_bytes: bytes, v2_message_schema: bool = False):
@@ -40,21 +31,8 @@ def deliver(meta_data: MetaWrapper, data_bytes: bytes, v2_message_schema: bool =
     path = write_to_bucket(encrypted_output, filename=meta_data.filename, output_type=meta_data.output_type)
 
     logger.info("Sending DAP notification")
-    if v2_message_schema:
-        location_name_repo.load_location_values()
-        location_key_lookup: LocationKeyLookupBase = LocationKeyLookup(location_name_repo)
-        message_constructor = MessageBuilder(submission_mapper=SubmissionTypeMapper(location_key_lookup))
 
-        if meta_data.output_type == OutputType.LEGACY or meta_data.output_type == OutputType.SPP:
-            filenames = unzip(data_bytes)
-        else:
-            filenames = [meta_data.output_filename]
-
-        v2_message: MessageSchemaV2 = message_constructor.build_message(filenames, meta_data)
-        publish_v2_message(v2_message, meta_data.tx_id)
-
-    else:
-        message: MessageSchema = create_message(meta_data)
-        publish_message(message, meta_data.tx_id, path)
+    message: MessageSchema = create_message(meta_data)
+    publish_message(message, meta_data.tx_id, path)
 
     logger.info("Process completed successfully", survey_id=meta_data.survey_id)

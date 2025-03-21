@@ -1,10 +1,10 @@
 from typing import Final
 
-from app.meta_wrapper import MetaWrapper
 from app.v2.definitions.config_schema import File
 from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.path_helper import get_ftp_path
-from app.v2.submission_types.bases.survey_type import SurveyType
+from app.v2.definitions.context import BusinessSurveyContext
+from app.v2.submission_types.bases.survey_submission import SurveySubmission
 
 # file types
 _PCK: Final[str] = "pck"
@@ -19,9 +19,9 @@ _CSV: Final[str] = "csv"
 _DAT: Final[str] = "dat"
 
 
-class LegacySubmissionType(SurveyType):
+class LegacySubmissionType(SurveySubmission):
 
-    def get_file_config(self, metadata: MetaWrapper) -> dict[str, [File]]:
+    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, [File]]:
         return {
             _PCK: [{
                 "location": LookupKey.FTP,

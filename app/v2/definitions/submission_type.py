@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Optional, Final
+from typing import Final
 
-from app.meta_wrapper import MetaWrapper
 from app.v2.definitions.message_schema import Location
+from app.v2.definitions.context import Context
 
 UNZIP: Final[str] = "unzip"
 DECRYPT: Final[str] = "decrypt"
@@ -19,5 +19,5 @@ class SubmissionTypeBase(ABC):
         pass
 
     @abstractmethod
-    def get_outputs(self, filename: str, metadata: MetaWrapper) -> list[Location]:
+    def get_outputs(self, filename: str, context: Context) -> list[Location]:
         pass

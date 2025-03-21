@@ -1,11 +1,11 @@
 from abc import abstractmethod
 
-from app.meta_wrapper import MetaWrapper
 from app.v2.definitions.config_schema import File
 from app.v2.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
 from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.message_schema import Location
 from app.v2.definitions.submission_type import SubmissionTypeBase
+from app.v2.definitions.context import Context
 
 
 class SubmissionType(SubmissionTypeBase):
@@ -14,7 +14,7 @@ class SubmissionType(SubmissionTypeBase):
         self._location_key_lookup = location_key_lookup
 
     @abstractmethod
-    def get_file_config(self, metadata: MetaWrapper) -> dict[str, [File]]:
+    def get_file_config(self, context: Context) -> dict[str, [File]]:
         pass
 
     @abstractmethod
@@ -40,9 +40,9 @@ class SubmissionType(SubmissionTypeBase):
             "filename": filename
         }
 
-    def get_outputs(self, filename: str, metadata: MetaWrapper) -> list[Location]:
+    def get_outputs(self, filename: str, context: Context) -> list[Location]:
         key: str = self.get_mapping(filename)
-        filelist: list[File] = self.get_file_config(metadata)[key]
+        filelist: list[File] = self.get_file_config(context)[key]
 
         result: list[Location] = []
         for file in filelist:
