@@ -1,24 +1,24 @@
+import io
 import json
 import unittest
+import zipfile
 from unittest.mock import patch, Mock
 
 from sdx_gcp import Request
 
-from app import deliver
-from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, SUBMISSION_FILE, deliver_feedback
+from app.v2 import deliver
+from app.v2.routes import FILE_NAME, ZIP_FILE, CONTEXT, deliver_business_survey
 from app.v2.definitions.message_schema import MessageSchemaV2
 from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME
 
 
 class TestFeedbackV2(unittest.TestCase):
 
-    @patch('app.deliver.write_to_bucket')
-    @patch('app.deliver.publish_v2_message')
-    @patch('app.deliver.encrypt_output')
-    @patch('app.routes.Flask.jsonify')
-    @patch('app.meta_wrapper.get_current_time')
+    @patch('app.v2.deliver.sdx_app.gcs_write')
+    @patch('app.v2.deliver.publish_v2_message')
+    @patch('app.v2.deliver.encrypt_output')
+    @patch('app.v2.routes.Flask.jsonify')
     def test_feedback_survey(self,
-                             mock_get_current_time: Mock,
                              mock_jsonify: Mock,
                              mock_encrypt: Mock,
                              mock_publish_v2_schema: Mock,
@@ -27,64 +27,38 @@ class TestFeedbackV2(unittest.TestCase):
         mock_encrypt.return_value = "My encrypted output"
         mock_write_to_bucket.return_value = "My fake bucket path"
         mock_jsonify.return_value = {"success": True}
-        mock_get_current_time.return_value = "16-25-27_26-02-2025"
 
         tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
         input_filename = tx_id
         output_filename = f'{tx_id}-fb-16-25-27_26-02-2025'
         survey_id = "009"
         period_id = "202505"
+        ru_ref = "49900000001A"
 
-        # Create the input submission file
-        submission_file = {
-            "tx_id": tx_id,
-            "type": "uk.gov.ons.edc.eq:feedback",
-            "version": "v2",
-            "data_version": "0.0.1",
-            "origin": "uk.gov.ons.edc.eq",
-            "flushed": False,
-            "submitted_at": "2016-05-21T16:37:56.551086",
-            "launch_language_code": "en",
-            "submission_language_code": "en",
-            "collection_exercise_sid": "9ced8dc9-f2f3-49f3-95af-2f3ca0b74ee3",
-            "schema_name": "mbs_0001",
-            "started_at": "2016-05-21T16:33:30.665144",
-            "case_id": "a386b2de-a615-42c8-a0f4-e274f9eb28ee",
-            "region_code": "GB-ENG",
-            "channel": "RAS",
-            "survey_metadata": {
-                "survey_id": survey_id,
-                "case_ref": "1000000000000001",
-                "case_type": "B",
-                "display_address": "ONS, Government Buildings, Cardiff Rd",
-                "employment_date": "2021-03-01",
-                "form_type": "0253",
-                "period_id": period_id,
-                "period_str": "January 2021",
-                "ref_p_end_date": "2021-06-01",
-                "ref_p_start_date": "2021-01-01",
-                "ru_name": "ACME T&T Limited",
-                "ru_ref": "49900000001A",
-                "trad_as": "ACME LTD.",
-                "user_id": "64389274239"
-            },
-            "data": {
-                "feedback_rating": "Easy",
-                "feedback_text": "Page design feedback"
-            }
-        }
+        zip_buffer = io.BytesIO()
+
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            zip_file.writestr(output_filename, "This is the content of the feedback file.")
+
+        zip_bytes = zip_buffer.getvalue()
 
         # Create the fake Request object
 
         files_dict = {
-            SUBMISSION_FILE: FileHolder(json.dumps(submission_file).encode("utf-8")),
+            ZIP_FILE: FileHolder(zip_bytes)
+        }
+
+        context = {
+            "survey_type": "feedback",
+            "survey_id": survey_id,
+            "period_id": period_id,
+            "ru_ref": ru_ref,
         }
 
         data = {
             FILE_NAME: input_filename,
             "tx_id": tx_id,
-            VERSION: V2,
-            MESSAGE_SCHEMA: V2
+            CONTEXT: json.dumps(context)
         }
 
         class MockRequest(Request):
@@ -92,7 +66,7 @@ class TestFeedbackV2(unittest.TestCase):
             args = data
 
         # Call the endpoint
-        response = deliver_feedback(MockRequest(data), tx_id)
+        response = deliver_business_survey(MockRequest(data), tx_id)
         self.assertTrue(response["success"])
 
         expected_v2_message: MessageSchemaV2 = {
@@ -103,13 +77,13 @@ class TestFeedbackV2(unittest.TestCase):
             "context": {
                 "survey_id": survey_id,
                 "period_id": period_id,
-                "ru_ref": "49900000001A"
+                "ru_ref": ru_ref
             },
             "source": {
                 "location_type": "gcs",
                 "location_name": SDX_LOCATION_NAME,
                 "path": "feedback",
-                "filename": output_filename
+                "filename": input_filename
             },
             "actions": ["decrypt"],
             "targets": [

@@ -62,11 +62,11 @@ class TestLegacyV2(unittest.TestCase):
         }
 
         context = {
-                "survey_type": "legacy",
-                "survey_id": survey_id,
-                "period_id": period_id,
-                "ru_ref": ru_ref,
-            }
+            "survey_type": "legacy",
+            "survey_id": survey_id,
+            "period_id": period_id,
+            "ru_ref": ru_ref,
+        }
 
         data = {
             FILE_NAME: input_filename,

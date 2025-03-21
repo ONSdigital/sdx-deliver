@@ -34,14 +34,19 @@ def deliver_v2(filename: str, data_bytes: bytes, context: Context):
     size_bytes = len(encrypted_bytes)
 
     logger.info("Storing to bucket")
-    sdx_app.gcs_write(encrypted_output, filename, CONFIG.BUCKET_NAME, "survey")
+    sdx_app.gcs_write(encrypted_output, filename, CONFIG.BUCKET_NAME, get_output_path(context))
 
     logger.info("Sending Nifi message")
     location_name_repo.load_location_values()
     location_key_lookup: LocationKeyLookupBase = LocationKeyLookup(location_name_repo)
     message_constructor = MessageBuilder(submission_mapper=SubmissionTypeMapper(location_key_lookup))
 
-    filenames = unzip(data_bytes)
+    filenames: list[str]
+    if context["survey_type"] == SurveyType.COMMENTS:
+        filenames = [filename]
+    else:
+        filenames = unzip(data_bytes)
+
     zip_details: ZipDetails = {
         "filename": filename,
         "size_bytes": size_bytes,
@@ -63,3 +68,12 @@ def get_survey_id(context: Context) -> str:
     else:
         business_context: BusinessSurveyContext = cast(BusinessSurveyContext, context)
         return business_context["survey_id"]
+
+
+def get_output_path(context: Context) -> str:
+    if context["survey_type"] == SurveyType.COMMENTS:
+        return "comments"
+    elif context["survey_type"] == SurveyType.SEFT:
+        return "seft"
+    else:
+        return "survey"

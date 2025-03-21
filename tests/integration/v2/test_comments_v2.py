@@ -1,22 +1,23 @@
 import io
+import json
 import unittest
 import zipfile
 from unittest.mock import patch, Mock
 
 from sdx_gcp import Request
 
-from app import deliver
-from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, ZIP_FILE, deliver_comments
+from app.v2 import deliver
+from app.v2.routes import FILE_NAME, ZIP_FILE, deliver_comments, CONTEXT
 from app.v2.definitions.message_schema import MessageSchemaV2
 from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME
 
 
 class TestCommentsV2(unittest.TestCase):
 
-    @patch('app.deliver.write_to_bucket')
-    @patch('app.deliver.publish_v2_message')
-    @patch('app.deliver.encrypt_output')
-    @patch('app.routes.Flask.jsonify')
+    @patch('app.v2.deliver.sdx_app.gcs_write')
+    @patch('app.v2.deliver.publish_v2_message')
+    @patch('app.v2.deliver.encrypt_output')
+    @patch('app.v2.routes.Flask.jsonify')
     def test_comments(self,
                       mock_jsonify: Mock,
                       mock_encrypt: Mock,
@@ -27,7 +28,7 @@ class TestCommentsV2(unittest.TestCase):
         mock_write_to_bucket.return_value = "My fake bucket path"
         mock_jsonify.return_value = {"success": True}
 
-        tx_id = "2025-01-01.zip:ftp"  # why?
+        tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
         input_filename = "2025-01-01.zip"
 
         # Create the input zipfile
@@ -46,11 +47,15 @@ class TestCommentsV2(unittest.TestCase):
             ZIP_FILE: FileHolder(zip_bytes)
         }
 
+        context = {
+            "survey_type": "comments",
+            "title": "Comments.zip",
+        }
+
         data = {
             FILE_NAME: input_filename,
             "tx_id": tx_id,
-            VERSION: V2,
-            MESSAGE_SCHEMA: V2
+            CONTEXT: json.dumps(context)
         }
 
         class MockRequest(Request):
