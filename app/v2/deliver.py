@@ -27,14 +27,19 @@ def deliver_v2(filename: str, data_bytes: bytes, context: Context):
     Encrypts any unencrypted data, writes to the appropriate location within the outputs GCP bucket and notifies DAP
     via PubSub
     """
-    logger.info("Encrypting output")
-    encrypted_output = encrypt_output(data_bytes)
-    encrypted_bytes = encrypted_output.encode()
-    md5sum = hashlib.md5(encrypted_bytes).hexdigest()
-    size_bytes = len(encrypted_bytes)
+    encrypted_bytes: bytes
+    if context["survey_type"] == SurveyType.SEFT:
+        encrypted_bytes = data_bytes
+    else:
+        logger.info("Encrypting output")
+        encrypted_output: str = encrypt_output(data_bytes)
+        encrypted_bytes = encrypted_output.encode()
+
+    md5sum: str = hashlib.md5(encrypted_bytes).hexdigest()
+    size_bytes: int = len(encrypted_bytes)
 
     logger.info("Storing to bucket")
-    sdx_app.gcs_write(encrypted_output, filename, CONFIG.BUCKET_NAME, get_output_path(context))
+    sdx_app.gcs_write(encrypted_bytes, filename, CONFIG.BUCKET_NAME, get_output_path(context))
 
     logger.info("Sending Nifi message")
     location_name_repo.load_location_values()
@@ -42,7 +47,7 @@ def deliver_v2(filename: str, data_bytes: bytes, context: Context):
     message_constructor = MessageBuilder(submission_mapper=SubmissionTypeMapper(location_key_lookup))
 
     filenames: list[str]
-    if context["survey_type"] == SurveyType.COMMENTS:
+    if context["survey_type"] == SurveyType.COMMENTS or context["survey_type"] == SurveyType.SEFT:
         filenames = [filename]
     else:
         filenames = unzip(data_bytes)

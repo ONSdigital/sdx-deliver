@@ -4,18 +4,18 @@ from unittest.mock import patch, Mock
 
 from sdx_gcp import Request
 
-from app import deliver
-from app.routes import FILE_NAME, V2, MESSAGE_SCHEMA, SEFT_FILE, METADATA_FILE, deliver_seft
+from app.v2 import deliver
+from app.v2.routes import FILE_NAME, SEFT_FILE, deliver_seft, CONTEXT
 from app.v2.definitions.message_schema import MessageSchemaV2
 from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME
 
 
 class TestSeftV2(unittest.TestCase):
 
-    @patch('app.deliver.write_to_bucket')
-    @patch('app.deliver.publish_v2_message')
-    @patch('app.deliver.encrypt_output')
-    @patch('app.routes.Flask.jsonify')
+    @patch('app.v2.deliver.sdx_app.gcs_write')
+    @patch('app.v2.deliver.publish_v2_message')
+    @patch('app.v2.deliver.encrypt_output')
+    @patch('app.v2.routes.Flask.jsonify')
     def test_seft(self,
                   mock_jsonify: Mock,
                   mock_encrypt: Mock,
@@ -30,30 +30,26 @@ class TestSeftV2(unittest.TestCase):
         input_filename = "14112300153_202203_141_20220623072928.xlsx.gpg"
         survey_id = "141"
         period_id = "202203"
-        ruref = "14112300153"
-        size_bytes = 19
-        md5sum = "3190f8a68aad6a9e33a624c318516ebb"
+        ru_ref = "14112300153"
+        size_bytes = 20
+        md5sum = "3085186577f3e5710efc7763fde95e13"
 
         # Create the fake Request object
-        metadata = {
-            'filename': input_filename,
-            'md5sum': md5sum,
-            'period': period_id,
-            'ru_ref': ruref,
-            'sizeBytes': size_bytes,
-            'survey_id': survey_id,
-            'tx_id': tx_id
+        context = {
+            "survey_type": "seft",
+            "survey_id": survey_id,
+            "period_id": period_id,
+            "ru_ref": ru_ref,
         }
 
         files_dict = {
-            METADATA_FILE: FileHolder(json.dumps(metadata).encode("utf-8")),
             SEFT_FILE: FileHolder(json.dumps("seft_file_contents").encode("utf-8")),
         }
 
         data = {
             FILE_NAME: input_filename,
             "tx_id": tx_id,
-            MESSAGE_SCHEMA: V2
+            CONTEXT: json.dumps(context)
         }
 
         class MockRequest(Request):
@@ -72,7 +68,7 @@ class TestSeftV2(unittest.TestCase):
             "context": {
                 "survey_id": survey_id,
                 "period_id": period_id,
-                "ru_ref": ruref
+                "ru_ref": ru_ref
             },
             "source": {
                 "location_type": "gcs",
