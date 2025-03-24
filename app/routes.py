@@ -18,7 +18,6 @@ VERSION = "version"
 V1 = "v1"
 V2 = "v2"
 ADHOC = "adhoc"
-MESSAGE_SCHEMA = "message_schema"
 
 
 def get_wrapper(req_args: dict[str, str]) -> MetaWrapper:
@@ -33,12 +32,6 @@ def get_wrapper(req_args: dict[str, str]) -> MetaWrapper:
         return MetaWrapper(filename)
 
 
-def use_v2_message_schema(req_args: dict[str, str]) -> bool:
-    if req_args.get(MESSAGE_SCHEMA, V1) == V2:
-        return True
-    return False
-
-
 def deliver_dap(req: Request, _tx_id: TX_ID):
     """
     Endpoint for submissions only intended for DAP. POST request requires the submission JSON to be uploaded
@@ -51,7 +44,7 @@ def deliver_dap(req: Request, _tx_id: TX_ID):
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = submission_bytes
     meta.set_dap(survey_dict)
-    deliver(meta, data_bytes, use_v2_message_schema(req.args))
+    deliver(meta, data_bytes)
     return Flask.jsonify(success=True)
 
 
@@ -68,7 +61,7 @@ def deliver_legacy(req: Request, _tx_id: TX_ID):
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = files[TRANSFORMED_FILE].read()
     meta.set_legacy(survey_dict)
-    deliver(meta, data_bytes, use_v2_message_schema(req.args))
+    deliver(meta, data_bytes)
     return Flask.jsonify(success=True)
 
 
@@ -85,7 +78,7 @@ def deliver_hybrid(req: Request, _tx_id: TX_ID):
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = files[TRANSFORMED_FILE].read()
     meta.set_hybrid(survey_dict)
-    deliver(meta, data_bytes, use_v2_message_schema(req.args))
+    deliver(meta, data_bytes)
     return Flask.jsonify(success=True)
 
 
@@ -101,7 +94,7 @@ def deliver_feedback(req: Request, _tx_id: TX_ID):
     survey_dict = json.loads(submission_bytes.decode())
     data_bytes = submission_bytes
     meta.set_feedback(survey_dict)
-    deliver(meta, data_bytes, use_v2_message_schema(req.args))
+    deliver(meta, data_bytes)
     return Flask.jsonify(success=True)
 
 
@@ -115,7 +108,7 @@ def deliver_comments(req: Request, _tx_id: TX_ID):
     files = req.files
     data_bytes = files[ZIP_FILE].read()
     meta.set_comments()
-    deliver(meta, data_bytes, use_v2_message_schema(req.args))
+    deliver(meta, data_bytes)
     return Flask.jsonify(success=True)
 
 
@@ -132,5 +125,5 @@ def deliver_seft(req: Request, _tx_id: TX_ID):
     meta_dict = json.loads(meta_bytes.decode())
     data_bytes = files[SEFT_FILE].read()
     meta.set_seft(meta_dict)
-    deliver(meta, data_bytes, use_v2_message_schema(req.args))
+    deliver(meta, data_bytes)
     return Flask.jsonify(success=True)
