@@ -13,7 +13,7 @@ from app.store import write_to_bucket
 logger = get_logger()
 
 
-def deliver(meta_data: MetaWrapper, data_bytes: bytes, v2_message_schema: bool = False):
+def deliver(meta_data: MetaWrapper, data_bytes: bytes):
     """
     Encrypts any unencrypted data, writes to the appropriate location within the outputs GCP bucket and notifies DAP
     via PubSub
