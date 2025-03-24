@@ -2,58 +2,22 @@ import io
 import json
 import unittest
 import zipfile
-from typing import Final
 from unittest.mock import patch, Mock
 
 from sdx_gcp import Request
 
-from app import deliver
-from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, SUBMISSION_FILE, TRANSFORMED_FILE, deliver_legacy
-from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
-from app.v2.definitions.message_schema import SchemaDataV2
-from app.v2.message_builder import BUSINESS_CONTEXT
-
-SDX_LOCATION_NAME: Final[str] = "sdx_location_name"
-FTP_LOCATION_NAME: Final[str] = "ftp_location_name"
-SPP_LOCATION_NAME: Final[str] = "spp_location_name"
-DAP_LOCATION_NAME: Final[str] = "dap_location_name"
-
-
-class MockLocationNameMapper(LocationNameRepositoryBase):
-    def __init__(self):
-        self.locations_mapping = None
-
-    def get_location_name(self, key: LookupKey) -> str:
-        return self.locations_mapping[key.value]
-
-    def load_location_values(self):
-        ftp_key = LookupKey.FTP.value
-        sdx_key = LookupKey.SDX.value
-        spp_key = LookupKey.SPP.value
-        dap_key = LookupKey.DAP.value
-        self.locations_mapping = {
-            ftp_key: FTP_LOCATION_NAME,
-            sdx_key: SDX_LOCATION_NAME,
-            spp_key: SPP_LOCATION_NAME,
-            dap_key: DAP_LOCATION_NAME
-        }
-
-
-class FileHolder:
-
-    def __init__(self, file_bytes: bytes):
-        self._file_bytes = file_bytes
-
-    def read(self) -> bytes:
-        return self._file_bytes
+from app.v2.definitions.message_schema import MessageSchemaV2
+from app.v2 import deliver
+from app.v2.routes import ZIP_FILE, FILE_NAME, CONTEXT, deliver_business_survey
+from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME
 
 
 class TestLegacyV2(unittest.TestCase):
 
-    @patch('app.deliver.write_to_bucket')
-    @patch('app.deliver.publish_v2_schema')
-    @patch('app.deliver.encrypt_output')
-    @patch('app.routes.Flask.jsonify')
+    @patch('app.v2.deliver.sdx_app.gcs_write')
+    @patch('app.v2.deliver.publish_v2_message')
+    @patch('app.v2.deliver.encrypt_output')
+    @patch('app.v2.routes.Flask.jsonify')
     def test_legacy_survey(self,
                            mock_jsonify: Mock,
                            mock_encrypt: Mock,
@@ -69,6 +33,7 @@ class TestLegacyV2(unittest.TestCase):
         tx_id_trunc = "c37a3efa-593c-4bab"
         survey_id = "009"
         period_id = "201605"
+        ru_ref = "12346789012A"
         submission_date_str = "20210105"
         submission_date_dm = "0501"
 
@@ -90,51 +55,23 @@ class TestLegacyV2(unittest.TestCase):
 
         zip_bytes = zip_buffer.getvalue()
 
-        # Create the input submission file
-        submission_file = {
-            "case_id": "8fc3eb0b-2dd7-4acd-a354-5d4f69503233",
-            "tx_id": tx_id,
-            "type": "uk.gov.ons.edc.eq:surveyresponse",
-            "version": "v2",
-            "data_version": "0.0.1",
-            "origin": "uk.gov.ons.edc.eq",
-            "collection_exercise_sid": "44047ed7-2c7b-45d5-a7ad-31a05c6a5965",
-            "schema_name": "mbs_0106",
-            "flushed": False,
-            "submitted_at": "2023-01-18T13:33:19+00:00",
-            "launch_language_code": "en",
-            "survey_metadata": {
-                "survey_id": survey_id,
-                "period_id": period_id,
-                "ref_p_end_date": "2016-05-31",
-                "trad_as": "ESSENTIAL ENTERPRISE LTD.",
-                "ru_name": "ESSENTIAL ENTERPRISE LTD.",
-                "ref_p_start_date": "2016-05-01",
-                "ru_ref": "12346789012A",
-                "user_id": "UNKNOWN",
-                "form_type": "0106"
-            },
-            "data": {
-                "9999": "Yes, I can report for this period",
-                "40": "12000",
-                "146": "comment"
-            },
-            "started_at": "2023-01-18T13:33:00.425419+00:00",
-            "submission_language_code": "en"
-        }
-
         # Create the fake Request object
 
         files_dict = {
-            SUBMISSION_FILE: FileHolder(json.dumps(submission_file).encode("utf-8")),
-            TRANSFORMED_FILE: FileHolder(zip_bytes)
+            ZIP_FILE: FileHolder(zip_bytes)
+        }
+
+        context = {
+            "survey_type": "legacy",
+            "survey_id": survey_id,
+            "period_id": period_id,
+            "ru_ref": ru_ref,
         }
 
         data = {
             FILE_NAME: input_filename,
             "tx_id": tx_id,
-            VERSION: V2,
-            MESSAGE_SCHEMA: V2
+            CONTEXT: json.dumps(context)
         }
 
         class MockRequest(Request):
@@ -142,20 +79,18 @@ class TestLegacyV2(unittest.TestCase):
             args = data
 
         # Call the endpoint
-
-        response = deliver_legacy(MockRequest(data), tx_id)
+        response = deliver_business_survey(MockRequest(data), tx_id)
         self.assertTrue(response["success"])
 
-        expected_v2_message: SchemaDataV2 = {
+        expected_v2_message: MessageSchemaV2 = {
             "schema_version": "2",
             "sensitivity": "High",
             "sizeBytes": 19,
             "md5sum": "3190f8a68aad6a9e33a624c318516ebb",
             "context": {
-                'context_type': BUSINESS_CONTEXT,
                 "survey_id": survey_id,
                 "period_id": period_id,
-                "ru_ref": "12346789012A"
+                "ru_ref": ru_ref
             },
             "source": {
                 "location_type": "gcs",

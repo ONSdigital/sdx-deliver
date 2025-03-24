@@ -12,12 +12,14 @@ class MockLocationNameRepository(LocationNameRepositoryBase):
         sdx_key = LookupKey.SDX.value
         spp_key = LookupKey.SPP.value
         dap_key = LookupKey.DAP.value
+        ns5_key = LookupKey.NS5.value
 
         self.locations_mapping = {
             ftp_key: "NIFI_LOCATION_FTP",
             sdx_key: "NIFI_LOCATION_SDX",
             spp_key: "NIFI_LOCATION_SPP",
-            dap_key: "NIFI_LOCATION_DAP"
+            dap_key: "NIFI_LOCATION_DAP",
+            ns5_key: "NIFI_LOCATION_NS5",
         }
 
     def get_location_name(self, key: LookupKey) -> str:

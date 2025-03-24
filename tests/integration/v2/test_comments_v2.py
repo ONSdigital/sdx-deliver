@@ -1,58 +1,23 @@
 import io
+import json
 import unittest
 import zipfile
-from typing import Final
 from unittest.mock import patch, Mock
 
 from sdx_gcp import Request
 
-from app import deliver
-from app.routes import FILE_NAME, VERSION, V2, MESSAGE_SCHEMA, ZIP_FILE, deliver_comments
-from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
-from app.v2.definitions.message_schema import SchemaDataV2
-from app.v2.message_builder import COMMENTS_CONTEXT
-
-SDX_LOCATION_NAME: Final[str] = "sdx_location_name"
-FTP_LOCATION_NAME: Final[str] = "ftp_location_name"
-SPP_LOCATION_NAME: Final[str] = "spp_location_name"
-DAP_LOCATION_NAME: Final[str] = "dap_location_name"
-
-
-class MockLocationNameMapper(LocationNameRepositoryBase):
-    def __init__(self):
-        self.locations_mapping = None
-
-    def get_location_name(self, key: LookupKey) -> str:
-        return self.locations_mapping[key.value]
-
-    def load_location_values(self):
-        ftp_key = LookupKey.FTP.value
-        sdx_key = LookupKey.SDX.value
-        spp_key = LookupKey.SPP.value
-        dap_key = LookupKey.DAP.value
-        self.locations_mapping = {
-            ftp_key: FTP_LOCATION_NAME,
-            sdx_key: SDX_LOCATION_NAME,
-            spp_key: SPP_LOCATION_NAME,
-            dap_key: DAP_LOCATION_NAME
-        }
-
-
-class FileHolder:
-
-    def __init__(self, file_bytes: bytes):
-        self._file_bytes = file_bytes
-
-    def read(self) -> bytes:
-        return self._file_bytes
+from app.v2 import deliver
+from app.v2.routes import FILE_NAME, ZIP_FILE, deliver_comments_file, CONTEXT
+from app.v2.definitions.message_schema import MessageSchemaV2
+from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME
 
 
 class TestCommentsV2(unittest.TestCase):
 
-    @patch('app.deliver.write_to_bucket')
-    @patch('app.deliver.publish_v2_schema')
-    @patch('app.deliver.encrypt_output')
-    @patch('app.routes.Flask.jsonify')
+    @patch('app.v2.deliver.sdx_app.gcs_write')
+    @patch('app.v2.deliver.publish_v2_message')
+    @patch('app.v2.deliver.encrypt_output')
+    @patch('app.v2.routes.Flask.jsonify')
     def test_comments(self,
                       mock_jsonify: Mock,
                       mock_encrypt: Mock,
@@ -63,7 +28,7 @@ class TestCommentsV2(unittest.TestCase):
         mock_write_to_bucket.return_value = "My fake bucket path"
         mock_jsonify.return_value = {"success": True}
 
-        tx_id = "2025-01-01.zip:ftp"  # why?
+        tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
         input_filename = "2025-01-01.zip"
 
         # Create the input zipfile
@@ -82,11 +47,15 @@ class TestCommentsV2(unittest.TestCase):
             ZIP_FILE: FileHolder(zip_bytes)
         }
 
+        context = {
+            "survey_type": "comments",
+            "title": "Comments.zip",
+        }
+
         data = {
             FILE_NAME: input_filename,
             "tx_id": tx_id,
-            VERSION: V2,
-            MESSAGE_SCHEMA: V2
+            CONTEXT: json.dumps(context)
         }
 
         class MockRequest(Request):
@@ -94,16 +63,15 @@ class TestCommentsV2(unittest.TestCase):
             args = data
 
         # Call the endpoint
-        response = deliver_comments(MockRequest(data), tx_id)
+        response = deliver_comments_file(MockRequest(data), tx_id)
         self.assertTrue(response["success"])
 
-        expected_v2_message: SchemaDataV2 = {
+        expected_v2_message: MessageSchemaV2 = {
             "schema_version": "2",
             "sensitivity": "High",
             "sizeBytes": 19,
             "md5sum": "3190f8a68aad6a9e33a624c318516ebb",
             "context": {
-                "context_type": COMMENTS_CONTEXT,
                 "title": "Comments.zip",
             },
             "source": {

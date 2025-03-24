@@ -18,6 +18,7 @@ class LocationKeyLookup(LocationKeyLookupBase):
         sdx_key = str(LookupKey.SDX.value)
         spp_key = str(LookupKey.SPP.value)
         dap_key = str(LookupKey.DAP.value)
+        ns5_key = str(LookupKey.NS5.value)
         self._location_keys: dict[str, LocationKey] = {
             ftp_key: {
                 "location_type": WINDOWS_SERVER,
@@ -34,7 +35,11 @@ class LocationKeyLookup(LocationKeyLookupBase):
             dap_key: {
                 "location_type": CDP,
                 "location_name": self._location_name_repo.get_location_name(LookupKey.DAP)
-            }
+            },
+            ns5_key: {
+                "location_type": WINDOWS_SERVER,
+                "location_name": self._location_name_repo.get_location_name(LookupKey.NS5)
+            },
         }
 
     def get_location_key(self, lookup_key: LookupKey) -> LocationKey:

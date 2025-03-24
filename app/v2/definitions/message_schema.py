@@ -13,7 +13,7 @@ class Target(TypedDict):
     outputs: list[Location]
 
 
-class SchemaDataV2(TypedDict):
+class MessageSchemaV2(TypedDict):
     schema_version: str
     sensitivity: str
     sizeBytes: int

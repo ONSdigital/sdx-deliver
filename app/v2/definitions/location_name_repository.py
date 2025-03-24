@@ -7,6 +7,7 @@ class LookupKey(StrEnum):
     SDX = "sdx"
     SPP = "spp"
     DAP = "dap"
+    NS5 = "ns5"
 
 
 class LocationNameRepositoryBase(ABC):

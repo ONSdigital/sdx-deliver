@@ -1,28 +1,14 @@
 import unittest
-from typing import Optional
 
-from app.meta_wrapper import MetaWrapperV2, MetaWrapperAdhoc
-from app.output_type import OutputType
+from app.v2.definitions.context import BusinessSurveyContext, Context, CommentsFileContext, AdhocSurveyContext
 from app.v2.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
 from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.message_schema import Location
 from app.v2.definitions.submission_type import DECRYPT, SubmissionTypeBase
 from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
-from app.v2.message_builder import MessageBuilder, BUSINESS_CONTEXT, ADHOC_CONTEXT, COMMENTS_CONTEXT
-
-
-class MockMetaWrapper(MetaWrapperV2):
-
-    def __init__(self, filename: str, output_type: OutputType):
-        super().__init__(filename=filename)
-        self.filename = filename
-        self.tx_id = "123"
-        self.survey_id = "101"
-        self.period = "202101"
-        self.ru_ref = "10550"
-        self.md5sum = "51252"
-        self.sizeBytes = 100
-        self.output_type = output_type
+from app.v2.definitions.zip_details import ZipDetails
+from app.v2.message_builder import MessageBuilder
+from app.v2.definitions.survey_type import SurveyType
 
 
 class MockLocationKeyLookup(LocationKeyLookupBase):
@@ -68,7 +54,7 @@ class MockSubmissionType(SubmissionTypeBase):
     def get_actions(self) -> list[str]:
         return [DECRYPT]
 
-    def get_outputs(self, filename: str, survey_id: Optional[str] = None) -> list[Location]:
+    def get_outputs(self, filename: str, context: Context) -> list[Location]:
         return [{
             "location_type": "server2",
             "location_name": "server2-name",
@@ -79,7 +65,7 @@ class MockSubmissionType(SubmissionTypeBase):
 
 class MockSubmissionTypeMapper(SubmissionTypeMapperBase):
 
-    def get_submission_type(self, output_type: OutputType) -> SubmissionTypeBase:
+    def get_submission_type(self, survey_type: SurveyType) -> SubmissionTypeBase:
         return MockSubmissionType()
 
 
@@ -105,9 +91,13 @@ class TestMessageConstructor(unittest.TestCase):
 
     def test_get_target(self):
         filename_list = ["file1", "file2"]
+        context: Context = {
+            "tx_id": "123",
+            "survey_type": SurveyType.SPP
+        }
         target_list = self.message_builder.get_targets(filename_list,
                                                        MockSubmissionType(),
-                                                       MockMetaWrapper("filename", output_type=OutputType.HYBRID))
+                                                       context)
 
         expected = [
             {
@@ -143,66 +133,90 @@ class TestMessageConstructor(unittest.TestCase):
         self.assertEqual(expected, actions)
 
     def test_get_business_survey_context(self):
-        meta_data = MockMetaWrapper(filename="file1", output_type=OutputType.SPP)
-        context = self.message_builder.get_context(meta_data)
-
-        expected = {
-            "context_type": BUSINESS_CONTEXT,
-            "survey_id": "101",
+        context: BusinessSurveyContext = {
+            "tx_id": "123",
+            "survey_type": SurveyType.LEGACY,
+            "survey_id": "666",
             "period_id": "202101",
             "ru_ref": "10550"
         }
 
-        self.assertEqual(expected, context)
-
-    def test_get_comments_context(self):
-        meta_data = MockMetaWrapper(filename="file1", output_type=OutputType.COMMENTS)
-        context = self.message_builder.get_context(meta_data)
+        actual = self.message_builder.get_context(context)
 
         expected = {
-            "context_type": COMMENTS_CONTEXT,
+            "survey_id": "666",
+            "period_id": "202101",
+            "ru_ref": "10550"
+        }
+
+        self.assertEqual(expected, actual)
+
+    def test_get_comments_context(self):
+        context: CommentsFileContext = {
+            "tx_id": "123",
+            "survey_type": SurveyType.COMMENTS,
             "title": "Comments.zip"
         }
 
-        self.assertEqual(expected, context)
-
-    def test_get_adhoc_context(self):
-        class TestMetaWrapperAdhoc(MetaWrapperAdhoc):
-            def __init__(self, filename: str, output_type: OutputType):
-                super().__init__(filename=filename)
-                self.filename = filename
-                self.tx_id = "123"
-                self.survey_id = "101"
-                self.period = "202101"
-                self.ru_ref = "10550"
-                self.md5sum = "51252"
-                self.sizeBytes = 100
-                self.output_type = output_type
-
-        meta_data = TestMetaWrapperAdhoc(filename="file1", output_type=OutputType.SPP)
-        context = self.message_builder.get_context(meta_data)
+        actual = self.message_builder.get_context(context)
 
         expected = {
-            "context_type": ADHOC_CONTEXT,
-            "survey_id": "101",
-            "title": "101 survey response for adhoc survey"
+            "title": "Comments.zip"
         }
 
-        self.assertEqual(expected, context)
+        self.assertEqual(expected, actual)
+
+    def test_get_adhoc_context(self):
+        context: AdhocSurveyContext = {
+            "tx_id": "123",
+            "survey_type": SurveyType.ADHOC,
+            "survey_id": "101",
+            "title": "101 survey response for adhoc survey",
+            "label": "adhoc label"
+        }
+
+        actual = self.message_builder.get_context(context)
+
+        expected = {
+            "survey_id": "101",
+            "title": "101 survey response for adhoc survey",
+            "label": "adhoc label"
+        }
+
+        self.assertEqual(expected, actual)
 
     def test_build_message(self):
         input_filename = "input_file"
         filenames = ["file1", "file2"]
+        size_bytes = 100
+        md5sum = '51252'
+        survey_id = "666"
+        period_id = "202101"
+        ru_ref = "10550"
 
-        meta_data = MockMetaWrapper(filename=input_filename, output_type=OutputType.SPP)
-        actual = self.message_builder.build_message(filenames, meta_data)
+        context: BusinessSurveyContext = {
+            "tx_id": "123",
+            "survey_type": SurveyType.LEGACY,
+            "survey_id": survey_id,
+            "period_id": period_id,
+            "ru_ref": ru_ref
+        }
+
+        zip_details: ZipDetails = {
+            "filename": input_filename,
+            "size_bytes": size_bytes,
+            "md5sum": md5sum,
+            "filenames": filenames
+        }
+
+        actual = self.message_builder.build_message(zip_details, context)
 
         expected = {'actions': ['decrypt'],
-                    'context': {'context_type': BUSINESS_CONTEXT, 'period_id': '202101', 'ru_ref': '10550', 'survey_id': '101'},
-                    'md5sum': '51252',
+                    'context': {'period_id': period_id, 'ru_ref': ru_ref, 'survey_id': survey_id},
+                    'md5sum': md5sum,
                     'schema_version': '2',
                     'sensitivity': 'High',
-                    'sizeBytes': 100,
+                    'sizeBytes': size_bytes,
                     'source': {'filename': 'input_file',
                                'location_name': 'server1-name',
                                'location_type': 'server1',
