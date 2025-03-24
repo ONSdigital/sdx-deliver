@@ -54,11 +54,6 @@ class MetaWrapper:
         self.output_type = OutputType.LEGACY
         self._from_survey(survey_dict)
 
-    def set_spp(self, survey_dict: dict):
-        self.filename = f'{self.filename}:{locations["HYBRID"]}'
-        self.output_type = OutputType.SPP
-        self._from_survey(survey_dict)
-
     def set_hybrid(self, survey_dict: dict):
         self.filename = f'{self.filename}:{locations["HYBRID"]}'
         self.output_type = OutputType.HYBRID
