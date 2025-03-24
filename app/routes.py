@@ -72,23 +72,6 @@ def deliver_legacy(req: Request, _tx_id: TX_ID):
     return Flask.jsonify(success=True)
 
 
-def deliver_spp(req: Request, _tx_id: TX_ID):
-    """
-    Endpoint for submissions intended for SPP and legacy systems. POST request requires the submission JSON to be uploaded as
-    "submission", the zipped transformed artifact as "transformed", and the filename passed in the query
-    parameters.
-    """
-    logger.info('Processing SPP submission')
-    meta = get_wrapper(req.args)
-    files = req.files
-    submission_bytes = files[SUBMISSION_FILE].read()
-    survey_dict = json.loads(submission_bytes.decode())
-    data_bytes = files[TRANSFORMED_FILE].read()
-    meta.set_spp(survey_dict)
-    deliver(meta, data_bytes, use_v2_message_schema(req.args))
-    return Flask.jsonify(success=True)
-
-
 def deliver_hybrid(req: Request, _tx_id: TX_ID):
     """
     Endpoint for submissions intended for dap and legacy systems. POST request requires the submission JSON to be
