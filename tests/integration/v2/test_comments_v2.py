@@ -49,6 +49,7 @@ class TestCommentsV2(unittest.TestCase):
 
         context = {
             "survey_type": "comments",
+            "tx_id": tx_id,
             "title": "Comments.zip",
         }
 

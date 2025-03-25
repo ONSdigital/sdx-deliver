@@ -7,7 +7,7 @@ from unittest.mock import patch, Mock
 from sdx_gcp import Request
 
 from app.v2 import deliver
-from app.v2.routes import FILE_NAME, ZIP_FILE, CONTEXT, deliver_business_survey
+from app.v2.routes import FILE_NAME, ZIP_FILE, CONTEXT, deliver_survey
 from app.v2.definitions.message_schema import MessageSchemaV2
 from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME, SPP_LOCATION_NAME
 
@@ -61,6 +61,7 @@ class TestSppV2(unittest.TestCase):
 
         context = {
             "survey_type": "spp",
+            "tx_id": tx_id,
             "survey_id": survey_id,
             "period_id": period_id,
             "ru_ref": ru_ref,
@@ -77,7 +78,7 @@ class TestSppV2(unittest.TestCase):
             args = data
 
         # Call the endpoint
-        response = deliver_business_survey(MockRequest(data), tx_id)
+        response = deliver_survey(MockRequest(data), tx_id)
         self.assertTrue(response["success"])
 
         expected_v2_message: MessageSchemaV2 = {

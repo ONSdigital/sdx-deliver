@@ -8,7 +8,7 @@ from sdx_gcp import Request
 
 from app.v2.definitions.message_schema import MessageSchemaV2
 from app.v2 import deliver
-from app.v2.routes import ZIP_FILE, FILE_NAME, CONTEXT, deliver_business_survey
+from app.v2.routes import ZIP_FILE, FILE_NAME, CONTEXT, deliver_survey
 from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME
 
 
@@ -41,7 +41,6 @@ class TestLegacyV2(unittest.TestCase):
         image_filename = f"S{tx_id_trunc}_1.JPG"
         index_filename = f"EDC_{survey_id}_{submission_date_str}_{tx_id_trunc}.csv"
         receipt_filename = f"REC{submission_date_dm}_{tx_id_trunc}.DAT"
-        json_filename = f"{survey_id}_{tx_id_trunc}.json"
 
         # Create the input zipfile
         zip_buffer = io.BytesIO()
@@ -51,7 +50,6 @@ class TestLegacyV2(unittest.TestCase):
             zip_file.writestr(image_filename, 'This is the content of image file.')
             zip_file.writestr(index_filename, 'This is the content of index file.')
             zip_file.writestr(receipt_filename, 'This is the content of the receipt file.')
-            zip_file.writestr(json_filename, "This is the content of the json file.")
 
         zip_bytes = zip_buffer.getvalue()
 
@@ -63,6 +61,7 @@ class TestLegacyV2(unittest.TestCase):
 
         context = {
             "survey_type": "legacy",
+            "tx_id": tx_id,
             "survey_id": survey_id,
             "period_id": period_id,
             "ru_ref": ru_ref,
@@ -79,7 +78,7 @@ class TestLegacyV2(unittest.TestCase):
             args = data
 
         # Call the endpoint
-        response = deliver_business_survey(MockRequest(data), tx_id)
+        response = deliver_survey(MockRequest(data), tx_id)
         self.assertTrue(response["success"])
 
         expected_v2_message: MessageSchemaV2 = {
@@ -141,17 +140,6 @@ class TestLegacyV2(unittest.TestCase):
                             "location_name": FTP_LOCATION_NAME,
                             "path": "SDX_PREPROD/EDC_QReceipts",
                             "filename": receipt_filename
-                        }
-                    ]
-                },
-                {
-                    "input": json_filename,
-                    "outputs": [
-                        {
-                            "location_type": "windows_server",
-                            "location_name": FTP_LOCATION_NAME,
-                            "path": "SDX_PREPROD/EDC_QJson",
-                            "filename": json_filename
                         }
                     ]
                 }
