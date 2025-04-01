@@ -5,7 +5,7 @@ class SurveyType(StrEnum):
     DAP = "dap"
     LEGACY = "legacy"
     SPP = "spp"
-    ENVIRONMENTAL = "ns5"
+    ENVIRONMENTAL = "environmental"
     MATERIALS = "materials"
     FEEDBACK = "feedback"
     SEFT = "seft"
