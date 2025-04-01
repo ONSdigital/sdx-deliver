@@ -1,0 +1,192 @@
+openapi: 3.0.0
+info:
+  title: SDX Deliver API
+  version: 1.0.0
+paths:
+  /deliver/v2/survey:
+    post:
+      summary: Endpoint for business submissions that will use the version 2 schema for the nifi message.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                filename:
+                  type: string
+                  description: The name of the zip file being submitted.
+                tx_id:
+                  type: string
+                  description: The transaction id
+                context:
+                  oneOf:
+                    - $ref: '#/components/schemas/BusinessSurveyContext'
+                    - $ref: '#/components/schemas/AdhocSurveyContext'
+                zip_file:
+                  type: string
+                  format: binary
+                  description: The zip file containing the created artifacts.
+      responses:
+        200:
+          $ref: '#/components/responses/200'
+        400:
+          $ref: '#/components/responses/400'
+        500:
+          $ref: '#/components/responses/500'
+
+  /deliver/v2/comments:
+    post:
+      summary: Endpoint for the comments file using the version 2 schema for the nifi message.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                filename:
+                  type: string
+                  description: The name of the zip file being submitted.
+                tx_id:
+                  type: string
+                  description: The transaction id
+                context:
+                  $ref: '#/components/schemas/CommentsFileContext'
+                zip_file:
+                  type: string
+                  format: binary
+                  description: The zip file containing the comments.
+      responses:
+        200:
+          $ref: '#/components/responses/200'
+        400:
+          $ref: '#/components/responses/400'
+        500:
+          $ref: '#/components/responses/500'
+
+  /deliver/v2/seft:
+    post:
+      summary: Endpoint for SEFT files using the version 2 schema for the nifi message.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                filename:
+                  type: string
+                  description: The name of the SEFT file being submitted.
+                tx_id:
+                  type: string
+                  description: The transaction id
+                context:
+                  $ref: '#/components/schemas/CommentsFileContext'
+                seft_file:
+                  type: string
+                  format: binary
+                  description: The encrypted SEFT file bytes.
+      responses:
+        200:
+          $ref: '#/components/responses/200'
+        400:
+          $ref: '#/components/responses/400'
+        500:
+          $ref: '#/components/responses/500'
+
+components:
+  schemas:
+    Context:
+      type: object
+      properties:
+        tx_id:
+          type: string
+          description: The transaction ID.
+    BusinessSurveyContext:
+      allOf:
+        - $ref: '#/components/schemas/Context'
+        - type: object
+          properties:
+            survey_type:
+              type: string
+              description: The type of the survey.
+              enum:
+                - "dap"
+                - "legacy"
+                - "spp"
+                - "environmental"
+                - "materials"
+                - "feedback"
+            survey_id:
+              type: string
+              description: The survey ID.
+            period_id:
+              type: string
+              description: The period ID.
+            ru_ref:
+              type: string
+              description: The reporting unit reference.
+    AdhocSurveyContext:
+      allOf:
+        - $ref: '#/components/schemas/Context'
+        - type: object
+          properties:
+            survey_type:
+              type: string
+              description: The type of the survey.
+              enum:
+                - "adhoc"
+            survey_id:
+              type: string
+              description: The survey ID.
+            title:
+              type: string
+              description: The title of the survey.
+            label:
+              type: string
+              description: The label of the survey.
+    CommentsFileContext:
+      allOf:
+        - $ref: '#/components/schemas/Context'
+        - type: object
+          properties:
+            survey_type:
+              type: string
+              description: The type of the survey.
+              enum:
+                - "comments"
+            title:
+              type: string
+              description: The title of the comments file.
+  responses:
+    '200':
+      description: Successful response
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+    '400':
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "missing filename"
+    '500':
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "internal server error"
