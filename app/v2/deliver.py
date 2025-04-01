@@ -38,10 +38,6 @@ def deliver_v2(filename: str, data_bytes: bytes, context: Context):
     md5sum: str = hashlib.md5(encrypted_bytes).hexdigest()
     size_bytes: int = len(encrypted_bytes)
 
-    logger.info("Storing to bucket")
-    sdx_app.gcs_write(encrypted_bytes, filename, CONFIG.BUCKET_NAME, get_output_path(context))
-
-    logger.info("Sending Nifi message")
     location_name_repo.load_location_values()
     location_key_lookup: LocationKeyLookupBase = LocationKeyLookup(location_name_repo)
     message_constructor = MessageBuilder(submission_mapper=SubmissionTypeMapper(location_key_lookup))
@@ -59,6 +55,11 @@ def deliver_v2(filename: str, data_bytes: bytes, context: Context):
         "filenames": filenames,
     }
     v2_message: MessageSchemaV2 = message_constructor.build_message(zip_details, context)
+
+    logger.info("Storing to bucket")
+    sdx_app.gcs_write(encrypted_bytes, filename, CONFIG.BUCKET_NAME, get_output_path(v2_message))
+
+    logger.info("Sending Nifi message")
     publish_v2_message(v2_message, context["tx_id"])
 
     logger.info("Process completed successfully", survey_id=get_survey_id(context))
@@ -75,10 +76,5 @@ def get_survey_id(context: Context) -> str:
         return business_context["survey_id"]
 
 
-def get_output_path(context: Context) -> str:
-    if context["survey_type"] == SurveyType.COMMENTS:
-        return "comments"
-    elif context["survey_type"] == SurveyType.SEFT:
-        return "seft"
-    else:
-        return "survey"
+def get_output_path(v2_message: MessageSchemaV2) -> str:
+    return v2_message["source"]["path"]

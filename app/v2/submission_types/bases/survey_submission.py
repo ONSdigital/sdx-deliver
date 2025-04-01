@@ -10,6 +10,10 @@ from app.v2.submission_types.bases.submission_type import SubmissionType
 
 class SurveySubmission(SubmissionType, ABC):
 
+    @abstractmethod
+    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, [File]]:
+        pass
+
     def get_source_path(self) -> str:
         return "survey"
 
@@ -21,10 +25,6 @@ class SurveySubmission(SubmissionType, ABC):
             "location": LookupKey.FTP,
             "path": f"{get_ftp_path()}/EDC_QImages/Images"
         }
-
-    @abstractmethod
-    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, [File]]:
-        pass
 
     def get_ftp_index(self) -> File:
         return {
