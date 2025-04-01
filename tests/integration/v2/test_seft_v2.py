@@ -40,6 +40,7 @@ class TestSeftV2(unittest.TestCase):
             "survey_id": survey_id,
             "period_id": period_id,
             "ru_ref": ru_ref,
+            "tx_id": tx_id
         }
 
         files_dict = {
