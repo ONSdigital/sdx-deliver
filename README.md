@@ -138,6 +138,7 @@ They are currently:
 
 Allows Survey, SEFT and Collate to send data to be stored by deliver
 
+Endpoints for the v1 message:
 
 * `POST /deliver/dap` - Processes JSON surveys destined for DAP
 
@@ -149,9 +150,16 @@ Allows Survey, SEFT and Collate to send data to be stored by deliver
 
 * `POST /deliver/seft` - Processes SEFT submissions
 
-* `POST /deliver/spp` - Processes submissions destined for SPP
-
 * `POST /deliver/hybrid` - Processes submissions destined that require specific routing in Nifi (Version 1 only)
+
+Endpoints for the v2 message:
+
+* `POST /deliver/v2/survey` - Processes any survey type that originated from eQ-runner including legacy, spp, adhoc, feedback etc
+
+* `POST /deliver/v2/coments` - Processes the comments zip
+
+* `POST /deliver/v2/seft` - Processes SEFT submissions
+
 
 
 ## License
