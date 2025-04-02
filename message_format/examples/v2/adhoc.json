@@ -1,0 +1,37 @@
+{
+  "data": {
+    "schema_version": "2",
+    "sensitivity": "Medium",
+    "sizeBytes": 1398,
+    "md5sum": "fb27bec4baff5a5ec62dd27b05eed7fc",
+    "context": {
+      "survey_id": "740",
+      "title": "covid_resp_inf_surv_response",
+      "label": "phm_740_health_insights_2024"
+    },
+    "source": {
+      "location_type": "gcs",
+      "location_name": "ons-sdx-preprod-outputs",
+      "path": "dap",
+      "filename": "740-20f44292-488e-4ed8-908a-76e4b50b5b14.json"
+    },
+    "targets": [
+      {
+        "input": "740-20f44292-488e-4ed8-908a-76e4b50b5b14.json",
+        "outputs": [
+          {
+            "location_type": "windows_server",
+            "location_name": "?",
+            "path": "?",
+            "filename": "?"
+          }
+        ]
+      }
+    ]
+  },
+  "attributes": {
+    "tx_id": "20f44292-488e-4ed8-908a-76e4b50b5b14"
+  },
+  "messageId": "123456789101112",
+  "publishTime": "2014-10-02T15:01:23Z"
+}

@@ -32,7 +32,7 @@ def get_wrapper(req_args: dict[str, str]) -> MetaWrapper:
         return MetaWrapper(filename)
 
 
-def deliver_dap(req: Request, tx_id: TX_ID):
+def deliver_dap(req: Request, _tx_id: TX_ID):
     """
     Endpoint for submissions only intended for DAP. POST request requires the submission JSON to be uploaded
     as "submission" and the filename passed in the query parameters.
@@ -48,7 +48,7 @@ def deliver_dap(req: Request, tx_id: TX_ID):
     return Flask.jsonify(success=True)
 
 
-def deliver_legacy(req: Request, tx_id: TX_ID):
+def deliver_legacy(req: Request, _tx_id: TX_ID):
     """
     Endpoint for submissions intended for legacy systems. POST request requires the submission JSON to be uploaded as
     "submission", the zipped transformed artifact as "transformed", and the filename passed in the query
@@ -65,7 +65,7 @@ def deliver_legacy(req: Request, tx_id: TX_ID):
     return Flask.jsonify(success=True)
 
 
-def deliver_hybrid(req: Request, tx_id: TX_ID):
+def deliver_hybrid(req: Request, _tx_id: TX_ID):
     """
     Endpoint for submissions intended for dap and legacy systems. POST request requires the submission JSON to be
     uploaded as "submission", the zipped transformed artifact as "transformed", and the filename passed in the
@@ -82,7 +82,7 @@ def deliver_hybrid(req: Request, tx_id: TX_ID):
     return Flask.jsonify(success=True)
 
 
-def deliver_feedback(req: Request, tx_id: TX_ID):
+def deliver_feedback(req: Request, _tx_id: TX_ID):
     """
     Endpoint for feedback submissions only. POST request requires the feedback JSON to be uploaded as
     "submission", and the filename passed in the query parameters.
@@ -98,7 +98,7 @@ def deliver_feedback(req: Request, tx_id: TX_ID):
     return Flask.jsonify(success=True)
 
 
-def deliver_comments(req: Request, tx_id: TX_ID):
+def deliver_comments(req: Request, _tx_id: TX_ID):
     """
     Endpoint for delivering daily comment report. POST request requires the zipped up comments to be uploaded as
     "zip", and the filename passed in the query parameters.
@@ -112,7 +112,7 @@ def deliver_comments(req: Request, tx_id: TX_ID):
     return Flask.jsonify(success=True)
 
 
-def deliver_seft(req: Request, tx_id: TX_ID):
+def deliver_seft(req: Request, _tx_id: TX_ID):
     """
     Endpoint for delivering SEFT submissions. POST request requires the encrypted SEFT to be uploaded as
     "seft", metadata JSON as "metadata", and the filename passed in the query parameters.

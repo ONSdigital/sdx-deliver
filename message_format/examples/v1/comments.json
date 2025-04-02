@@ -1,0 +1,25 @@
+{
+  "data": {
+    "version": "1",
+    "files": [
+      {
+        "name": "2025-01-08_16-14-22.zip:ftp",
+        "sizeBytes": 1398,
+        "md5sum": "fb27bec4baff5a5ec62dd27b05eed7fc"
+      }
+    ],
+    "sensitivity": "Low",
+    "sourceName": "ons-sdx-preprod",
+    "manifestCreated": "2025-01-08T16:14:22.905Z",
+    "description": "Comments.zip",
+    "dataset": "sdx_comments",
+    "schemaversion": "1"
+  },
+  "attributes": {
+    "gcs.bucket" : "ons-sdx-preprod-outputs",
+    "gcs.key": "comments|2025-01-08_16-14-22.zip",
+    "tx_id": "e10e8f37-e119-4d1f-83b5-2220fefa2ab9"
+  },
+  "messageId": "123456789101112",
+  "publishTime": "2014-10-02T15:01:23Z"
+}

@@ -1,40 +1,51 @@
 # sdx-deliver
-[![Build Status](https://github.com/ONSdigital/sdx-deliver/workflows/Build/badge.svg)](https://github.com/ONSdigital/sdx-deliver)
- 
+
 The SDX-Deliver service is responsible for ensuring that all SDX outputs are delivered to ONS via NIFI. This is done by
-encrypting and storing data into a GCP Bucket. It then notifies NIFI of the data's location. Metadata is provided for 
-routing and validation once decrypted downstream.
+encrypting and storing data into a GCP Bucket, and then sending a message via Pub/Sub to Nifi. 
+The message is in 2 different formats. Version 1 contains identifiers (such as ftp or hybrid) that Nifi
+use to work out the appropriate route. For Version 2 the message defines all source and target locations explicitly
+allowing SDX to be fully in control of where the files are sent.
 
-## Process
 
-SDX-Deliver is flask application made up of **five** endpoints. As a request is made to the service, metadata 
-is extracted and the data is then stored within a google bucket. The metadata is used to 
-construct a PubSub message to: `dap-topic`. This notifies DAP that a new submission is in the bucket.
+## Implementation
+
+SDX-Deliver is implemented as a Python microservice with endpoints for each submission type.
+The process involves encrypting the files using GPG and writing them to the bucket: `ons-sdx-{project_id}-outputs`.
+It then publishes a message to the Pub/sub topic with name `dap-topic` to notify Nifi that a new submission is in the bucket.
 ##### note:
 **SEFT** submissions are already encrypted as they come through SDX and therefore require no additional encryption 
 before being stored
 
 ## Getting started
-Install pipenv:
+
+Create the virtual environment:
 ```shell
-$ pip install pipenv
+$ python3 -m venv venv
 ```
 
-Create a virtualenv and install dependencies
+Activate the virtual environment:
 ```shell
-$ make build
+$ . venv/bin/activate
 ```
 
-**Testing**:
-Install all test requirements and run tests:
+Install and Update pip
 ```shell
-$ make test
+$ python3 -m pip install --upgrade pip
 ```
 
-**Running**:
-ensure you have installed all requirements with above `make build` command then:
+Pull the dependencies:
 ```shell
-$ make start
+$ pip install -r requirements.txt
+```
+
+Pull the test dependencies:
+```shell
+$ pip install -r test-requirements.txt
+```
+
+Run the code:
+```shell
+$ python3 -m run.py
 ```
 
 ## GCP
@@ -55,7 +66,7 @@ dap_message: Message {
   }
 }
 ```
-**Message Data field Example:**
+**Message Data field for Version 1:**
 ```python
     data : {
         'version': '1',
@@ -74,45 +85,82 @@ dap_message: Message {
     }
 ```
 
+**Message Data field for Version 2:**
+```python
+    data : {
+        "schema_version": "2",
+        "sensitivity": "Low",
+        "sizeBytes": 2691342,
+        "md5sum": "f6e217c6f99dcf79ce54937f766f20f9",
+        "context": {
+          "survey_id": "141",
+          "period_id": "202501",
+          "ru_ref": "14100000135A"
+        },
+        "source": {
+          "location_type": "gcs",
+          "location_name": "ons-sdx-preprod-outputs",
+          "path": "seft",
+          "filename": "14100000135_202501_141_20250123072928.xlsx.gpg"
+        },
+        "actions": ["decrypt"],
+        "targets": [
+          {
+            "input": "14100000135_202501_141_20250123072928.xlsx",
+            "outputs": [
+              {
+                "location_type": "windows_server",
+                "location_name": "NP123456",
+                "path": "SDX_PREPROD/EDC_Submissions/141",
+                "filename": "14100000135_202501_141_20250123072928.xlsx"
+              }
+            ]
+          }
+        ]
+    },
+```
+
 ### Google Storage
 
-All submissions are stored within: `ons-sdx-{project_id}-outputs` in their respective folders. The file-path is
-specified in `attributes."gcs.key"`.
+All submissions are stored within: `ons-sdx-{project_id}-outputs` in their respective folders.
 
 ### Secret Manager
 The gpg key used to encrypt JSON surveys: `dap-public-gpg` is managed by Google Secret Manager. A single API call is 
 made on program startup and stored in `ENCRYPTION_KEY`.
+The location names of various servers are also stored as secrets.
+They are currently:
+* nifi-location-ftp
+* nifi-location-spp
+* nifi-location-dap
+
 
 ## API endpoints
 
 Allows Survey, SEFT and Collate to send data to be stored by deliver
 
+Endpoints for the v1 message:
 
-* `POST /deliver/dap` - Stores JSON surveys destined for DAP
+* `POST /deliver/dap` - Processes JSON surveys destined for DAP
 
-* `POST /deliver/legacy` - Stores JSON surveys destined for Legacy downstream
+* `POST /deliver/legacy` - Processes JSON surveys destined for Legacy downstream
 
-* `POST /deliver/feedback` - Stores JSON Feedback submissions
+* `POST /deliver/feedback` - Processes JSON Feedback submissions
 
-* `POST /deliver/comments` - Stores zipped spreadsheet (.xls) of comments
+* `POST /deliver/comments` - Processes zipped spreadsheet (.xls) of comments
 
-* `POST /deliver/seft` - Stores SEFT submissions
+* `POST /deliver/seft` - Processes SEFT submissions
+
+* `POST /deliver/hybrid` - Processes submissions destined that require specific routing in Nifi (Version 1 only)
+
+Endpoints for the v2 message:
+
+* `POST /deliver/v2/survey` - Processes any survey type that originated from eQ-runner including legacy, spp, adhoc, feedback etc
+
+* `POST /deliver/v2/coments` - Processes the comments zip
+
+* `POST /deliver/v2/seft` - Processes SEFT submissions
 
 
-##### note: 
-deliver runs within the kubernetes cluster and utilises a `kubernetes service`.This assigns the service with an IP 
-address and DNS name exposing it to the other services.
-
-## Configuration
-| Environment Variable    | Description
-|-------------------------|------------------------------------
-| PROJECT_ID              | Name of project
-| BUCKET_NAME             | Name of the bucket: `{project_id}-outputs`
-| BUCKET                  | Bucket client to GCP
-| DAP_TOPIC_PATH          | Name of the dap topic: `dap-topic`
-| DAP_PUBLISHER           | PubSub publisher client to GCP
-| ENCRYPTION_KEY          | Key to encrypt all data
-| GPG                     | System GPG key import
 
 ## License
 
