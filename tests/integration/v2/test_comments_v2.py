@@ -7,6 +7,8 @@ from unittest.mock import patch, Mock
 from sdx_gcp import Request
 
 from app.v2 import deliver
+from app.v2.definitions.context_type import ContextType
+from app.v2.definitions.survey_type import SurveyType
 from app.v2.routes import FILE_NAME, ZIP_FILE, deliver_comments_file, CONTEXT
 from app.v2.definitions.message_schema import MessageSchemaV2
 from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME
@@ -48,9 +50,10 @@ class TestCommentsV2(unittest.TestCase):
         }
 
         context = {
-            "survey_type": "comments",
+            "survey_type": SurveyType.COMMENTS,
             "tx_id": tx_id,
             "title": "Comments.zip",
+            "context_type": ContextType.COMMENTS_FILE,
         }
 
         data = {
@@ -74,6 +77,7 @@ class TestCommentsV2(unittest.TestCase):
             "md5sum": "3190f8a68aad6a9e33a624c318516ebb",
             "context": {
                 "title": "Comments.zip",
+                "context_type": ContextType.COMMENTS_FILE,
             },
             "source": {
                 "location_type": "gcs",

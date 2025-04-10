@@ -1,6 +1,7 @@
 import unittest
 
 from app.v2.definitions.context import BusinessSurveyContext, Context, CommentsFileContext, AdhocSurveyContext
+from app.v2.definitions.context_type import ContextType
 from app.v2.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
 from app.v2.definitions.location_name_repository import LookupKey
 from app.v2.definitions.message_schema import Location
@@ -93,7 +94,8 @@ class TestMessageConstructor(unittest.TestCase):
         filename_list = ["file1", "file2"]
         context: Context = {
             "tx_id": "123",
-            "survey_type": SurveyType.SPP
+            "survey_type": SurveyType.SPP,
+            "context_type": ContextType.BUSINESS_SURVEY
         }
         target_list = self.message_builder.get_targets(filename_list,
                                                        MockSubmissionType(),
@@ -136,6 +138,7 @@ class TestMessageConstructor(unittest.TestCase):
         context: BusinessSurveyContext = {
             "tx_id": "123",
             "survey_type": SurveyType.LEGACY,
+            "context_type": ContextType.BUSINESS_SURVEY,
             "survey_id": "666",
             "period_id": "202101",
             "ru_ref": "10550"
@@ -146,7 +149,8 @@ class TestMessageConstructor(unittest.TestCase):
         expected = {
             "survey_id": "666",
             "period_id": "202101",
-            "ru_ref": "10550"
+            "ru_ref": "10550",
+            "context_type": ContextType.BUSINESS_SURVEY
         }
 
         self.assertEqual(expected, actual)
@@ -155,13 +159,15 @@ class TestMessageConstructor(unittest.TestCase):
         context: CommentsFileContext = {
             "tx_id": "123",
             "survey_type": SurveyType.COMMENTS,
+            "context_type": ContextType.COMMENTS_FILE,
             "title": "Comments.zip"
         }
 
         actual = self.message_builder.get_context(context)
 
         expected = {
-            "title": "Comments.zip"
+            "title": "Comments.zip",
+            "context_type": ContextType.COMMENTS_FILE
         }
 
         self.assertEqual(expected, actual)
@@ -170,6 +176,7 @@ class TestMessageConstructor(unittest.TestCase):
         context: AdhocSurveyContext = {
             "tx_id": "123",
             "survey_type": SurveyType.ADHOC,
+            "context_type": ContextType.ADHOC_SURVEY,
             "survey_id": "101",
             "title": "101 survey response for adhoc survey",
             "label": "adhoc label"
@@ -180,7 +187,8 @@ class TestMessageConstructor(unittest.TestCase):
         expected = {
             "survey_id": "101",
             "title": "101 survey response for adhoc survey",
-            "label": "adhoc label"
+            "label": "adhoc label",
+            "context_type": ContextType.ADHOC_SURVEY
         }
 
         self.assertEqual(expected, actual)
@@ -197,6 +205,7 @@ class TestMessageConstructor(unittest.TestCase):
         context: BusinessSurveyContext = {
             "tx_id": "123",
             "survey_type": SurveyType.LEGACY,
+            "context_type": ContextType.BUSINESS_SURVEY,
             "survey_id": survey_id,
             "period_id": period_id,
             "ru_ref": ru_ref
@@ -212,7 +221,10 @@ class TestMessageConstructor(unittest.TestCase):
         actual = self.message_builder.build_message(zip_details, context)
 
         expected = {'actions': ['decrypt'],
-                    'context': {'period_id': period_id, 'ru_ref': ru_ref, 'survey_id': survey_id},
+                    'context': {'period_id': period_id,
+                                'ru_ref': ru_ref,
+                                'survey_id': survey_id,
+                                'context_type': ContextType.BUSINESS_SURVEY},
                     'md5sum': md5sum,
                     'schema_version': '2',
                     'sensitivity': 'High',

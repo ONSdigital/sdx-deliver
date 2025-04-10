@@ -6,8 +6,10 @@ from unittest.mock import patch, Mock
 
 from sdx_gcp import Request
 
+from app.v2.definitions.context_type import ContextType
 from app.v2.definitions.message_schema import MessageSchemaV2
 from app.v2 import deliver
+from app.v2.definitions.survey_type import SurveyType
 from app.v2.routes import ZIP_FILE, FILE_NAME, CONTEXT, deliver_survey
 from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME
 
@@ -60,7 +62,8 @@ class TestLegacyV2(unittest.TestCase):
         }
 
         context = {
-            "survey_type": "legacy",
+            "survey_type": SurveyType.LEGACY,
+            "context_type": ContextType.BUSINESS_SURVEY,
             "tx_id": tx_id,
             "survey_id": survey_id,
             "period_id": period_id,
@@ -89,7 +92,8 @@ class TestLegacyV2(unittest.TestCase):
             "context": {
                 "survey_id": survey_id,
                 "period_id": period_id,
-                "ru_ref": ru_ref
+                "ru_ref": ru_ref,
+                "context_type": ContextType.BUSINESS_SURVEY,
             },
             "source": {
                 "location_type": "gcs",
