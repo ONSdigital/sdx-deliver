@@ -40,6 +40,9 @@ class SubmissionType(SubmissionTypeBase):
             "filename": filename
         }
 
+    def get_output_filename(self, filename: str, _context: Context) -> str:
+        return filename
+
     def get_outputs(self, filename: str, context: Context) -> list[Location]:
         key: str = self.get_mapping(filename)
         filelist: list[File] = self.get_file_config(context)[key]
@@ -52,7 +55,7 @@ class SubmissionType(SubmissionTypeBase):
                 "location_type": location_key["location_type"],
                 "location_name": location_key["location_name"],
                 "path": file["path"],
-                "filename": filename
+                "filename": self.get_output_filename(filename, context)
             })
 
         return result

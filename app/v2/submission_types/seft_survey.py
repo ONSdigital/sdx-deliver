@@ -28,3 +28,7 @@ class SeftSubmissionType(SubmissionType):
 
     def get_mapping(self, filename: str) -> str:
         return _XLSX
+
+    def get_output_filename(self, filename: str, _context: BusinessSurveyContext) -> str:
+        # remove the .gpg extension
+        return filename[:-4]
