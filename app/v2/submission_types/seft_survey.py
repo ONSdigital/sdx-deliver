@@ -28,3 +28,6 @@ class SeftSubmissionType(SubmissionType):
 
     def get_mapping(self, filename: str) -> str:
         return _XLSX
+
+    def get_output_filename(self, filename: str, _context: BusinessSurveyContext) -> str:
+        return filename[:-4]
