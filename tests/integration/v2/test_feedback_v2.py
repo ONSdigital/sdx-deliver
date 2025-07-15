@@ -90,7 +90,7 @@ class TestFeedbackV2(unittest.TestCase):
                 "path": "feedback",
                 "filename": input_filename
             },
-            "actions": ["decrypt"],
+            "actions": ["decrypt", "unzip"],
             "targets": [
                 {
                     "input": output_filename,

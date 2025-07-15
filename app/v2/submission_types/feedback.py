@@ -2,7 +2,7 @@ from typing import Final
 
 from app.v2.definitions.config_schema import File
 from app.v2.definitions.location_name_repository import LookupKey
-from app.v2.definitions.submission_type import DECRYPT
+from app.v2.definitions.submission_type import DECRYPT, UNZIP
 from app.v2.path_helper import get_ftp_path
 from app.v2.definitions.context import BusinessSurveyContext
 from app.v2.submission_types.bases.submission_type import SubmissionType
@@ -16,7 +16,7 @@ class FeedbackSubmissionType(SubmissionType):
         return "feedback"
 
     def get_actions(self) -> list[str]:
-        return [DECRYPT]
+        return [DECRYPT, UNZIP]
 
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, [File]]:
         return {
