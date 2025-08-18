@@ -98,7 +98,7 @@ class TestDapV2(unittest.TestCase):
                         {
                             "location_type": "windows_server",
                             "location_name": DAP_LOCATION_NAME,
-                            "path": f"landing_zone/sdx_preprod/{survey_id}",
+                            "path": f"Covid_Survey/pre-prod/dapsen/landing_zone/sdx_preprod/{survey_id}",
                             "filename": output_filename
                         }
                     ]

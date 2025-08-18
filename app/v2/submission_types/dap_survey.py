@@ -22,7 +22,7 @@ class DapSubmissionType(SubmissionType):
         return {
             _JSON: [{
                 "location": LookupKey.DAP,
-                "path": f"landing_zone/{get_dap_path()}/{context['survey_id']}"
+                "path": f"{get_dap_path()}/{context['survey_id']}"
             }]
         }
 
