@@ -87,16 +87,16 @@ class TestDapV2(unittest.TestCase):
             "source": {
                 "location_type": "gcs",
                 "location_name": SDX_LOCATION_NAME,
-                "path": "dap",
+                "path": "survey",
                 "filename": input_filename
             },
-            "actions": ["decrypt"],
+            "actions": ["decrypt", "unzip"],
             "targets": [
                 {
                     "input": output_filename,
                     "outputs": [
                         {
-                            "location_type": "cdp",
+                            "location_type": "windows_server",
                             "location_name": DAP_LOCATION_NAME,
                             "path": f"landing_zone/sdx_preprod/{survey_id}",
                             "filename": output_filename

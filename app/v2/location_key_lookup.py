@@ -33,7 +33,7 @@ class LocationKeyLookup(LocationKeyLookupBase):
                 "location_name": self._location_name_repo.get_location_name(LookupKey.SPP)
             },
             dap_key: {
-                "location_type": CDP,
+                "location_type": WINDOWS_SERVER,
                 "location_name": self._location_name_repo.get_location_name(LookupKey.DAP)
             },
             ns5_key: {
