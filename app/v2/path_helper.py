@@ -11,7 +11,9 @@ def get_ftp_path() -> str:
 
 
 def get_dap_path() -> str:
-    return "sdx_prod" if CONFIG.PROJECT_ID == PROD_PROJECT else "sdx_preprod"
+    prod_path = "Covid_Survey/prod/dapsen/landing_zone/sdx_prod"
+    preprod_path = "Covid_Survey/pre-prod/dapsen/landing_zone/sdx_preprod"
+    return prod_path if CONFIG.PROJECT_ID == PROD_PROJECT else preprod_path
 
 
 def get_ns5_path() -> str:

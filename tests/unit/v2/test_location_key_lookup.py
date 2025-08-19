@@ -2,7 +2,7 @@ import unittest
 
 from app.v2.definitions.location_key_lookup import LocationKey
 from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
-from app.v2.location_key_lookup import LocationKeyLookup, WINDOWS_SERVER, GCS, S3, CDP
+from app.v2.location_key_lookup import LocationKeyLookup, WINDOWS_SERVER, GCS, S3
 
 
 class MockLocationNameRepository(LocationNameRepositoryBase):
@@ -65,7 +65,7 @@ class TestLocationKeyLookup(unittest.TestCase):
     def test_lookup_dap(self):
         location_key_lookup = LocationKeyLookup(MockLocationNameRepository())
         expected: LocationKey = {
-            "location_type": CDP,
+            "location_type": WINDOWS_SERVER,
             "location_name": "NIFI_LOCATION_DAP"}
 
         value = location_key_lookup.get_location_key(LookupKey.DAP)
