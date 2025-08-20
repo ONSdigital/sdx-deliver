@@ -110,7 +110,7 @@ class TestEnvironmentalV2(unittest.TestCase):
                         {
                             "location_type": "windows_server",
                             "location_name": NS5_LOCATION_NAME,
-                            "path": f"/lcres/LCRES_EQ_data/preprod/{period_id}/v1",
+                            "path": f"lcres/LCRES_EQ_data/preprod/{period_id}/v1",
                             "filename": json_filename
                         }
                     ]

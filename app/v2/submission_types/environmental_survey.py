@@ -28,11 +28,11 @@ class EnvironmentalSubmissionType(SurveySubmission):
             _RECEIPT: [self.get_ftp_receipt()],
             _LCREE: [{
                 "location": LookupKey.NS5,
-                "path": f"/lcres/LCRES_EQ_data/{get_ns5_path()}/{context['period_id']}/v1"
+                "path": f"lcres/LCRES_EQ_data/{get_ns5_path()}/{context['period_id']}/v1"
             }],
             _EPE: [{
                 "location": LookupKey.NS5,
-                "path": f"/epes/EPE_EQ_DATA/{get_ns5_path()}/{context['period_id']}/v1"
+                "path": f"epes/EPE_EQ_DATA/{get_ns5_path()}/{context['period_id']}/v1"
             }],
         }
 
