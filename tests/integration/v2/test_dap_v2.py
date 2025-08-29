@@ -82,7 +82,7 @@ class TestDapV2(unittest.TestCase):
                 "survey_id": survey_id,
                 "period_id": period_id,
                 "ru_ref": ru_ref,
-                "context_type": ContextType.BUSINESS_SURVEY,
+                "context_type": ContextType.BUSINESS_SURVEY.value,
             },
             "source": {
                 "location_type": "gcs",
@@ -98,7 +98,7 @@ class TestDapV2(unittest.TestCase):
                         {
                             "location_type": "windows_server",
                             "location_name": DAP_LOCATION_NAME,
-                            "path": f"Covid_Survey/pre-prod/{survey_id}",
+                            "path": f"Covid_Survey/pre-prod/{survey_id}/{period_id}",
                             "filename": output_filename
                         }
                     ]
