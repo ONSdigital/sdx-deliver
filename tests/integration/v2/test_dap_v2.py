@@ -82,7 +82,7 @@ class TestDapV2(unittest.TestCase):
                 "survey_id": survey_id,
                 "period_id": period_id,
                 "ru_ref": ru_ref,
-                "context_type": ContextType.BUSINESS_SURVEY.value,
+                "context_type": ContextType.BUSINESS_SURVEY,
             },
             "source": {
                 "location_type": "gcs",
