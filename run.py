@@ -1,6 +1,6 @@
 from app import setup_keys, sdx_app
 from app.routes import deliver_dap, deliver_legacy, deliver_hybrid, deliver_feedback, deliver_comments, deliver_seft
-from app.v2.routes import deliver_survey, deliver_comments_file, deliver_seft_submission
+from app.routes import deliver_survey, deliver_comments_file, deliver_seft_submission
 
 if __name__ == '__main__':
     setup_keys()

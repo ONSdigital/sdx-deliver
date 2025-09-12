@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
-from app.v2.definitions.submission_type import SubmissionTypeBase
-from app.v2.definitions.survey_type import SurveyType
+from app.definitions.submission_type import SubmissionTypeBase
+from app.definitions.survey_type import SurveyType
 
 
 class SubmissionTypeMapperBase(ABC):

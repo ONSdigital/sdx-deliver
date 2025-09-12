@@ -1,8 +1,8 @@
 import unittest
 
-from app.v2.definitions.location_key_lookup import LocationKey
-from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
-from app.v2.location_key_lookup import LocationKeyLookup, WINDOWS_SERVER, GCS, S3
+from app.definitions import LocationKey
+from app.definitions import LocationNameRepositoryBase, LookupKey
+from app.location_key_lookup import LocationKeyLookup, WINDOWS_SERVER, GCS, S3
 
 
 class MockLocationNameRepository(LocationNameRepositoryBase):

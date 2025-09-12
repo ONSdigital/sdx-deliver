@@ -1,6 +1,6 @@
 from typing import Final
 
-from app.v2.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
+from app.definitions import LocationNameRepositoryBase, LookupKey
 
 
 SDX_LOCATION_NAME: Final[str] = "sdx_location_name"

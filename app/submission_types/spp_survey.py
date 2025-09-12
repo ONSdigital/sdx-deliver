@@ -2,10 +2,10 @@ from typing import Final
 
 from sdx_gcp.errors import DataError
 
-from app.v2.definitions.config_schema import File
-from app.v2.definitions.location_name_repository import LookupKey
-from app.v2.definitions.context import BusinessSurveyContext
-from app.v2.submission_types.bases.survey_submission import SurveySubmission
+from app.definitions.config_schema import File
+from app.definitions import LookupKey
+from app.definitions import BusinessSurveyContext
+from app.submission_types.bases.survey_submission import SurveySubmission
 
 # file types
 _PCK: Final[str] = "pck"

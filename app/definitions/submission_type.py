@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Final
 
-from app.v2.definitions.message_schema import Location
-from app.v2.definitions.context import Context
+from app.definitions.message_schema import Location
+from app.definitions.context import Context
 
 UNZIP: Final[str] = "unzip"
 DECRYPT: Final[str] = "decrypt"

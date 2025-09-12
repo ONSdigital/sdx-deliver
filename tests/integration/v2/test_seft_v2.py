@@ -4,11 +4,11 @@ from unittest.mock import patch, Mock
 
 from sdx_gcp import Request
 
-from app.v2 import deliver
-from app.v2.definitions.context_type import ContextType
-from app.v2.definitions.survey_type import SurveyType
-from app.v2.routes import FILE_NAME, SEFT_FILE, deliver_seft_submission, CONTEXT
-from app.v2.definitions.message_schema import MessageSchemaV2
+from app import deliver
+from app.definitions.context_type import ContextType
+from app.definitions import SurveyType
+from app.routes import FILE_NAME, SEFT_FILE, deliver_seft_submission, CONTEXT
+from app.definitions import MessageSchemaV2
 from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME
 
 

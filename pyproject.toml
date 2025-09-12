@@ -1,0 +1,26 @@
+[project]
+name = "sdx-deliver"
+version = "3.3.0"
+description = "Delivering for SDX"
+requires-python = ">=3.13"
+dependencies = [
+    "sdx-base==1.0.0",
+    "python-gnupg==0.4.7"
+]
+
+[tool.uv.sources]
+sdx-base = { index = "sdx-repo" }
+
+[[tool.uv.index]]
+name = "sdx-repo"
+url = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/simple/"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "pytest-xdist>=3.6.1",
+    "mypy>=1.15.0",
+    "flake8>=6.1.0",
+    "jsonschema>=4.23.0"
+]

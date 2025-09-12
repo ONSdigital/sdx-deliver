@@ -1,7 +1,13 @@
+import logging
 import os
+from logging import Logger
 
 import gnupg
-from sdx_gcp.app import get_logger, SdxApp
+
+
+def get_logger() -> Logger:
+    return logging.getLogger("sdx-deliver")
+
 
 logger = get_logger()
 

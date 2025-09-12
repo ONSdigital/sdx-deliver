@@ -1,7 +1,7 @@
 import json
 import unittest
-from app.v2.definitions.context import BusinessSurveyContext
-from app.v2.definitions.survey_type import SurveyType
+from app.definitions import BusinessSurveyContext
+from app.definitions import SurveyType
 
 
 class TestRoutesV2(unittest.TestCase):

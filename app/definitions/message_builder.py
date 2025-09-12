@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
-from app.v2.definitions.message_schema import MessageSchemaV2, Location, Target
-from app.v2.definitions.submission_type import SubmissionTypeBase
-from app.v2.definitions.context import Context
-from app.v2.definitions.zip_details import ZipDetails
+from app.definitions.message_schema import MessageSchemaV2, Location, Target
+from app.definitions.submission_type import SubmissionTypeBase
+from app.definitions.context import Context
+from app.definitions.zip_details import ZipDetails
 
 
 class MessageBuilderBase(ABC):

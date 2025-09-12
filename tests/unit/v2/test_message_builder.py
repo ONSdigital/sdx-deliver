@@ -1,15 +1,15 @@
 import unittest
 
-from app.v2.definitions.context import BusinessSurveyContext, Context, CommentsFileContext, AdhocSurveyContext
-from app.v2.definitions.context_type import ContextType
-from app.v2.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
-from app.v2.definitions.location_name_repository import LookupKey
-from app.v2.definitions.message_schema import Location
-from app.v2.definitions.submission_type import DECRYPT, SubmissionTypeBase
-from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
-from app.v2.definitions.zip_details import ZipDetails
-from app.v2.message_builder import MessageBuilder
-from app.v2.definitions.survey_type import SurveyType
+from app.definitions import BusinessSurveyContext, Context, CommentsFileContext, AdhocSurveyContext
+from app.definitions.context_type import ContextType
+from app.definitions import LocationKeyLookupBase, LocationKey
+from app.definitions import LookupKey
+from app.definitions import Location
+from app.definitions import DECRYPT, SubmissionTypeBase
+from app.definitions import SubmissionTypeMapperBase
+from app.definitions import ZipDetails
+from app.message_builder import MessageBuilder
+from app.definitions import SurveyType
 
 
 class MockLocationKeyLookup(LocationKeyLookupBase):

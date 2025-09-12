@@ -1,13 +1,13 @@
 from typing import cast
 
 from app import CONFIG
-from app.v2.definitions.context_type import ContextType
-from app.v2.definitions.message_builder import MessageBuilderBase
-from app.v2.definitions.message_schema import MessageSchemaV2, Target, Location
-from app.v2.definitions.submission_type import SubmissionTypeBase
-from app.v2.definitions.submission_type_mapper import SubmissionTypeMapperBase
-from app.v2.definitions.context import Context, BusinessSurveyContext, AdhocSurveyContext, CommentsFileContext
-from app.v2.definitions.zip_details import ZipDetails
+from app.definitions.context_type import ContextType
+from app.definitions import MessageBuilderBase
+from app.definitions import MessageSchemaV2, Target, Location
+from app.definitions import SubmissionTypeBase
+from app.definitions import SubmissionTypeMapperBase
+from app.definitions import Context, BusinessSurveyContext, AdhocSurveyContext, CommentsFileContext
+from app.definitions import ZipDetails
 
 
 class MessageBuilder(MessageBuilderBase):
