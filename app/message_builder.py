@@ -1,13 +1,13 @@
 from typing import cast
 
 from app import CONFIG
+from app.definitions.context import Context, CommentsFileContext, AdhocSurveyContext, BusinessSurveyContext
 from app.definitions.context_type import ContextType
-from app.definitions import MessageBuilderBase
-from app.definitions import MessageSchemaV2, Target, Location
-from app.definitions import SubmissionTypeBase
-from app.definitions import SubmissionTypeMapperBase
-from app.definitions import Context, BusinessSurveyContext, AdhocSurveyContext, CommentsFileContext
-from app.definitions import ZipDetails
+from app.definitions.message_builder import MessageBuilderBase
+from app.definitions.message_schema import MessageSchemaV2, Location, Target
+from app.definitions.submission_type import SubmissionTypeBase
+from app.definitions.submission_type_mapper import SubmissionTypeMapperBase
+from app.definitions.zip_details import ZipDetails
 
 
 class MessageBuilder(MessageBuilderBase):
@@ -16,7 +16,7 @@ class MessageBuilder(MessageBuilderBase):
         self._submission_mapper = submission_mapper
 
     def build_message(self, zip_details: ZipDetails, context: Context) -> MessageSchemaV2:
-        submission_type: SubmissionTypeBase = self._submission_mapper.get_submission_type(context["survey_type"])
+        submission_type: SubmissionTypeBase = self._submission_mapper.get_submission_type(context.survey_type)
         message: MessageSchemaV2 = {
             "schema_version": "2",
             "sensitivity": CONFIG.DATA_SENSITIVITY,
@@ -45,27 +45,27 @@ class MessageBuilder(MessageBuilderBase):
         return submission_type.get_actions()
 
     def get_context(self, context: Context) -> dict[str, str]:
-        if context["context_type"] == ContextType.COMMENTS_FILE:
+        if context.context_type == ContextType.COMMENTS_FILE:
             comments_context: CommentsFileContext = cast(CommentsFileContext, context)
             return {
                 "title": "Comments.zip",
-                "context_type": comments_context["context_type"]
+                "context_type": comments_context.context_type
             }
 
-        elif context["context_type"] == ContextType.ADHOC_SURVEY:
+        elif context.context_type == ContextType.ADHOC_SURVEY:
             adhoc_context: AdhocSurveyContext = cast(AdhocSurveyContext, context)
             return {
-                "survey_id": adhoc_context["survey_id"],
-                "title": adhoc_context["title"],
-                "label": adhoc_context["label"],
-                "context_type": adhoc_context["context_type"]
+                "survey_id": adhoc_context.survey_id,
+                "title": adhoc_context.title,
+                "label": adhoc_context.label,
+                "context_type": adhoc_context.context_type
             }
 
         else:
             business_context: BusinessSurveyContext = cast(BusinessSurveyContext, context)
             return {
-                "survey_id": business_context["survey_id"],
-                "period_id": business_context["period_id"],
-                "ru_ref": business_context["ru_ref"],
-                "context_type": business_context["context_type"]
+                "survey_id": business_context.survey_id,
+                "period_id": business_context.period_id,
+                "ru_ref": business_context.ru_ref,
+                "context_type": business_context.context_type
             }

@@ -1,9 +1,9 @@
 from typing import Final
 
 from app.definitions.config_schema import File
-from app.definitions import LookupKey
+from app.definitions.context import BusinessSurveyContext
+from app.definitions.location_name_repository import LookupKey
 from app.path_helper import get_ftp_path
-from app.definitions import BusinessSurveyContext
 from app.submission_types.bases.survey_submission import SurveySubmission
 
 # file types
@@ -20,7 +20,7 @@ _DAT: Final[str] = "dat"
 
 class MaterialsSubmissionType(SurveySubmission):
 
-    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, [File]]:
+    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         return {
             _IMAGE: [self.get_ftp_image()],
             _INDEX: [self.get_ftp_index()],

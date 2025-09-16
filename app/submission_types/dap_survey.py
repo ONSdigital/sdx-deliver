@@ -1,10 +1,10 @@
 from typing import Final
 
 from app.definitions.config_schema import File
-from app.definitions import LookupKey
-from app.definitions import DECRYPT, UNZIP
+from app.definitions.context import BusinessSurveyContext
+from app.definitions.location_name_repository import LookupKey
+from app.definitions.submission_type import DECRYPT, UNZIP
 from app.path_helper import get_dap_path
-from app.definitions import BusinessSurveyContext
 from app.submission_types.bases.submission_type import SubmissionType
 
 _JSON: Final[str] = "json"
@@ -18,11 +18,11 @@ class DapSubmissionType(SubmissionType):
     def get_actions(self) -> list[str]:
         return [DECRYPT, UNZIP]
 
-    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, [File]]:
+    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         return {
             _JSON: [{
                 "location": LookupKey.DAP,
-                "path": f"{get_dap_path()}/{context['survey_id']}/{context['period_id']}/v1"
+                "path": f"{get_dap_path()}/{context.survey_id}/{context['period_id']}/v1"
             }]
         }
 

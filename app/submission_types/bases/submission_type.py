@@ -1,11 +1,11 @@
 from abc import abstractmethod
 
 from app.definitions.config_schema import File
-from app.definitions import LocationKeyLookupBase, LocationKey
-from app.definitions import LookupKey
-from app.definitions import Location
-from app.definitions import SubmissionTypeBase
-from app.definitions import Context
+from app.definitions.context import Context
+from app.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
+from app.definitions.location_name_repository import LookupKey
+from app.definitions.message_schema import Location
+from app.definitions.submission_type import SubmissionTypeBase
 
 
 class SubmissionType(SubmissionTypeBase):
@@ -14,7 +14,7 @@ class SubmissionType(SubmissionTypeBase):
         self._location_key_lookup = location_key_lookup
 
     @abstractmethod
-    def get_file_config(self, context: Context) -> dict[str, [File]]:
+    def get_file_config(self, context: Context) -> dict[str, list[File]]:
         pass
 
     @abstractmethod

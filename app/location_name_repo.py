@@ -1,7 +1,7 @@
 from typing import Final
 
 from app import sdx_app, CONFIG
-from app.definitions import LocationNameRepositoryBase, LookupKey
+from app.definitions.location_name_repository import LookupKey, LocationNameRepositoryBase
 
 NIFI_LOCATION_FTP: Final[str] = "nifi-location-ftp"
 NIFI_LOCATION_SPP: Final[str] = "nifi-location-spp"

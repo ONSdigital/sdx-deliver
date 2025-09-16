@@ -1,17 +1,17 @@
 from abc import ABC, abstractmethod
 
 from app.definitions.config_schema import File
-from app.definitions import LookupKey
-from app.definitions import DECRYPT, UNZIP
+from app.definitions.context import BusinessSurveyContext
+from app.definitions.location_name_repository import LookupKey
+from app.definitions.submission_type import UNZIP, DECRYPT
 from app.path_helper import get_ftp_path
-from app.definitions import BusinessSurveyContext
 from app.submission_types.bases.submission_type import SubmissionType
 
 
 class SurveySubmission(SubmissionType, ABC):
 
     @abstractmethod
-    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, [File]]:
+    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         pass
 
     def get_source_path(self) -> str:

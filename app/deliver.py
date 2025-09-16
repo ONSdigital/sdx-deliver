@@ -1,19 +1,21 @@
 import hashlib
 from typing import cast
 
-from app import sdx_app, CONFIG
+from app import sdx_app, CONFIG, get_logger
+from app.definitions.context import Context, AdhocSurveyContext, BusinessSurveyContext
+from app.definitions.location_key_lookup import LocationKeyLookupBase
+from app.definitions.location_name_repository import LocationNameRepositoryBase
+from app.definitions.message_schema import MessageSchemaV2
+from app.definitions.survey_type import SurveyType
+from app.definitions.zip_details import ZipDetails
 from app.encrypt import encrypt_output
 from app.publish import publish_v2_message
-from app.definitions import Context, AdhocSurveyContext, BusinessSurveyContext
-from app.definitions import LocationKeyLookupBase
-from app.definitions import MessageSchemaV2
-from app.definitions import SurveyType
-from app.definitions import ZipDetails
+
 from app.location_key_lookup import LocationKeyLookup
 from app.submission_type_mapper import SubmissionTypeMapper
 from app.location_name_repo import LocationNameRepo
 from app.message_builder import MessageBuilder
-from app.definitions import LocationNameRepositoryBase
+
 from app.zip import unzip
 
 logger = get_logger()
@@ -26,7 +28,7 @@ def deliver_v2(filename: str, data_bytes: bytes, context: Context):
     via PubSub
     """
     encrypted_bytes: bytes
-    if context["survey_type"] == SurveyType.SEFT:
+    if context.survey_type == SurveyType.SEFT:
         encrypted_bytes = data_bytes
     else:
         logger.info("Encrypting output")
@@ -41,7 +43,7 @@ def deliver_v2(filename: str, data_bytes: bytes, context: Context):
     message_constructor = MessageBuilder(submission_mapper=SubmissionTypeMapper(location_key_lookup))
 
     filenames: list[str]
-    if context["survey_type"] == SurveyType.COMMENTS or context["survey_type"] == SurveyType.SEFT:
+    if context.survey_type == SurveyType.COMMENTS or context.survey_type == SurveyType.SEFT:
         filenames = [filename]
     else:
         filenames = unzip(data_bytes)
@@ -58,20 +60,20 @@ def deliver_v2(filename: str, data_bytes: bytes, context: Context):
     sdx_app.gcs_write(encrypted_bytes, filename, CONFIG.BUCKET_NAME, get_output_path(v2_message))
 
     logger.info("Sending Nifi message")
-    publish_v2_message(v2_message, context["tx_id"])
+    publish_v2_message(v2_message, context.tx_id)
 
-    logger.info("Process completed successfully", survey_id=get_survey_id(context))
+    logger.info("Process completed successfully", extra={"survey_id": get_survey_id(context)})
 
 
 def get_survey_id(context: Context) -> str:
-    if context["survey_type"] == SurveyType.COMMENTS:
+    if context.survey_type == SurveyType.COMMENTS:
         return "Comments"
-    elif context["survey_type"] == SurveyType.ADHOC:
+    elif context.survey_type == SurveyType.ADHOC:
         adhoc_context: AdhocSurveyContext = cast(AdhocSurveyContext, context)
-        return adhoc_context["survey_id"]
+        return adhoc_context.survey_id
     else:
         business_context: BusinessSurveyContext = cast(BusinessSurveyContext, context)
-        return business_context["survey_id"]
+        return business_context.survey_id
 
 
 def get_output_path(v2_message: MessageSchemaV2) -> str:

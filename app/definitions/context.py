@@ -1,10 +1,10 @@
-from typing import TypedDict
+from pydantic import BaseModel
 
 from app.definitions.context_type import ContextType
 from app.definitions.survey_type import SurveyType
 
 
-class Context(TypedDict):
+class Context(BaseModel):
     tx_id: str
     survey_type: SurveyType
     context_type: ContextType

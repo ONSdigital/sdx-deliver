@@ -1,7 +1,7 @@
 from typing import Final
 
-from app.definitions import LocationKeyLookupBase, LocationKey
-from app.definitions import LocationNameRepositoryBase, LookupKey
+from app.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
+from app.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
 
 # Location Types
 WINDOWS_SERVER: Final[str] = "windows_server"

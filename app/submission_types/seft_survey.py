@@ -1,10 +1,10 @@
 from typing import Final
 
 from app.definitions.config_schema import File
-from app.definitions import LookupKey
-from app.definitions import DECRYPT
+from app.definitions.context import BusinessSurveyContext
+from app.definitions.location_name_repository import LookupKey
+from app.definitions.submission_type import DECRYPT
 from app.path_helper import get_ftp_path
-from app.definitions import BusinessSurveyContext
 from app.submission_types.bases.submission_type import SubmissionType
 
 _XLSX: Final[str] = "xlsx"
@@ -18,11 +18,11 @@ class SeftSubmissionType(SubmissionType):
     def get_actions(self) -> list[str]:
         return [DECRYPT]
 
-    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, [File]]:
+    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         return {
             _XLSX: [{
                 "location": LookupKey.FTP,
-                "path": f"{get_ftp_path()}/EDC_Submissions/{context['survey_id']}"
+                "path": f"{get_ftp_path()}/EDC_Submissions/{context.survey_id}"
             }]
         }
 

@@ -1,9 +1,9 @@
 from typing import Final
 
 from app.definitions.config_schema import File
-from app.definitions import LookupKey
+from app.definitions.context import BusinessSurveyContext
+from app.definitions.location_name_repository import LookupKey
 from app.path_helper import get_ns5_path
-from app.definitions import BusinessSurveyContext
 from app.submission_types.bases.survey_submission import SurveySubmission
 
 # file types
@@ -21,18 +21,18 @@ _DAT: Final[str] = "dat"
 
 class EnvironmentalSubmissionType(SurveySubmission):
 
-    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, [File]]:
+    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         return {
             _IMAGE: [self.get_ftp_image()],
             _INDEX: [self.get_ftp_index()],
             _RECEIPT: [self.get_ftp_receipt()],
             _LCREE: [{
                 "location": LookupKey.NS5,
-                "path": f"lcres/LCRES_EQ_data/{get_ns5_path()}/{context['period_id']}/v1"
+                "path": f"lcres/LCRES_EQ_data/{get_ns5_path()}/{context.period_id}/v1"
             }],
             _EPE: [{
                 "location": LookupKey.NS5,
-                "path": f"epes/EPE_EQ_DATA/{get_ns5_path()}/{context['period_id']}/v1"
+                "path": f"epes/EPE_EQ_DATA/{get_ns5_path()}/{context.period_id}/v1"
             }],
         }
 

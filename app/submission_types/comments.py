@@ -1,10 +1,10 @@
 from typing import Final
 
 from app.definitions.config_schema import File
-from app.definitions import LookupKey
-from app.definitions import DECRYPT
+from app.definitions.context import CommentsFileContext
+from app.definitions.location_name_repository import LookupKey
+from app.definitions.submission_type import DECRYPT
 from app.path_helper import get_ftp_path
-from app.definitions import CommentsFileContext
 from app.submission_types.bases.submission_type import SubmissionType
 
 _ZIP: Final[str] = "zip"
@@ -18,7 +18,7 @@ class CommentsSubmissionType(SubmissionType):
     def get_actions(self) -> list[str]:
         return [DECRYPT]
 
-    def get_file_config(self, context: CommentsFileContext) -> dict[str, [File]]:
+    def get_file_config(self, context: CommentsFileContext) -> dict[str, list[File]]:
         return {
             _ZIP: [{
                 "location": LookupKey.FTP,
