@@ -6,7 +6,6 @@ from starlette.responses import JSONResponse
 
 from app import get_logger
 from app.definitions.context import AdhocSurveyContext, BusinessSurveyContext, CommentsFileContext
-from app.deliver import deliver_v2
 
 logger = get_logger()
 

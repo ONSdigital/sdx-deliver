@@ -2,8 +2,8 @@ from typing import Final
 
 from app.definitions.config_schema import File
 from app.definitions.context import BusinessSurveyContext
-from app.definitions.location_name_repository import LookupKey
-from app.path_helper import get_ns5_path
+from app.definitions.lookup_key import LookupKey
+from app.submission_types.path_helper import get_ns5_path
 from app.submission_types.bases.survey_submission import SurveySubmission
 
 # file types

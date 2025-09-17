@@ -1,16 +1,21 @@
 from abc import abstractmethod
+from typing import Protocol
 
 from app.definitions.config_schema import File
 from app.definitions.context import Context
-from app.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
-from app.definitions.location_name_repository import LookupKey
+from app.definitions.location_key import LocationKey
+from app.definitions.lookup_key import LookupKey
 from app.definitions.message_schema import Location
 from app.definitions.submission_type import SubmissionTypeBase
 
 
+class LocationKeyLookuper(Protocol):
+    def get_location_key(self, lookup_key: LookupKey) -> LocationKey: ...
+
+
 class SubmissionType(SubmissionTypeBase):
 
-    def __init__(self, location_key_lookup: LocationKeyLookupBase):
+    def __init__(self, location_key_lookup: LocationKeyLookuper):
         self._location_key_lookup = location_key_lookup
 
     @abstractmethod

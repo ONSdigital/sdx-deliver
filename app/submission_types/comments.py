@@ -4,7 +4,7 @@ from app.definitions.config_schema import File
 from app.definitions.context import CommentsFileContext
 from app.definitions.location_name_repository import LookupKey
 from app.definitions.submission_type import DECRYPT
-from app.path_helper import get_ftp_path
+from app.submission_types.path_helper import get_ftp_path
 from app.submission_types.bases.submission_type import SubmissionType
 
 _ZIP: Final[str] = "zip"

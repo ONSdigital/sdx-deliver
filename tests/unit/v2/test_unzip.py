@@ -2,7 +2,7 @@ import unittest
 import zipfile
 import io
 
-from app.zip import unzip
+from app.services.zip import unzip
 
 
 class TestUnzip(unittest.TestCase):

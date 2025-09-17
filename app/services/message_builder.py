@@ -1,25 +1,29 @@
-from typing import cast
+from typing import cast, Protocol
 
-from app import CONFIG
 from app.definitions.context import Context, CommentsFileContext, AdhocSurveyContext, BusinessSurveyContext
 from app.definitions.context_type import ContextType
 from app.definitions.message_builder import MessageBuilderBase
 from app.definitions.message_schema import MessageSchemaV2, Location, Target
 from app.definitions.submission_type import SubmissionTypeBase
-from app.definitions.submission_type_mapper import SubmissionTypeMapperBase
+from app.definitions.survey_type import SurveyType
 from app.definitions.zip_details import ZipDetails
+
+
+class SubmissionTypeFinder(Protocol):
+    def get_submission_type(self, survey_type: SurveyType) -> SubmissionTypeBase: ...
 
 
 class MessageBuilder(MessageBuilderBase):
 
-    def __init__(self, submission_mapper: SubmissionTypeMapperBase):
+    def __init__(self, submission_mapper: SubmissionTypeFinder, data_sensitivity: str):
         self._submission_mapper = submission_mapper
+        self._data_sensitivity = data_sensitivity
 
     def build_message(self, zip_details: ZipDetails, context: Context) -> MessageSchemaV2:
         submission_type: SubmissionTypeBase = self._submission_mapper.get_submission_type(context.survey_type)
         message: MessageSchemaV2 = {
             "schema_version": "2",
-            "sensitivity": CONFIG.DATA_SENSITIVITY,
+            "sensitivity": self._data_sensitivity,
             "sizeBytes": zip_details["size_bytes"],
             "md5sum": zip_details["md5sum"],
             "context": self.get_context(context),

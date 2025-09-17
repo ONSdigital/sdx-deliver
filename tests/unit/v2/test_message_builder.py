@@ -8,7 +8,7 @@ from app.definitions import Location
 from app.definitions import DECRYPT, SubmissionTypeBase
 from app.definitions import SubmissionTypeMapperBase
 from app.definitions import ZipDetails
-from app.message_builder import MessageBuilder
+from app.services.message_builder import MessageBuilder
 from app.definitions import SurveyType
 
 

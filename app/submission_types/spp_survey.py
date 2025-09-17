@@ -4,7 +4,7 @@ from sdx_base.errors.errors import DataError
 
 from app.definitions.config_schema import File
 from app.definitions.context import BusinessSurveyContext
-from app.definitions.location_name_repository import LookupKey
+from app.definitions.lookup_key import LookupKey
 
 from app.submission_types.bases.survey_submission import SurveySubmission
 

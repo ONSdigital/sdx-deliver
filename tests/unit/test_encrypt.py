@@ -3,7 +3,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 
 from app import gnupg, CONFIG
-from app.encrypt import encrypt_output
+from app.services.encrypt import encrypt_output
 
 
 class TestInit(unittest.TestCase):

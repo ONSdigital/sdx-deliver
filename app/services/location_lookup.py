@@ -1,24 +1,22 @@
-from typing import Final
+from typing import Protocol
 
-from app.definitions.location_key_lookup import LocationKeyLookupBase, LocationKey
-from app.definitions.location_name_repository import LocationNameRepositoryBase, LookupKey
-
-# Location Types
-WINDOWS_SERVER: Final[str] = "windows_server"
-GCS: Final[str] = "gcs"
-S3: Final[str] = "s3"
-CDP: Final[str] = "cdp"
+from app.definitions.location_key import WINDOWS_SERVER, GCS, S3, LocationKey
+from app.definitions.lookup_key import LookupKey
 
 
-class LocationKeyLookup(LocationKeyLookupBase):
+class LocationNameFinder(Protocol):
+    def get_location_name(self, key: LookupKey) -> str: ...
 
-    def __init__(self, location_name_repo: LocationNameRepositoryBase):
-        self._location_name_repo = location_name_repo
+
+class LocationKeyLookup:
+
+    def __init__(self, location_name_finder: LocationNameFinder):
+        self._location_name_repo = location_name_finder
         ftp_key: str = str(LookupKey.FTP.value)
-        sdx_key = str(LookupKey.SDX.value)
-        spp_key = str(LookupKey.SPP.value)
-        dap_key = str(LookupKey.DAP.value)
-        ns5_key = str(LookupKey.NS5.value)
+        sdx_key: str = str(LookupKey.SDX.value)
+        spp_key: str = str(LookupKey.SPP.value)
+        dap_key: str = str(LookupKey.DAP.value)
+        ns5_key: str = str(LookupKey.NS5.value)
         self._location_keys: dict[str, LocationKey] = {
             ftp_key: {
                 "location_type": WINDOWS_SERVER,

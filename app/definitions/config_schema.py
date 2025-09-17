@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-from app.definitions.location_name_repository import LookupKey
+from app.definitions.lookup_key import LookupKey
 
 
 class File(TypedDict):
