@@ -4,13 +4,12 @@ import unittest
 import zipfile
 from unittest.mock import patch, Mock
 
-from sdx_gcp import Request
 
 from app import deliver
 from app.definitions.context_type import ContextType
-from app.definitions import SurveyType
+
 from app.routes import FILE_NAME, ZIP_FILE, CONTEXT, deliver_survey
-from app.definitions import MessageSchemaV2
+
 from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, FTP_LOCATION_NAME, SPP_LOCATION_NAME
 
 

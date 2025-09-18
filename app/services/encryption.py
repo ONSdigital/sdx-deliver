@@ -4,13 +4,13 @@ import gnupg
 from sdx_base.utilities.singleton import SingletonMeta
 
 from app import get_logger
-from app.settings import settings
 
 logger = get_logger()
 
 
 class GpgKeyGetter(Protocol):
     def get_gpg_key(self) -> str: ...
+    def get_data_recipient(self) -> str: ...
 
 
 class EncryptionService(metaclass=SingletonMeta):
@@ -25,7 +25,7 @@ class EncryptionService(metaclass=SingletonMeta):
         Encrypts data using DAP public key (GPG)
         """
 
-        recipients = [settings().data_recipient]
+        recipients = [self._gpg_getter.get_data_recipient()]
         encrypted_data = gnupg.GPG().encrypt(data_bytes, recipients=recipients, always_trust=True)
 
         if encrypted_data.ok:

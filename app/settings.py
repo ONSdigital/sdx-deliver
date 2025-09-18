@@ -20,6 +20,9 @@ class Settings(AppSettings):
     def get_gpg_key(self) -> str:
         return self.dap_public_gpg
 
+    def get_data_recipient(self) -> str:
+        return self.data_recipient
+
     def get_bucket_name(self) -> str:
         return f'{self.project_id}-outputs'
 
@@ -37,5 +40,5 @@ class Settings(AppSettings):
             return self.get_bucket_name()
 
 
-def settings() -> Settings:
+def get_instance() -> Settings:
     return get_settings(Settings)

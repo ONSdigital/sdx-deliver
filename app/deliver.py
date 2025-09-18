@@ -39,15 +39,17 @@ class Deliver:
                  message_builder: MessageBuilderBase,
                  encrypter: Encrypter,
                  publisher: Publisher,
+                 bucket: str,
                  storer: Storer,
                  zipper: Zipper):
         self._message_builder = message_builder
         self._encrypter = encrypter
         self._publisher = publisher
+        self._bucket_name = bucket
         self._storer = storer
         self._zipper = zipper
 
-    def deliver_v2(self, filename: str, data_bytes: bytes, context: Context, bucket_name: str):
+    def deliver_v2(self, filename: str, data_bytes: bytes, context: Context):
         """
         Encrypts any unencrypted data, writes to the appropriate location within the outputs GCP bucket and notifies DAP
         via PubSub
@@ -78,7 +80,7 @@ class Deliver:
         v2_message: MessageSchemaV2 = self._message_builder.build_message(zip_details, context)
 
         logger.info("Storing to bucket")
-        self._storer.write(encrypted_bytes, filename, bucket_name, _get_output_path(v2_message))
+        self._storer.write(encrypted_bytes, filename, self._bucket_name, _get_output_path(v2_message))
 
         logger.info("Sending Nifi message")
         self._publisher.publish_v2_message(v2_message, context.tx_id)

@@ -1,6 +1,7 @@
 from app.definitions.submission_type import SubmissionTypeBase
 from app.definitions.submission_type_mapper import SubmissionTypeMapperBase
 from app.definitions.survey_type import SurveyType
+from app.submission_types.bases.submission_type import LocationKeyLookuper
 from app.submission_types.comments import CommentsSubmissionType
 from app.submission_types.dap_survey import DapSubmissionType
 from app.submission_types.environmental_survey import EnvironmentalSubmissionType
@@ -13,20 +14,23 @@ from app.submission_types.spp_survey import SppSubmissionType
 
 class SubmissionTypeMapper(SubmissionTypeMapperBase):
 
+    def __init__(self, key_lookup: LocationKeyLookuper):
+        self._key_lookup = key_lookup
+
     def get_submission_type(self, survey_type: SurveyType) -> SubmissionTypeBase:
         if survey_type == SurveyType.SEFT:
-            return SeftSubmissionType()
+            return SeftSubmissionType(self._key_lookup)
         elif survey_type == SurveyType.SPP:
-            return SppSubmissionType()
+            return SppSubmissionType(self._key_lookup)
         elif survey_type == SurveyType.FEEDBACK:
-            return FeedbackSubmissionType()
+            return FeedbackSubmissionType(self._key_lookup)
         elif survey_type == SurveyType.COMMENTS:
-            return CommentsSubmissionType(self._location_key_lookup)
+            return CommentsSubmissionType(self._key_lookup)
         elif survey_type == SurveyType.DAP:
-            return DapSubmissionType(self._location_key_lookup)
+            return DapSubmissionType(self._key_lookup)
         elif survey_type == SurveyType.ENVIRONMENTAL:
-            return EnvironmentalSubmissionType(self._location_key_lookup)
+            return EnvironmentalSubmissionType(self._key_lookup)
         elif survey_type == SurveyType.MATERIALS:
-            return MaterialsSubmissionType(self._location_key_lookup)
+            return MaterialsSubmissionType(self._key_lookup)
         else:
-            return LegacySubmissionType(self._location_key_lookup)
+            return LegacySubmissionType(self._key_lookup)
