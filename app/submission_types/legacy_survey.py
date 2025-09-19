@@ -1,9 +1,8 @@
-from typing import Final
+from typing import Final, override
 
 from app.definitions.config_schema import File
 from app.definitions.context import BusinessSurveyContext
 from app.definitions.lookup_key import LookupKey
-from app.submission_types.path_helper import get_ftp_path
 from app.submission_types.bases.survey_submission import SurveySubmission
 
 # file types
@@ -21,17 +20,19 @@ _DAT: Final[str] = "dat"
 
 class LegacySubmissionType(SurveySubmission):
 
+    @override
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         return {
             _PCK: [{
                 "location": LookupKey.FTP,
-                "path": f"{get_ftp_path()}/EDC_QData"
+                "path": f"{self._get_ftp_path()}/EDC_QData"
             }],
             _IMAGE: [self.get_ftp_image()],
             _INDEX: [self.get_ftp_index()],
             _RECEIPT: [self.get_ftp_receipt()],
         }
 
+    @override
     def get_mapping(self, filename: str) -> str:
         split_string = filename.split(".")
         if len(split_string) == 1:

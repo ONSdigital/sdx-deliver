@@ -3,50 +3,27 @@ from typing import cast, Protocol, Optional
 
 from app import get_logger
 from app.definitions.context import Context, AdhocSurveyContext, BusinessSurveyContext
+from app.definitions.encryption import EncryptionBase
+from app.definitions.gcp import GcpBase
 from app.definitions.message_builder import MessageBuilderBase
 from app.definitions.message_schema import MessageSchemaV2
 from app.definitions.survey_type import SurveyType
+from app.definitions.zip import ZipBase
 from app.definitions.zip_details import ZipDetails
 
 logger = get_logger()
-
-
-class Encrypter(Protocol):
-    def encrypt(self, data_bytes: bytes) -> str: ...
-
-
-class Publisher(Protocol):
-    def publish_v2_message(self, message: MessageSchemaV2, tx_id: str): ...
-
-
-class Storer(Protocol):
-    def write(self,
-              data: str,
-              filename: str,
-              bucket_name: str,
-              sub_dir: Optional[str] = None,
-              project_id: Optional[str] = None,
-              metadata: dict[str, str] | None = None) -> str: ...
-
-
-class Zipper(Protocol):
-    def unzip(self, data_bytes: bytes) -> list[str]: ...
 
 
 class Deliver:
 
     def __init__(self,
                  message_builder: MessageBuilderBase,
-                 encrypter: Encrypter,
-                 publisher: Publisher,
-                 bucket: str,
-                 storer: Storer,
-                 zipper: Zipper):
+                 encrypter: EncryptionBase,
+                 gcp: GcpBase,
+                 zipper: ZipBase):
         self._message_builder = message_builder
         self._encrypter = encrypter
-        self._publisher = publisher
-        self._bucket_name = bucket
-        self._storer = storer
+        self._gcp = gcp
         self._zipper = zipper
 
     def deliver_v2(self, filename: str, data_bytes: bytes, context: Context):
@@ -80,10 +57,10 @@ class Deliver:
         v2_message: MessageSchemaV2 = self._message_builder.build_message(zip_details, context)
 
         logger.info("Storing to bucket")
-        self._storer.write(encrypted_bytes, filename, self._bucket_name, _get_output_path(v2_message))
+        self._gcp.store(encrypted_bytes, filename, _get_output_path(v2_message))
 
         logger.info("Sending Nifi message")
-        self._publisher.publish_v2_message(v2_message, context.tx_id)
+        self._gcp.publish_v2_message(v2_message, context.tx_id)
 
         logger.info("Process completed successfully", extra={"survey_id": _get_survey_id(context)})
 

@@ -1,5 +1,5 @@
 from abc import abstractmethod
-from typing import Protocol
+from typing import Protocol, Self
 
 from app.definitions.config_schema import File
 from app.definitions.context import Context
@@ -9,17 +9,24 @@ from app.definitions.message_schema import Location
 from app.definitions.submission_type import SubmissionTypeBase
 
 
-class LocationKeyLookuper(Protocol):
+class LocationHelper(Protocol):
     def get_location_key(self, lookup_key: LookupKey) -> LocationKey: ...
+    def is_prod_env(self) -> bool: ...
 
 
 class SubmissionType(SubmissionTypeBase):
 
-    def __init__(self, location_key_lookup: LocationKeyLookuper):
-        self._location_key_lookup = location_key_lookup
+    def __init__(self, location_helper: LocationHelper):
+        self._location_helper = location_helper
+
+    def _is_prod_env(self) -> bool:
+        return self._location_helper.is_prod_env()
+
+    def _get_ftp_path(self: Self) -> str:
+        return "SDX_Prod" if self._is_prod_env() else "SDX_PREPROD"
 
     @abstractmethod
-    def get_file_config(self, context: Context) -> dict[str, list[File]]:
+    def create_file_config(self, context: Context) -> dict[str, list[File]]:
         pass
 
     @abstractmethod
@@ -36,7 +43,7 @@ class SubmissionType(SubmissionTypeBase):
 
     def get_source(self, filename: str) -> Location:
         lookup_key: LookupKey = LookupKey.SDX
-        location_key: LocationKey = self._location_key_lookup.get_location_key(lookup_key)
+        location_key: LocationKey = self._location_helper.get_location_key(lookup_key)
 
         return {
             "location_type": location_key["location_type"],
@@ -50,12 +57,12 @@ class SubmissionType(SubmissionTypeBase):
 
     def get_outputs(self, filename: str, context: Context) -> list[Location]:
         key: str = self.get_mapping(filename)
-        filelist: list[File] = self.get_file_config(context)[key]
+        filelist: list[File] = self.create_file_config(context)[key]
 
         result: list[Location] = []
         for file in filelist:
             lookup_key: LookupKey = file["location"]
-            location_key: LocationKey = self._location_key_lookup.get_location_key(lookup_key)
+            location_key: LocationKey = self._location_helper.get_location_key(lookup_key)
             result.append({
                 "location_type": location_key["location_type"],
                 "location_name": location_key["location_name"],

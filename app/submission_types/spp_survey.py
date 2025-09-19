@@ -1,4 +1,4 @@
-from typing import Final
+from typing import Final, override
 
 from sdx_base.errors.errors import DataError
 
@@ -23,6 +23,7 @@ _DAT: Final[str] = "dat"
 
 class SppSubmissionType(SurveySubmission):
 
+    @override
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         return {
             _IMAGE: [self.get_ftp_image()],
@@ -34,6 +35,7 @@ class SppSubmissionType(SurveySubmission):
             }]
         }
 
+    @override
     def get_mapping(self, filename: str) -> str:
         split_string = filename.split(".")
         if len(split_string) < 2:
