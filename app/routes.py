@@ -39,6 +39,7 @@ async def deliver_survey(filename: Annotated[str, Form()],
     return JSONResponse(content={"success": True}, status_code=200)
 
 
+@router.post("/deliver/v2/comments")
 async def deliver_comments_file(filename: Annotated[str, Form()],
                                 context: Annotated[CommentsFileContext, Form()],
                                 zip_file: UploadFile = File(...),
@@ -55,6 +56,7 @@ async def deliver_comments_file(filename: Annotated[str, Form()],
     return JSONResponse(content={"success": True}, status_code=200)
 
 
+@router.post("/deliver/v2/seft")
 async def deliver_seft_submission(filename: Annotated[str, Form()],
                                   context: Annotated[BusinessSurveyContext, Form()],
                                   seft_file: UploadFile = File(...),

@@ -3,13 +3,10 @@ from typing import Annotated
 from sdx_base.settings.app import AppSettings, get_settings
 from sdx_base.settings.service import SECRET
 
-from app.definitions.lookup_key import LookupKey
-
 
 class Settings(AppSettings):
     data_sensitivity: str
     data_recipient: str
-    bucket_name: str
     dap_topic_id: str = "dap-topic"
     dap_public_gpg: Annotated[SECRET, "dap-public-gpg"]
     nifi_location_ftp: Annotated[SECRET, "nifi-location-ftp"]

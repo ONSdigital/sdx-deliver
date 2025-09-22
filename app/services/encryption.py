@@ -16,7 +16,7 @@ class GpgSettings(Protocol):
     data_recipient: str
 
 
-class EncryptionService(EncryptionBase, metaclass=SingletonMeta):
+class EncryptionService(EncryptionBase):
 
     def __init__(self, gpg_settings: GpgSettings):
         gpg = gnupg.GPG()

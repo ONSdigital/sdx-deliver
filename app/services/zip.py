@@ -2,8 +2,10 @@ import zipfile
 
 import io
 
+from app.definitions.zip import ZipBase
 
-class ZipService:
+
+class ZipService(ZipBase):
 
     def unzip(self, data_bytes: bytes) -> list[str]:
         # Create a BytesIO object from the bytes
