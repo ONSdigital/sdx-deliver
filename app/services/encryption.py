@@ -1,9 +1,9 @@
+import hashlib
 from typing import Self, Protocol
 
 import gnupg
 from sdx_base.errors.retryable import RetryableError
 from sdx_base.settings.service import SECRET
-from sdx_base.utilities.singleton import SingletonMeta
 
 from app import get_logger
 from app.definitions.encryption import EncryptionBase
@@ -39,3 +39,8 @@ class EncryptionService(EncryptionBase):
             raise RetryableError("Failed to encrypt payload")
 
         return str(encrypted_data)
+
+    def get_md5_and_size(self, data_bytes: bytes) -> tuple[str, int]:
+        md5sum: str = hashlib.md5(data_bytes).hexdigest()
+        size_bytes: int = len(data_bytes)
+        return md5sum, size_bytes

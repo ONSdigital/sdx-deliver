@@ -1,5 +1,4 @@
-import hashlib
-from typing import cast, Protocol, Optional
+from typing import cast
 
 from app import get_logger
 from app.definitions.context import Context, AdhocSurveyContext, BusinessSurveyContext
@@ -39,8 +38,9 @@ class Deliver:
             encrypted_output: str = self._encrypter.encrypt(data_bytes)
             encrypted_bytes = encrypted_output.encode()
 
-        md5sum: str = hashlib.md5(encrypted_bytes).hexdigest()
-        size_bytes: int = len(encrypted_bytes)
+        md5sum: str
+        size_bytes: int
+        md5sum, size_bytes = self._encrypter.get_md5_and_size(encrypted_bytes)
 
         filenames: list[str]
         if context.survey_type == SurveyType.COMMENTS or context.survey_type == SurveyType.SEFT:

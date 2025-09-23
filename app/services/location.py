@@ -2,6 +2,7 @@ from typing import Protocol, Final
 
 from sdx_base.settings.service import SECRET
 
+from app.definitions.location import LocationBase
 from app.definitions.location_key import WINDOWS_SERVER, GCS, S3, LocationKey
 from app.definitions.lookup_key import LookupKey
 
@@ -18,7 +19,7 @@ class LocationNameSettings(Protocol):
     def get_bucket_name(self) -> str: ...
 
 
-class LocationService:
+class LocationService(LocationBase):
 
     def __init__(self, location_name_settings: LocationNameSettings):
         self._settings = location_name_settings

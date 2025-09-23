@@ -5,15 +5,18 @@ from typing import Self
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from sdx_base.loggy.configure import configure_loggers
+from sdx_base.loggy.handlers import SdxStreamHandler
 
 from sdx_base.server.server import create_app
 
+from app.definitions.message_schema import MessageSchemaV2
 from app.definitions.survey_type import SurveyType
 
 from app.definitions.context_type import ContextType
 from app.dependencies import get_settings, get_encryption_service, get_gcp_service
 from app.routes import router
-from tests.integration.mocks import MockSettings, MockEncryptor, MockGcp
+from tests.integration.mocks import MockSettings, get_mock_settings, get_mock_encryptor, get_mock_gcp, MockGcp
 
 
 class TestSeftV2(unittest.TestCase):
@@ -21,13 +24,23 @@ class TestSeftV2(unittest.TestCase):
     def test_seft(self: Self):
 
         settings = MockSettings()
+        global_fields: dict[str, str] = {
+            "app_name": settings.app_name,
+            "app_version": settings.app_version
+        }
+        configure_loggers(
+            ["uvicorn", "fastapi", "httpx", settings.app_name],
+            log_level=settings.logging_level,
+            global_context=global_fields,
+            handlers=[SdxStreamHandler()]
+        )
         app: FastAPI = create_app(app_name=settings.app_name,
                                   version=settings.app_version,
                                   routers=[router])
 
-        app.dependency_overrides[get_settings] = MockSettings
-        app.dependency_overrides[get_encryption_service] = MockEncryptor
-        app.dependency_overrides[get_gcp_service] = MockGcp
+        app.dependency_overrides[get_settings] = get_mock_settings
+        app.dependency_overrides[get_encryption_service] = get_mock_encryptor
+        app.dependency_overrides[get_gcp_service] = get_mock_gcp
 
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
         input_filename = "14112300153_202203_141_20220623072928.xlsx.gpg"
@@ -56,39 +69,39 @@ class TestSeftV2(unittest.TestCase):
                     )
 
 
-        print(response)
+        self.assertTrue(response.is_success)
 
-        # expected_v2_message: MessageSchemaV2 = {
-        #     "schema_version": "2",
-        #     "sensitivity": "High",
-        #     "sizeBytes": size_bytes,
-        #     "md5sum": md5sum,
-        #     "context": {
-        #         "survey_id": survey_id,
-        #         "period_id": period_id,
-        #         "ru_ref": ru_ref,
-        #         "context_type": ContextType.BUSINESS_SURVEY,
-        #     },
-        #     "source": {
-        #         "location_type": "gcs",
-        #         "location_name": SDX_LOCATION_NAME,
-        #         "path": "seft",
-        #         "filename": input_filename
-        #     },
-        #     "actions": ["decrypt"],
-        #     "targets": [
-        #         {
-        #             "input": input_filename,
-        #             "outputs": [
-        #                 {
-        #                     "location_type": "windows_server",
-        #                     "location_name": FTP_LOCATION_NAME,
-        #                     "path": "SDX_PREPROD/EDC_Submissions/141",
-        #                     "filename": output_filename
-        #                 }
-        #             ]
-        #         }
-        #     ]
-        # }
-        #
-        # mock_publish_v2_schema.assert_called_with(expected_v2_message, tx_id)
+        expected_v2_message: MessageSchemaV2 = {
+            "schema_version": "2",
+            "sensitivity": "Low",
+            "sizeBytes": 10,
+            "md5sum": "md5sum",
+            "context": {
+                "survey_id": survey_id,
+                "period_id": period_id,
+                "ru_ref": ru_ref,
+                "context_type": ContextType.BUSINESS_SURVEY,
+            },
+            "source": {
+                "location_type": "gcs",
+                "location_name": settings.get_bucket_name(),
+                "path": "seft",
+                "filename": input_filename
+            },
+            "actions": ["decrypt"],
+            "targets": [
+                {
+                    "input": input_filename,
+                    "outputs": [
+                        {
+                            "location_type": "windows_server",
+                            "location_name": "ftp_location_name",
+                            "path": "SDX_PREPROD/EDC_Submissions/141",
+                            "filename": output_filename
+                        }
+                    ]
+                }
+            ]
+        }
+
+        self.assertEqual(expected_v2_message, MockGcp.get_message())

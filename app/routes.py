@@ -57,18 +57,19 @@ async def deliver_comments_file(filename: Annotated[str, Form()],
 
 
 @router.post("/deliver/v2/seft")
-async def deliver_seft_submission(filename: Annotated[str, Form()],
-                                  context: Annotated[BusinessSurveyContext, Form()],
-                                  seft_file: UploadFile = File(...),
+async def deliver_seft_submission(filename: str,
+                                  context: str,
+                                  seft_file: UploadFile,
                                   deliver: Deliver = Depends(get_deliver_service)):
     """
     Endpoint for seft submissions that will use the version 2 schema for the nifi message.
     """
     logger.info('Processing seft')
+    context_obj = BusinessSurveyContext.model_validate_json(context)
 
     if seft_file is None:
         logger.error("missing SEFT file")
         raise UnrecoverableError("Missing SEFT file")
     data_bytes = await seft_file.read()
-    deliver.deliver_v2(filename, data_bytes, context)
+    deliver.deliver_v2(filename, data_bytes, context_obj)
     return JSONResponse(content={"success": True}, status_code=200)
