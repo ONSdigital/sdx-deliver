@@ -1,39 +1,26 @@
 import json
 import unittest
-
 from typing import Self
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
-from sdx_base.loggy.configure import configure_loggers
-from sdx_base.loggy.handlers import SdxStreamHandler
-
+from sdx_base.run import setup_loggers
 from sdx_base.server.server import create_app
 
+from app.definitions.context_type import ContextType
 from app.definitions.message_schema import MessageSchemaV2
 from app.definitions.survey_type import SurveyType
-
-from app.definitions.context_type import ContextType
 from app.dependencies import get_settings, get_encryption_service, get_gcp_service
 from app.routes import router
-from tests.integration.mocks import MockSettings, get_mock_settings, get_mock_encryptor, get_mock_gcp, MockGcp
+from tests.integration.mocks import MockSettings, get_mock_settings, get_mock_encryptor, get_mock_gcp, MockGcp, \
+    NIFI_LOCATION_FTP
 
 
 class TestSeftV2(unittest.TestCase):
 
     def test_seft(self: Self):
-
         settings = MockSettings()
-        global_fields: dict[str, str] = {
-            "app_name": settings.app_name,
-            "app_version": settings.app_version
-        }
-        configure_loggers(
-            ["uvicorn", "fastapi", "httpx", settings.app_name],
-            log_level=settings.logging_level,
-            global_context=global_fields,
-            handlers=[SdxStreamHandler()]
-        )
+        setup_loggers(settings.app_name, settings.app_version, settings.logging_level)
         app: FastAPI = create_app(app_name=settings.app_name,
                                   version=settings.app_version,
                                   routers=[router])
@@ -95,7 +82,7 @@ class TestSeftV2(unittest.TestCase):
                     "outputs": [
                         {
                             "location_type": "windows_server",
-                            "location_name": "ftp_location_name",
+                            "location_name": NIFI_LOCATION_FTP,
                             "path": "SDX_PREPROD/EDC_Submissions/141",
                             "filename": output_filename
                         }

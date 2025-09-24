@@ -20,9 +20,9 @@ router = APIRouter()
 
 
 @router.post("/deliver/v2/survey")
-async def deliver_survey(filename: Annotated[str, Form()],
-                         context: Annotated[BusinessSurveyContext | AdhocSurveyContext, Form()],
-                         zip_file: UploadFile = File(...),
+async def deliver_survey(filename: str,
+                         context: str,
+                         zip_file: UploadFile,
                          deliver: Deliver = Depends(get_deliver_service)):
     """
     Endpoint for business submissions that will use the version 2 schema for the nifi message.
@@ -30,12 +30,14 @@ async def deliver_survey(filename: Annotated[str, Form()],
     logger.info('Processing business submission')
     if filename is None:
         logger.error("missing filename")
+        raise UnrecoverableError("Missing filename")
 
     if zip_file is None:
         logger.error("missing zip file")
         raise UnrecoverableError("Missing zip file")
     data_bytes = await zip_file.read()
-    deliver.deliver_v2(filename, data_bytes, context)
+    context_obj = BusinessSurveyContext.model_validate_json(context)
+    deliver.deliver_v2(filename, data_bytes, context_obj)
     return JSONResponse(content={"success": True}, status_code=200)
 
 

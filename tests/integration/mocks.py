@@ -1,8 +1,14 @@
-from typing import Self, Optional
+from typing import Self, Optional, Final
 
 from app.definitions.encryption import EncryptionBase
 from app.definitions.gcp import GcpBase
 from app.definitions.message_schema import MessageSchemaV2
+
+
+NIFI_LOCATION_FTP: Final[str] = "ftp_location_name"
+NIFI_LOCATION_SPP: Final[str] = "spp_location_name"
+NIFI_LOCATION_DAP: Final[str] = "dap_location_name"
+NIFI_LOCATION_NS5: Final[str] = "ns5_location_name"
 
 
 class MockSettings:
@@ -30,10 +36,10 @@ class MockSettings:
         self.data_recipient: str = "test_recipient"
         self.dap_topic_id: str = "dap-topic"
         self.dap_public_gpg: str = "public_gpg"
-        self.nifi_location_ftp: str = "ftp_location_name"
-        self.nifi_location_spp: str = "spp_location_name"
-        self.nifi_location_dap: str = "dap_location_name"
-        self.nifi_location_ns5: str = "ns5_location_name"
+        self.nifi_location_ftp: str = NIFI_LOCATION_FTP
+        self.nifi_location_spp: str = NIFI_LOCATION_SPP
+        self.nifi_location_dap: str = NIFI_LOCATION_DAP
+        self.nifi_location_ns5: str = NIFI_LOCATION_NS5
 
     def get_bucket_name(self) -> str:
         return f'{self.project_id}-outputs'

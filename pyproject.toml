@@ -4,9 +4,8 @@ version = "3.3.0"
 description = "Delivering for SDX"
 requires-python = ">=3.13"
 dependencies = [
-    "sdx-base==0.1.1",
+    "sdx-base==0.1.2",
     "python-gnupg==0.4.7",
-    "python-multipart"
 ]
 
 [tool.uv.sources]
@@ -24,5 +23,4 @@ dev = [
     "mypy>=1.15.0",
     "flake8>=6.1.0",
     "jsonschema>=4.23.0",
-    "httpx"
 ]
