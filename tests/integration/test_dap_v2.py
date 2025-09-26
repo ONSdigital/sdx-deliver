@@ -2,33 +2,34 @@ import io
 import json
 import unittest
 import zipfile
-from unittest.mock import patch, Mock
+from typing import Self
 
-from sdx_gcp import Request
+from fastapi import FastAPI
+from fastapi.testclient import TestClient
+from sdx_base.run import setup_loggers
+from sdx_base.server.server import create_app
 
-from app import deliver
 from app.definitions.context_type import ContextType
-from app.definitions import SurveyType
-from app.routes import FILE_NAME, ZIP_FILE, CONTEXT, deliver_survey
-from app.definitions import MessageSchemaV2
-from tests.integration.v2 import MockLocationNameMapper, FileHolder, SDX_LOCATION_NAME, DAP_LOCATION_NAME
+from app.definitions.message_schema import MessageSchemaV2
+from app.definitions.survey_type import SurveyType
+from app.dependencies import get_settings, get_encryption_service, get_gcp_service
+from app.routes import router
+from tests.integration.mocks import MockSettings, get_mock_settings, get_mock_encryptor, get_mock_gcp, MockGcp, \
+    NIFI_LOCATION_DAP
 
 
 class TestDapV2(unittest.TestCase):
 
-    @patch('app.v2.deliver.sdx_app.gcs_write')
-    @patch('app.v2.deliver.publish_v2_message')
-    @patch('app.v2.deliver.encrypt_output')
-    @patch('app.v2.routes.Flask.jsonify')
-    def test_dap(self,
-                 mock_jsonify: Mock,
-                 mock_encrypt: Mock,
-                 mock_publish_v2_schema: Mock,
-                 mock_write_to_bucket: Mock):
-        deliver.location_name_repo = MockLocationNameMapper()
-        mock_encrypt.return_value = "My encrypted output"
-        mock_write_to_bucket.return_value = "My fake bucket path"
-        mock_jsonify.return_value = {"success": True}
+    def test_dap(self: Self):
+        settings = MockSettings()
+        setup_loggers(settings.app_name, settings.app_version, settings.logging_level)
+        app: FastAPI = create_app(app_name=settings.app_name,
+                                  version=settings.app_version,
+                                  routers=[router])
+
+        app.dependency_overrides[get_settings] = get_mock_settings
+        app.dependency_overrides[get_encryption_service] = get_mock_encryptor
+        app.dependency_overrides[get_gcp_service] = get_mock_gcp
 
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
         input_filename = tx_id
@@ -44,12 +45,6 @@ class TestDapV2(unittest.TestCase):
 
         zip_bytes = zip_buffer.getvalue()
 
-        # Create the fake Request object
-
-        files_dict = {
-            ZIP_FILE: FileHolder(zip_bytes)
-        }
-
         context = {
             "survey_type": SurveyType.DAP,
             "context_type": ContextType.BUSINESS_SURVEY,
@@ -59,25 +54,23 @@ class TestDapV2(unittest.TestCase):
             "ru_ref": ru_ref,
         }
 
-        data = {
-            FILE_NAME: input_filename,
-            "tx_id": tx_id,
-            CONTEXT: json.dumps(context)
-        }
+        client = TestClient(app)
+        response = client.post("/deliver/v2/survey",
+                               params={
+                                   "filename": input_filename,
+                                   "context": json.dumps(context),
+                                   "tx_id": tx_id
+                               },
+                               files={"zip_file": zip_bytes}
+                               )
 
-        class MockRequest(Request):
-            files = files_dict
-            args = data
-
-        # Call the endpoint
-        response = deliver_survey(MockRequest(data), tx_id)
-        self.assertTrue(response["success"])
+        self.assertTrue(response.is_success)
 
         expected_v2_message: MessageSchemaV2 = {
             "schema_version": "2",
-            "sensitivity": "High",
-            "sizeBytes": 19,
-            "md5sum": "3190f8a68aad6a9e33a624c318516ebb",
+            "sensitivity": "Low",
+            "sizeBytes": 10,
+            "md5sum": "md5sum",
             "context": {
                 "survey_id": survey_id,
                 "period_id": period_id,
@@ -86,7 +79,7 @@ class TestDapV2(unittest.TestCase):
             },
             "source": {
                 "location_type": "gcs",
-                "location_name": SDX_LOCATION_NAME,
+                "location_name": settings.get_bucket_name(),
                 "path": "survey",
                 "filename": input_filename
             },
@@ -97,7 +90,7 @@ class TestDapV2(unittest.TestCase):
                     "outputs": [
                         {
                             "location_type": "windows_server",
-                            "location_name": DAP_LOCATION_NAME,
+                            "location_name": NIFI_LOCATION_DAP,
                             "path": f"Covid_Survey/pre-prod/{survey_id}/{period_id}/v1",
                             "filename": output_filename
                         }
@@ -106,4 +99,4 @@ class TestDapV2(unittest.TestCase):
             ]
         }
 
-        mock_publish_v2_schema.assert_called_with(expected_v2_message, tx_id)
+        self.assertEqual(expected_v2_message, MockGcp.get_message())

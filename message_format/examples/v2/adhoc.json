@@ -1,7 +1,7 @@
 {
   "data": {
     "schema_version": "2",
-    "sensitivity": "Medium",
+    "sensitivity": "Low",
     "sizeBytes": 1398,
     "md5sum": "fb27bec4baff5a5ec62dd27b05eed7fc",
     "context": {
@@ -13,11 +13,12 @@
       "location_type": "gcs",
       "location_name": "ons-sdx-preprod-outputs",
       "path": "dap",
-      "filename": "740-20f44292-488e-4ed8-908a-76e4b50b5b14.json"
+      "filename": "20f44292-488e-4ed8-908a-76e4b50b5b14.json"
     },
+    "actions": ["decrypt", "unzip", "batch"],
     "targets": [
       {
-        "input": "740-20f44292-488e-4ed8-908a-76e4b50b5b14.json",
+        "input": "20f44292-488e-4ed8-908a-76e4b50b5b14.json",
         "outputs": [
           {
             "location_type": "windows_server",
