@@ -1,11 +1,11 @@
-from typing import Final, Annotated
+from typing import Final
 
-from fastapi import APIRouter, Form, UploadFile, File, Depends
+from fastapi import APIRouter, UploadFile, Depends
 from sdx_base.errors.errors import UnrecoverableError
 from starlette.responses import JSONResponse
 
 from app import get_logger
-from app.definitions.context import AdhocSurveyContext, BusinessSurveyContext, CommentsFileContext
+from app.definitions.context import BusinessSurveyContext, CommentsFileContext
 from app.deliver import Deliver
 from app.dependencies import get_deliver_service
 
@@ -42,9 +42,9 @@ async def deliver_survey(filename: str,
 
 
 @router.post("/deliver/v2/comments")
-async def deliver_comments_file(filename: Annotated[str, Form()],
-                                context: Annotated[CommentsFileContext, Form()],
-                                zip_file: UploadFile = File(...),
+async def deliver_comments_file(filename: str,
+                                context: str,
+                                zip_file: UploadFile,
                                 deliver: Deliver = Depends(get_deliver_service)):
     """
     Endpoint for the comments file using the version 2 schema for the nifi message.
@@ -54,7 +54,8 @@ async def deliver_comments_file(filename: Annotated[str, Form()],
         logger.error("missing zip file")
         raise UnrecoverableError("Missing zip file")
     data_bytes = await zip_file.read()
-    deliver.deliver_v2(filename, data_bytes, context)
+    context_obj = CommentsFileContext.model_validate_json(context)
+    deliver.deliver_v2(filename, data_bytes, context_obj)
     return JSONResponse(content={"success": True}, status_code=200)
 
 
