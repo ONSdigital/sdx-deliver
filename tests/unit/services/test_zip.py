@@ -2,11 +2,13 @@ import unittest
 import zipfile
 import io
 
-from app.services.zip import unzip
+from app.services.zip import ZipService
 
 
 class TestUnzip(unittest.TestCase):
+
     def test_unzip(self):
+        service = ZipService()
         zip_buffer = io.BytesIO()
 
         # Create a new zip file in the BytesIO object
@@ -18,6 +20,6 @@ class TestUnzip(unittest.TestCase):
         # Get the bytes of the zip file
         zip_bytes = zip_buffer.getvalue()
 
-        actual = unzip(zip_bytes)
+        actual = service.unzip(zip_bytes)
         expected = ['file1.txt', 'file2.txt']
         self.assertEqual(expected, actual)
