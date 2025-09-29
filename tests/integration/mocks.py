@@ -73,11 +73,11 @@ class MockGcp(GcpBase):
             raise Exception("message not set!")
 
     def publish_v2_message(self, message: MessageSchemaV2, tx_id: str):
-        print("published message")
+        print("pretending to publish a message")
         MockGcp._message = message
 
     def store(self, data: bytes, filename: str, sub_dir: str):
-        print("storing data")
+        print("pretending to store data")
 
 
 def get_mock_gcp() -> MockGcp:
