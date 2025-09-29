@@ -13,12 +13,12 @@ COPY pyproject.toml uv.lock ./
 # Place executables in the environment at the front of the path
 ENV PATH="/app/.venv/bin:$PATH"
 
-# Install dependencies
-RUN uv sync --frozen --no-dev
-
 # Then, add the rest of the project source code and install it
 # Installing separately from its dependencies allows optimal layer caching
 ADD . /app
+
+# Install dependencies
+RUN uv sync --frozen --no-dev
 
 # Expose the port the app runs on
 EXPOSE 5000
