@@ -1,45 +1,14 @@
 import unittest
+from typing import Self
 
-from app.definitions import BusinessSurveyContext, Context, CommentsFileContext, AdhocSurveyContext
+from app.definitions.context import Context, BusinessSurveyContext, AdhocSurveyContext, CommentsFileContext
 from app.definitions.context_type import ContextType
-from app.definitions import LocationKeyLookupBase, LocationKey
-from app.definitions import LookupKey
-from app.definitions import Location
-from app.definitions import DECRYPT, SubmissionTypeBase
-from app.definitions import SubmissionTypeMapperBase
-from app.definitions import ZipDetails
+from app.definitions.message_schema import Location
+from app.definitions.submission_type import SubmissionTypeBase, DECRYPT
+from app.definitions.submission_type_mapper import SubmissionTypeMapperBase
+from app.definitions.survey_type import SurveyType
+from app.definitions.zip_details import ZipDetails
 from app.services.message_builder import MessageBuilder
-from app.definitions import SurveyType
-
-
-class MockLocationKeyLookup(LocationKeyLookupBase):
-
-    def __init__(self):
-        ftp_key = LookupKey.FTP.value
-        sdx_key = LookupKey.SDX.value
-        spp_key = LookupKey.SPP.value
-        dap_key = LookupKey.DAP.value
-        self._location_keys = {
-            ftp_key: {
-                "location_type": "server1",
-                "location_name": "server1_name"
-            },
-            sdx_key: {
-                "location_type": "server2",
-                "location_name": "server2_name"
-            },
-            spp_key: {
-                "location_type": "server3",
-                "location_name": "server3_name"
-            },
-            dap_key: {
-                "location_type": "server4",
-                "location_name": "server4_name"
-            }
-        }
-
-    def get_location_key(self, lookup_key: LookupKey) -> LocationKey:
-        return self._location_keys[lookup_key.value]
 
 
 class MockSubmissionType(SubmissionTypeBase):
@@ -70,14 +39,15 @@ class MockSubmissionTypeMapper(SubmissionTypeMapperBase):
         return MockSubmissionType()
 
 
-class TestMessageConstructor(unittest.TestCase):
+class TestMessageBuilder(unittest.TestCase):
 
     def setUp(self):
         self.message_builder = MessageBuilder(
-            submission_mapper=MockSubmissionTypeMapper()
+            submission_mapper=MockSubmissionTypeMapper(),
+            data_sensitivity="Low"
         )
 
-    def test_get_source(self):
+    def test_get_source(self: Self):
         filename = "file1"
         source = self.message_builder.get_source(filename, MockSubmissionType())
 
@@ -90,13 +60,13 @@ class TestMessageConstructor(unittest.TestCase):
 
         self.assertEqual(expected, source)
 
-    def test_get_target(self):
+    def test_get_target(self: Self):
         filename_list = ["file1", "file2"]
-        context: Context = {
-            "tx_id": "123",
-            "survey_type": SurveyType.SPP,
-            "context_type": ContextType.BUSINESS_SURVEY
-        }
+        context: Context = Context(
+            tx_id = "123",
+            survey_type = SurveyType.SPP,
+            context_type = ContextType.BUSINESS_SURVEY
+        )
         target_list = self.message_builder.get_targets(filename_list,
                                                        MockSubmissionType(),
                                                        context)
@@ -128,21 +98,21 @@ class TestMessageConstructor(unittest.TestCase):
 
         self.assertEqual(expected, target_list)
 
-    def test_get_action(self):
+    def test_get_action(self: Self):
         actions = self.message_builder.get_actions(MockSubmissionType())
 
         expected = ["decrypt"]
         self.assertEqual(expected, actions)
 
-    def test_get_business_survey_context(self):
-        context: BusinessSurveyContext = {
-            "tx_id": "123",
-            "survey_type": SurveyType.LEGACY,
-            "context_type": ContextType.BUSINESS_SURVEY,
-            "survey_id": "666",
-            "period_id": "202101",
-            "ru_ref": "10550"
-        }
+    def test_get_business_survey_context(self: Self):
+        context: BusinessSurveyContext = BusinessSurveyContext(
+            tx_id = "123",
+            survey_type = SurveyType.LEGACY,
+            context_type = ContextType.BUSINESS_SURVEY,
+            survey_id = "666",
+            period_id = "202101",
+            ru_ref = "10550"
+        )
 
         actual = self.message_builder.get_context(context)
 
@@ -155,13 +125,13 @@ class TestMessageConstructor(unittest.TestCase):
 
         self.assertEqual(expected, actual)
 
-    def test_get_comments_context(self):
-        context: CommentsFileContext = {
-            "tx_id": "123",
-            "survey_type": SurveyType.COMMENTS,
-            "context_type": ContextType.COMMENTS_FILE,
-            "title": "Comments.zip"
-        }
+    def test_get_comments_context(self: Self):
+        context: CommentsFileContext = CommentsFileContext(
+            tx_id = "123",
+            survey_type = SurveyType.COMMENTS,
+            context_type = ContextType.COMMENTS_FILE,
+            title = "Comments.zip"
+        )
 
         actual = self.message_builder.get_context(context)
 
@@ -172,15 +142,15 @@ class TestMessageConstructor(unittest.TestCase):
 
         self.assertEqual(expected, actual)
 
-    def test_get_adhoc_context(self):
-        context: AdhocSurveyContext = {
-            "tx_id": "123",
-            "survey_type": SurveyType.ADHOC,
-            "context_type": ContextType.ADHOC_SURVEY,
-            "survey_id": "101",
-            "title": "101 survey response for adhoc survey",
-            "label": "adhoc label"
-        }
+    def test_get_adhoc_context(self: Self):
+        context: AdhocSurveyContext = AdhocSurveyContext(
+            tx_id = "123",
+            survey_type = SurveyType.ADHOC,
+            context_type = ContextType.ADHOC_SURVEY,
+            survey_id = "101",
+            title = "101 survey response for adhoc survey",
+            label = "adhoc label"
+        )
 
         actual = self.message_builder.get_context(context)
 
@@ -193,7 +163,7 @@ class TestMessageConstructor(unittest.TestCase):
 
         self.assertEqual(expected, actual)
 
-    def test_build_message(self):
+    def test_build_message(self: Self):
         input_filename = "input_file"
         filenames = ["file1", "file2"]
         size_bytes = 100
@@ -202,14 +172,14 @@ class TestMessageConstructor(unittest.TestCase):
         period_id = "202101"
         ru_ref = "10550"
 
-        context: BusinessSurveyContext = {
-            "tx_id": "123",
-            "survey_type": SurveyType.LEGACY,
-            "context_type": ContextType.BUSINESS_SURVEY,
-            "survey_id": survey_id,
-            "period_id": period_id,
-            "ru_ref": ru_ref
-        }
+        context: BusinessSurveyContext = BusinessSurveyContext(
+            tx_id = "123",
+            survey_type = SurveyType.LEGACY,
+            context_type = ContextType.BUSINESS_SURVEY,
+            survey_id = survey_id,
+            period_id = period_id,
+            ru_ref = ru_ref
+        )
 
         zip_details: ZipDetails = {
             "filename": input_filename,
@@ -227,7 +197,7 @@ class TestMessageConstructor(unittest.TestCase):
                                 'context_type': ContextType.BUSINESS_SURVEY},
                     'md5sum': md5sum,
                     'schema_version': '2',
-                    'sensitivity': 'High',
+                    'sensitivity': 'Low',
                     'sizeBytes': size_bytes,
                     'source': {'filename': 'input_file',
                                'location_name': 'server1-name',
