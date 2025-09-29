@@ -31,7 +31,7 @@ class MockSecretReader:
 
 class TestRun(unittest.TestCase):
 
-    def test_run(self: Self):
+    def setUp(self: Self):
         os.environ["PROJECT_ID"] = "my-project"
         os.environ["DATA_SENSITIVITY"] = "Low"
         os.environ["DATA_RECIPIENT"] = "mock-recipient"
@@ -70,9 +70,9 @@ class TestRun(unittest.TestCase):
             zip_file.writestr(index_filename, 'This is the content of index file.')
             zip_file.writestr(receipt_filename, 'This is the content of the receipt file.')
 
-        zip_bytes = zip_buffer.getvalue()
+        self.zip_bytes = zip_buffer.getvalue()
 
-        context = {
+        self.context = {
             "survey_type": SurveyType.LEGACY,
             "context_type": ContextType.BUSINESS_SURVEY,
             "tx_id": tx_id,
@@ -81,14 +81,46 @@ class TestRun(unittest.TestCase):
             "ru_ref": ru_ref,
         }
 
-        client = TestClient(app)
-        response = client.post("/deliver/v2/survey",
+        self.tx_id = tx_id
+        self.input_filename = input_filename
+        self.client = TestClient(app)
+
+    def test_run_success(self: Self):
+        response = self.client.post("/deliver/v2/survey",
                                params={
-                                   "filename": input_filename,
-                                   "context": json.dumps(context),
-                                   "tx_id": tx_id
+                                   "filename": self.input_filename,
+                                   "context": json.dumps(self.context),
+                                   "tx_id": self.tx_id
                                },
-                               files={"zip_file": zip_bytes}
+                               files={"zip_file": self.zip_bytes}
                                )
 
         self.assertTrue(response.is_success)
+
+    def test_run_fail_on_bad_context(self: Self):
+        del self.context["survey_id"]
+
+        response = self.client.post("/deliver/v2/survey",
+                                    params={
+                                        "filename": self.input_filename,
+                                        "context": json.dumps(self.context),
+                                        "tx_id": self.tx_id
+                                    },
+                                    files={"zip_file": self.zip_bytes}
+                                    )
+
+        self.assertFalse(response.is_success)
+        self.assertEqual(400, response.status_code)
+
+    def test_run_fail_on_bad_zip_file(self: Self):
+        response = self.client.post("/deliver/v2/survey",
+                                    params={
+                                        "filename": self.input_filename,
+                                        "context": json.dumps(self.context),
+                                        "tx_id": self.tx_id
+                                    },
+                                    files={"zip_file": b'nothing to see here!'}
+                                    )
+
+        self.assertFalse(response.is_success)
+        self.assertEqual(400, response.status_code)
