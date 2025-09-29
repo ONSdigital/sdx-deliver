@@ -2,8 +2,7 @@ import json
 import unittest
 from unittest.mock import patch, MagicMock
 
-from app import gnupg, CONFIG
-from app.services.encrypt import encrypt_output
+from app.services.encryption import EncryptionService
 
 
 class TestInit(unittest.TestCase):
@@ -11,10 +10,12 @@ class TestInit(unittest.TestCase):
     def setUp(self):
         with open('tests/test_key.txt', 'r') as file:
             test_key = file.read()
-        gpg = gnupg.GPG()
-        gpg.import_keys(test_key)
-        CONFIG.ENCRYPTION_KEY = test_key
-        CONFIG.GPG = gpg
+
+        class TestSettings:
+            dap_public_gpg = test_key
+            data_recipient = "test-recipient"
+
+        self.encryptor = EncryptionService(TestSettings())
 
     def test_encrypt(self):
         with self.assertLogs('app.encrypt', level='INFO') as actual:

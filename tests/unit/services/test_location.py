@@ -1,73 +1,66 @@
 import unittest
+from typing import Final, Self
 
-from app.definitions import LocationKey
-from app.definitions import LocationNameRepositoryBase, LookupKey
-from app.location.location_key_lookup import LocationKeyLookup, WINDOWS_SERVER, GCS, S3
-
-
-class MockLocationNameRepository(LocationNameRepositoryBase):
-
-    def __init__(self):
-        ftp_key = LookupKey.FTP.value
-        sdx_key = LookupKey.SDX.value
-        spp_key = LookupKey.SPP.value
-        dap_key = LookupKey.DAP.value
-        ns5_key = LookupKey.NS5.value
-
-        self.locations_mapping = {
-            ftp_key: "NIFI_LOCATION_FTP",
-            sdx_key: "NIFI_LOCATION_SDX",
-            spp_key: "NIFI_LOCATION_SPP",
-            dap_key: "NIFI_LOCATION_DAP",
-            ns5_key: "NIFI_LOCATION_NS5",
-        }
-
-    def get_location_name(self, key: LookupKey) -> str:
-        return self.locations_mapping[key.value]
-
-    def load_location_values(self):
-        # Not required in mock object
-        pass
+from app.definitions.location_key import LocationKey, WINDOWS_SERVER, GCS, S3
+from app.definitions.lookup_key import LookupKey
+from app.services.location import LocationService
 
 
-class TestLocationKeyLookup(unittest.TestCase):
+NIFI_LOCATION_FTP: Final[str] = "ftp_location_name"
+NIFI_LOCATION_SPP: Final[str] = "spp_location_name"
+NIFI_LOCATION_DAP: Final[str] = "dap_location_name"
+NIFI_LOCATION_NS5: Final[str] = "ns5_location_name"
 
-    def test_lookup_ftp(self):
-        location_key_lookup = LocationKeyLookup(MockLocationNameRepository())
+
+class LocationNameSettings:
+    project_id = "ons-sdx-sandbox"
+    nifi_location_ftp = NIFI_LOCATION_FTP
+    nifi_location_spp = NIFI_LOCATION_SPP
+    nifi_location_dap = NIFI_LOCATION_DAP
+    nifi_location_ns5 = NIFI_LOCATION_NS5
+
+    def get_bucket_name(self) -> str:
+        return "test-bucket"
+
+
+class TestLocationService(unittest.TestCase):
+
+    def test_lookup_ftp(self: Self):
+        location_service = LocationService(LocationNameSettings())
         expected: LocationKey = {
             "location_type": WINDOWS_SERVER,
-            "location_name": "NIFI_LOCATION_FTP"}
+            "location_name": NIFI_LOCATION_FTP}
 
-        value = location_key_lookup.get_location_key(LookupKey.FTP)
+        value = location_service.get_location_key(LookupKey.FTP)
 
         self.assertEqual(expected, value)
 
-    def test_lookup_sdx(self):
-        location_key_lookup = LocationKeyLookup(MockLocationNameRepository())
+    def test_lookup_sdx(self: Self):
+        location_service = LocationService(LocationNameSettings())
         expected: LocationKey = {
             "location_type": GCS,
-            "location_name": "NIFI_LOCATION_SDX"}
+            "location_name": "test-bucket"}
 
-        value = location_key_lookup.get_location_key(LookupKey.SDX)
+        value = location_service.get_location_key(LookupKey.SDX)
 
         self.assertEqual(expected, value)
 
-    def test_lookup_spp(self):
-        location_key_lookup = LocationKeyLookup(MockLocationNameRepository())
+    def test_lookup_spp(self: Self):
+        location_service = LocationService(LocationNameSettings())
         expected: LocationKey = {
             "location_type": S3,
-            "location_name": "NIFI_LOCATION_SPP"}
+            "location_name": NIFI_LOCATION_SPP}
 
-        value = location_key_lookup.get_location_key(LookupKey.SPP)
+        value = location_service.get_location_key(LookupKey.SPP)
 
         self.assertEqual(expected, value)
 
-    def test_lookup_dap(self):
-        location_key_lookup = LocationKeyLookup(MockLocationNameRepository())
+    def test_lookup_dap(self: Self):
+        location_service = LocationService(LocationNameSettings())
         expected: LocationKey = {
             "location_type": WINDOWS_SERVER,
-            "location_name": "NIFI_LOCATION_DAP"}
+            "location_name": NIFI_LOCATION_DAP}
 
-        value = location_key_lookup.get_location_key(LookupKey.DAP)
+        value = location_service.get_location_key(LookupKey.DAP)
 
         self.assertEqual(expected, value)
