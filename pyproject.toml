@@ -1,10 +1,10 @@
 [project]
 name = "sdx-deliver"
-version = "3.3.1"
+version = "3.3.2"
 description = "Delivering for SDX"
 requires-python = ">=3.13"
 dependencies = [
-    "sdx-base==0.1.3",
+    "sdx-base==0.1.4",
     "python-gnupg==0.4.7",
 ]
 
