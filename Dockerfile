@@ -26,6 +26,9 @@ ADD . /app
 # Install dependencies
 RUN uv sync --frozen --no-dev
 
+# force a rebuild of google-crc32c
+RUN uv pip install --force-reinstall --no-binary :all: google-crc32c
+
 # Expose the port the app runs on
 EXPOSE 5000
 
