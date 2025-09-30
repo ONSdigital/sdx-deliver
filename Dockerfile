@@ -1,6 +1,9 @@
 # Use a Python image with uv pre-installed
 FROM ghcr.io/astral-sh/uv:python3.13-alpine
 
+# install gnupg
+RUN apt-get update && apt-get install -y gnupg
+
 # Install the project into `/app`
 WORKDIR /app
 
