@@ -2,7 +2,7 @@
 FROM ghcr.io/astral-sh/uv:python3.13-alpine
 
 # install gnupg
-RUN apt-get update && apt-get install -y gnupg
+RUN apk add --no-cache gnupg
 
 # Install the project into `/app`
 WORKDIR /app
