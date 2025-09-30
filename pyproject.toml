@@ -1,11 +1,12 @@
 [project]
 name = "sdx-deliver"
-version = "3.3.6"
+version = "3.3.7"
 description = "Delivering for SDX"
 requires-python = ">=3.13"
 dependencies = [
     "sdx-base==0.1.4",
     "python-gnupg==0.4.7",
+    "google-crc32c>=1.7.1"
 ]
 
 [tool.uv.sources]
