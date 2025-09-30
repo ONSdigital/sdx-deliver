@@ -1,6 +1,6 @@
 [project]
 name = "sdx-deliver"
-version = "3.3.5"
+version = "3.3.6"
 description = "Delivering for SDX"
 requires-python = ">=3.13"
 dependencies = [
@@ -16,7 +16,7 @@ name = "sdx-repo"
 url = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/simple/"
 
 [dependency-groups]
-test = [
+dev = [
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
     "pytest-xdist>=3.6.1",

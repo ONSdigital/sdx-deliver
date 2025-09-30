@@ -33,7 +33,8 @@ class GcpService(GcpBase):
         }
 
         dap_topic_id: str = self._settings.dap_topic_id
-        self._pubsub_service.publish_message(dap_topic_id,
+        dap_topic_path: str = f"projects/{self._settings.project_id}/topics/{dap_topic_id}"
+        self._pubsub_service.publish_message(dap_topic_path,
                                              json.dumps(message),
                                              attributes)
 
