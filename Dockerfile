@@ -2,7 +2,7 @@
 FROM ghcr.io/astral-sh/uv:python3.13-alpine
 
 # Install build dependencies for C extensions
-RUN apk add --no-cache build-base python3-dev
+RUN apk add --no-cache build-base python3-dev crc32c-dev
 
 # install gnupg
 RUN apk add --no-cache gnupg
