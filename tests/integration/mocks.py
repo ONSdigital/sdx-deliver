@@ -9,6 +9,7 @@ NIFI_LOCATION_FTP: Final[str] = "ftp_location_name"
 NIFI_LOCATION_SPP: Final[str] = "spp_location_name"
 NIFI_LOCATION_DAP: Final[str] = "dap_location_name"
 NIFI_LOCATION_NS5: Final[str] = "ns5_location_name"
+NIFI_LOCATION_CDP: Final[str] = "cdp_location_name"
 
 
 class MockSettings:
@@ -25,6 +26,7 @@ class MockSettings:
     nifi_location_spp: str
     nifi_location_dap: str
     nifi_location_ns5: str
+    nifi_location_cdp: str
 
     def __init__(self: Self):
         self.project_id: str = "sdx-sandbox"
@@ -40,6 +42,7 @@ class MockSettings:
         self.nifi_location_spp: str = NIFI_LOCATION_SPP
         self.nifi_location_dap: str = NIFI_LOCATION_DAP
         self.nifi_location_ns5: str = NIFI_LOCATION_NS5
+        self.nifi_location_cdp: str = NIFI_LOCATION_CDP
 
     def get_bucket_name(self) -> str:
         return f'{self.project_id}-outputs'

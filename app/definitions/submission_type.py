@@ -6,6 +6,7 @@ from app.definitions.context import Context
 
 UNZIP: Final[str] = "unzip"
 DECRYPT: Final[str] = "decrypt"
+BATCH: Final[str] = "batch"
 
 
 class SubmissionTypeBase(ABC):

@@ -2,6 +2,7 @@ from app.definitions.location import LocationBase
 from app.definitions.submission_type import SubmissionTypeBase
 from app.definitions.submission_type_mapper import SubmissionTypeMapperBase
 from app.definitions.survey_type import SurveyType
+from app.submission_types.adhoc_survey import AdhocSubmissionType
 from app.submission_types.comments import CommentsSubmissionType
 from app.submission_types.dap_survey import DapSubmissionType
 from app.submission_types.environmental_survey import EnvironmentalSubmissionType
@@ -18,6 +19,8 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
         self._location_service = location_service
 
     def get_submission_type(self, survey_type: SurveyType) -> SubmissionTypeBase:
+        if survey_type == SurveyType.ADHOC:
+            return AdhocSubmissionType(self._location_service)
         if survey_type == SurveyType.SEFT:
             return SeftSubmissionType(self._location_service)
         elif survey_type == SurveyType.SPP:

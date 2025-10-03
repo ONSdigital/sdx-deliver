@@ -3,7 +3,7 @@ from typing import Protocol, Final
 from sdx_base.settings.service import SECRET
 
 from app.definitions.location import LocationBase
-from app.definitions.location_key import WINDOWS_SERVER, GCS, S3, LocationKey
+from app.definitions.location_key import WINDOWS_SERVER, GCS, S3, LocationKey, CDP
 from app.definitions.lookup_key import LookupKey
 
 
@@ -16,6 +16,7 @@ class LocationNameSettings(Protocol):
     nifi_location_spp: SECRET
     nifi_location_dap: SECRET
     nifi_location_ns5: SECRET
+    nifi_location_cdp: SECRET
     def get_bucket_name(self) -> str: ...
 
 
@@ -28,6 +29,7 @@ class LocationService(LocationBase):
         spp_key: str = str(LookupKey.SPP.value)
         dap_key: str = str(LookupKey.DAP.value)
         ns5_key: str = str(LookupKey.NS5.value)
+        cdp_key: str = str(LookupKey.CDP.value)
         self._location_keys: dict[str, LocationKey] = {
             ftp_key: {
                 "location_type": WINDOWS_SERVER,
@@ -49,6 +51,10 @@ class LocationService(LocationBase):
                 "location_type": WINDOWS_SERVER,
                 "location_name": self._get_location_name(LookupKey.NS5)
             },
+            cdp_key: {
+                "location_type": CDP,
+                "location_name": self._get_location_name(LookupKey.CDP)
+            },
         }
 
     def _get_location_name(self, key: LookupKey) -> str:
@@ -60,6 +66,8 @@ class LocationService(LocationBase):
             return self._settings.nifi_location_dap
         elif key == LookupKey.NS5:
             return self._settings.nifi_location_ns5
+        elif key == LookupKey.CDP:
+            return self._settings.nifi_location_cdp
         else:
             # return sdx location
             return self._settings.get_bucket_name()

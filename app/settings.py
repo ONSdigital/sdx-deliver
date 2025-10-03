@@ -13,6 +13,7 @@ class Settings(AppSettings):
     nifi_location_spp: Annotated[SECRET, "nifi-location-spp"]
     nifi_location_dap: Annotated[SECRET, "nifi-location-dap"]
     nifi_location_ns5: Annotated[SECRET, "nifi-location-ns5"]
+    nifi_location_cdp: Annotated[SECRET, "nifi-location-cdp"]
 
     def get_bucket_name(self) -> str:
         return f'{self.project_id}-outputs'

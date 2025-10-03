@@ -7,3 +7,4 @@ class LookupKey(StrEnum):
     SPP = "spp"
     DAP = "dap"
     NS5 = "ns5"
+    CDP = "cdp"
