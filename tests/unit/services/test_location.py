@@ -10,6 +10,7 @@ NIFI_LOCATION_FTP: Final[str] = "ftp_location_name"
 NIFI_LOCATION_SPP: Final[str] = "spp_location_name"
 NIFI_LOCATION_DAP: Final[str] = "dap_location_name"
 NIFI_LOCATION_NS5: Final[str] = "ns5_location_name"
+NIFI_LOCATION_CDP: Final[str] = "cdp_location_name"
 
 
 class LocationNameSettings:
@@ -18,6 +19,7 @@ class LocationNameSettings:
     nifi_location_spp = NIFI_LOCATION_SPP
     nifi_location_dap = NIFI_LOCATION_DAP
     nifi_location_ns5 = NIFI_LOCATION_NS5
+    nifi_location_cdp = NIFI_LOCATION_CDP
 
     def get_bucket_name(self) -> str:
         return "test-bucket"

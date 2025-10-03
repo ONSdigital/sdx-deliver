@@ -100,3 +100,84 @@ class TestFeedbackV2(unittest.TestCase):
         }
 
         self.assertEqual(expected_v2_message, MockGcp.get_message())
+
+    def test_feedback_adhoc(self: Self):
+        settings = MockSettings()
+        setup_loggers(settings.app_name, settings.app_version, settings.logging_level)
+        app: FastAPI = create_app(app_name=settings.app_name,
+                                  version=settings.app_version,
+                                  routers=[router])
+
+        app.dependency_overrides[get_settings] = get_mock_settings
+        app.dependency_overrides[get_encryption_service] = get_mock_encryptor
+        app.dependency_overrides[get_gcp_service] = get_mock_gcp
+
+        tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
+        input_filename = tx_id
+        output_filename = f'{tx_id}-fb-16-25-27_26-02-2025'
+        survey_id = "740"
+        title = "covid_resp_inf_surv_response"
+        label = "phm_740_health_insights_2024"
+
+        zip_buffer = io.BytesIO()
+
+        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+            zip_file.writestr(output_filename, "This is the content of the feedback file.")
+
+        zip_bytes = zip_buffer.getvalue()
+
+        context = {
+            "survey_type": SurveyType.FEEDBACK,
+            "context_type": ContextType.ADHOC_SURVEY,
+            "tx_id": tx_id,
+            "survey_id": survey_id,
+            "title": title,
+            "label": label,
+        }
+
+        client = TestClient(app)
+        response = client.post("/deliver/v2/adhoc",
+                               params={
+                                   "filename": input_filename,
+                                   "context": json.dumps(context),
+                                   "tx_id": tx_id
+                               },
+                               files={"zip_file": zip_bytes}
+                               )
+
+        self.assertTrue(response.is_success)
+
+        expected_v2_message: MessageSchemaV2 = {
+            "schema_version": "2",
+            "sensitivity": "Low",
+            "sizeBytes": 10,
+            "md5sum": "md5sum",
+            "context": {
+                "survey_id": survey_id,
+                "title": title,
+                "label": label,
+                "context_type": ContextType.ADHOC_SURVEY,
+            },
+            "source": {
+                "location_type": "gcs",
+                "location_name": settings.get_bucket_name(),
+                "path": "feedback",
+                "filename": input_filename
+            },
+            "actions": ["decrypt", "unzip"],
+            "targets": [
+                {
+                    "input": output_filename,
+                    "outputs": [
+                        {
+                            "location_type": "windows_server",
+                            "location_name": NIFI_LOCATION_FTP,
+                            "path": "SDX_PREPROD/EDC_QFeedback",
+                            "filename": output_filename
+                        }
+                    ]
+                }
+            ]
+        }
+
+        self.assertEqual(expected_v2_message, MockGcp.get_message())
