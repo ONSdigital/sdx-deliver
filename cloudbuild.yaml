@@ -3,8 +3,7 @@ steps:
   name: 'ghcr.io/astral-sh/uv:python3.13-alpine'
   script: |
     #!/usr/bin/env bash
-    apt-get update
-    apt-get install -y gnupg
+    apk add --no-cache gnupg
     uv sync --frozen
     uv run flake8 . --count --statistics
     uv run pytest -v --cov-report term-missing --disable-warnings --cov=app tests/
