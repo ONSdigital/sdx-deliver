@@ -4,6 +4,7 @@ from typing import Self, Protocol
 import gnupg
 from sdx_base.errors.retryable import RetryableError
 from sdx_base.settings.service import SECRET
+from sdx_base.utilities.singleton import AbstractSingleton
 
 from app import get_logger
 from app.definitions.encryption import EncryptionBase
@@ -16,7 +17,7 @@ class GpgSettings(Protocol):
     data_recipient: str
 
 
-class EncryptionService(EncryptionBase):
+class EncryptionService(EncryptionBase, metaclass=AbstractSingleton):
 
     def __init__(self, gpg_settings: GpgSettings):
         gpg = gnupg.GPG()

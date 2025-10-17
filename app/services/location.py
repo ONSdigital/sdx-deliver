@@ -1,6 +1,7 @@
 from typing import Protocol, Final
 
 from sdx_base.settings.service import SECRET
+from sdx_base.utilities.singleton import AbstractSingleton
 
 from app.definitions.location import LocationBase
 from app.definitions.location_key import WINDOWS_SERVER, GCS, S3, LocationKey, CDP
@@ -20,9 +21,10 @@ class LocationNameSettings(Protocol):
     def get_bucket_name(self) -> str: ...
 
 
-class LocationService(LocationBase):
+class LocationService(LocationBase, metaclass=AbstractSingleton):
 
     def __init__(self, location_name_settings: LocationNameSettings):
+        print("instantiating LocationService")
         self._settings = location_name_settings
         ftp_key: str = str(LookupKey.FTP.value)
         sdx_key: str = str(LookupKey.SDX.value)

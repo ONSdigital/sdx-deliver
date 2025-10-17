@@ -43,9 +43,9 @@ async def deliver_survey(filename: str,
 
 @router.post("/deliver/v2/adhoc")
 async def deliver_adhoc(filename: str,
-                         context: str,
-                         zip_file: UploadFile,
-                         deliver: Deliver = Depends(get_deliver_service)):
+                        context: str,
+                        zip_file: UploadFile,
+                        deliver: Deliver = Depends(get_deliver_service)):
     """
     Endpoint for business submissions that will use the version 2 schema for the nifi message.
     """

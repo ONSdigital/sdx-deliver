@@ -1,4 +1,6 @@
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, ABCMeta
+
+from sdx_base.utilities.singleton import SingletonMeta
 
 from app.definitions.location_key import LocationKey
 from app.definitions.lookup_key import LookupKey
