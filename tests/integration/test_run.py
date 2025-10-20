@@ -1,62 +1,28 @@
 import io
 import json
-import os
-import unittest
 import zipfile
-from pathlib import Path
-from typing import Self
-
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
-from sdx_base.run import run
+from typing import Self, Final
 
 from app.definitions.context_type import ContextType
 from app.definitions.survey_type import SurveyType
-from app.dependencies import get_encryption_service, get_gcp_service
-from app.routes import router
-from app.settings import Settings
-from tests.integration.mocks import get_mock_encryptor, get_mock_gcp, NIFI_LOCATION_FTP
+from tests.integration.test_base import TestBase
 
 
-class MockSecretReader:
-
-    def get_secret(self, _project_id: str, secret_id: str) -> str:
-        if secret_id == "dap-public-gpg":
-            return "mock key"
-        elif secret_id == "nifi-location-ftp":
-            return NIFI_LOCATION_FTP
-        else:
-            return ""
+_tx_id: Final[str] = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
+_input_filename: Final[str] = _tx_id
 
 
-class TestRun(unittest.TestCase):
+class TestRun(TestBase):
 
-    def setUp(self: Self):
-        os.environ["PROJECT_ID"] = "my-project"
-        os.environ["DATA_SENSITIVITY"] = "Low"
-        os.environ["DATA_RECIPIENT"] = "mock-recipient"
-        proj_root = Path(__file__).parent.parent.parent  # sdx-deliver dir
-
-        app: FastAPI = run(Settings,
-                           routers=[router],
-                           proj_root=proj_root,
-                           secret_reader=MockSecretReader(),
-                           serve=lambda a, b: a
-                           )
-
-        app.dependency_overrides[get_encryption_service] = get_mock_encryptor
-        app.dependency_overrides[get_gcp_service] = get_mock_gcp
-
-        tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
-        input_filename = tx_id
-        tx_id_trunc = "c37a3efa-593c-4bab"
+    def get_zip_and_context(self: Self) -> tuple[bytes, dict[str, str]]:
         survey_id = "009"
         period_id = "201605"
         ru_ref = "12346789012A"
         submission_date_str = "20210105"
         submission_date_dm = "0501"
 
-        pck_filename = tx_id
+        pck_filename: str = _tx_id
+        tx_id_trunc = "c37a3efa-593c-4bab"
         image_filename = f"S{tx_id_trunc}_1.JPG"
         index_filename = f"EDC_{survey_id}_{submission_date_str}_{tx_id_trunc}.csv"
         receipt_filename = f"REC{submission_date_dm}_{tx_id_trunc}.DAT"
@@ -70,54 +36,55 @@ class TestRun(unittest.TestCase):
             zip_file.writestr(index_filename, 'This is the content of index file.')
             zip_file.writestr(receipt_filename, 'This is the content of the receipt file.')
 
-        self.zip_bytes = zip_buffer.getvalue()
+        zip_bytes = zip_buffer.getvalue()
 
-        self.context = {
+        context = {
             "survey_type": SurveyType.LEGACY,
             "context_type": ContextType.BUSINESS_SURVEY,
-            "tx_id": tx_id,
+            "tx_id": _tx_id,
             "survey_id": survey_id,
             "period_id": period_id,
             "ru_ref": ru_ref,
         }
 
-        self.tx_id = tx_id
-        self.input_filename = input_filename
-        self.client = TestClient(app)
+        return zip_bytes, context
 
     def test_run_success(self: Self):
+        zip_bytes, context = self.get_zip_and_context()
         response = self.client.post("/deliver/v2/survey",
                                params={
-                                   "filename": self.input_filename,
-                                   "context": json.dumps(self.context),
-                                   "tx_id": self.tx_id
+                                   "filename": _input_filename,
+                                   "context": json.dumps(context),
+                                   "tx_id": _tx_id
                                },
-                               files={"zip_file": self.zip_bytes}
+                               files={"zip_file": zip_bytes}
                                )
 
         self.assertTrue(response.is_success)
 
     def test_run_fail_on_bad_context(self: Self):
-        del self.context["survey_id"]
+        zip_bytes, context = self.get_zip_and_context()
+        del context["survey_id"]
 
         response = self.client.post("/deliver/v2/survey",
                                     params={
-                                        "filename": self.input_filename,
-                                        "context": json.dumps(self.context),
-                                        "tx_id": self.tx_id
+                                        "filename": _input_filename,
+                                        "context": json.dumps(context),
+                                        "tx_id": _tx_id
                                     },
-                                    files={"zip_file": self.zip_bytes}
+                                    files={"zip_file": zip_bytes}
                                     )
 
         self.assertFalse(response.is_success)
         self.assertEqual(400, response.status_code)
 
     def test_run_fail_on_bad_zip_file(self: Self):
+        _, context = self.get_zip_and_context()
         response = self.client.post("/deliver/v2/survey",
                                     params={
-                                        "filename": self.input_filename,
-                                        "context": json.dumps(self.context),
-                                        "tx_id": self.tx_id
+                                        "filename": _input_filename,
+                                        "context": json.dumps(context),
+                                        "tx_id": _tx_id
                                     },
                                     files={"zip_file": b'nothing to see here!'}
                                     )

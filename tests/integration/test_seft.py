@@ -71,7 +71,7 @@ class TestSeftV2(unittest.TestCase):
             },
             "source": {
                 "location_type": "gcs",
-                "location_name": settings.get_bucket_name(),
+                "location_name": "ons-sdx-sandbox-outputs",
                 "path": "seft",
                 "filename": input_filename
             },
@@ -91,4 +91,4 @@ class TestSeftV2(unittest.TestCase):
             ]
         }
 
-        self.assertEqual(expected_v2_message, MockGcp.get_message())
+        self.assertEqual(expected_v2_message, self.mock_gcp.get_message())

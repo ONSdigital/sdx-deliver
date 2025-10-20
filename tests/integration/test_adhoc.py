@@ -1,36 +1,17 @@
 import io
 import json
-import unittest
 import zipfile
 from typing import Self
-
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
-from sdx_base.run import setup_loggers
-from sdx_base.server.server import create_app
 
 from app.definitions.context_type import ContextType
 from app.definitions.message_schema import MessageSchemaV2
 from app.definitions.survey_type import SurveyType
-from app.dependencies import get_settings, get_encryption_service, get_gcp_service
-from app.routes import router
-from tests.integration.mocks import MockSettings, get_mock_settings, get_mock_encryptor, get_mock_gcp, MockGcp, \
-    NIFI_LOCATION_CDP
+from tests.integration.test_base import TestBase
 
 
-class TestAdhocV2(unittest.TestCase):
+class TestAdhoc(TestBase):
 
     def test_adhoc(self: Self):
-        settings = MockSettings()
-        setup_loggers(settings.app_name, settings.app_version, settings.logging_level)
-        app: FastAPI = create_app(app_name=settings.app_name,
-                                  version=settings.app_version,
-                                  routers=[router])
-
-        app.dependency_overrides[get_settings] = get_mock_settings
-        app.dependency_overrides[get_encryption_service] = get_mock_encryptor
-        app.dependency_overrides[get_gcp_service] = get_mock_gcp
-
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
         input_filename = tx_id
         output_filename = f'{tx_id}.json'
@@ -54,8 +35,7 @@ class TestAdhocV2(unittest.TestCase):
             "label": label,
         }
 
-        client = TestClient(app)
-        response = client.post("/deliver/v2/adhoc",
+        response = self.client.post("/deliver/v2/adhoc",
                                params={
                                    "filename": input_filename,
                                    "context": json.dumps(context),
@@ -79,7 +59,7 @@ class TestAdhocV2(unittest.TestCase):
             },
             "source": {
                 "location_type": "gcs",
-                "location_name": settings.get_bucket_name(),
+                "location_name": "ons-sdx-sandbox-outputs",
                 "path": "survey",
                 "filename": input_filename
             },
@@ -90,7 +70,7 @@ class TestAdhocV2(unittest.TestCase):
                     "outputs": [
                         {
                             "location_type": "cdp",
-                            "location_name": NIFI_LOCATION_CDP,
+                            "location_name": "nifi-location-cdp",
                             "path": "dapsen/landing_zone/ons/covid_resp_inf_surv_response/prod/phm_740_health_insights_2024/v1/",
                             "filename": output_filename
                         }
@@ -99,4 +79,4 @@ class TestAdhocV2(unittest.TestCase):
             ]
         }
 
-        self.assertEqual(expected_v2_message, MockGcp.get_message())
+        self.assertEqual(expected_v2_message, self.mock_gcp.get_message())
