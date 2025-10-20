@@ -6,7 +6,6 @@ from typing import Self
 from app.definitions.context_type import ContextType
 from app.definitions.message_schema import MessageSchemaV2
 from app.definitions.survey_type import SurveyType
-from tests.integration.mocks import NIFI_LOCATION_FTP
 from tests.integration.test_base import TestBase
 
 

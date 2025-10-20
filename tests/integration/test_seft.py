@@ -1,34 +1,15 @@
 import json
-import unittest
 from typing import Self
-
-from fastapi import FastAPI
-from fastapi.testclient import TestClient
-from sdx_base.run import setup_loggers
-from sdx_base.server.server import create_app
 
 from app.definitions.context_type import ContextType
 from app.definitions.message_schema import MessageSchemaV2
 from app.definitions.survey_type import SurveyType
-from app.dependencies import get_settings, get_encryption_service, get_gcp_service
-from app.routes import router
-from tests.integration.mocks import MockSettings, get_mock_settings, get_mock_encryptor, get_mock_gcp, MockGcp, \
-    NIFI_LOCATION_FTP
+from tests.integration.test_base import TestBase
 
 
-class TestSeftV2(unittest.TestCase):
+class TestSeft(TestBase):
 
     def test_seft(self: Self):
-        settings = MockSettings()
-        setup_loggers(settings.app_name, settings.app_version, settings.logging_level)
-        app: FastAPI = create_app(app_name=settings.app_name,
-                                  version=settings.app_version,
-                                  routers=[router])
-
-        app.dependency_overrides[get_settings] = get_mock_settings
-        app.dependency_overrides[get_encryption_service] = get_mock_encryptor
-        app.dependency_overrides[get_gcp_service] = get_mock_gcp
-
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
         input_filename = "14112300153_202203_141_20220623072928.xlsx.gpg"
         output_filename = "14112300153_202203_141_20220623072928.xlsx"
@@ -45,8 +26,7 @@ class TestSeftV2(unittest.TestCase):
             "tx_id": tx_id
         }
 
-        client = TestClient(app)
-        response = client.post("/deliver/v2/seft",
+        response = self.client.post("/deliver/v2/seft",
                     params={
                         "filename": input_filename,
                         "context": json.dumps(context),
@@ -82,7 +62,7 @@ class TestSeftV2(unittest.TestCase):
                     "outputs": [
                         {
                             "location_type": "windows_server",
-                            "location_name": NIFI_LOCATION_FTP,
+                            "location_name": "nifi-location-ftp",
                             "path": "SDX_PREPROD/EDC_Submissions/141",
                             "filename": output_filename
                         }

@@ -117,7 +117,7 @@ class TestRun(unittest.TestCase):
         }
 
         client = TestClient(app)
-        response = client.post("/deliver/v2/adhoc",
+        response = self.client.post("/deliver/v2/adhoc",
                                params={
                                    "filename": input_filename,
                                    "context": json.dumps(context),
