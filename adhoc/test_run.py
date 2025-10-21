@@ -9,6 +9,7 @@ from typing import Self
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sdx_base.run import run
+from sdx_base.server.server import RouterConfig
 
 from app.definitions.context_type import ContextType
 from app.definitions.survey_type import SurveyType
@@ -26,7 +27,7 @@ class TestRun(unittest.TestCase):
         proj_root = Path(__file__).parent.parent  # sdx-deliver dir
 
         app: FastAPI = run(Settings,
-                           routers=[router],
+                           routers=[RouterConfig(router)],
                            proj_root=proj_root,
                            serve=lambda a, b: a
                            )
@@ -117,7 +118,7 @@ class TestRun(unittest.TestCase):
         }
 
         client = TestClient(app)
-        response = self.client.post("/deliver/v2/adhoc",
+        response = client.post("/deliver/v2/adhoc",
                                params={
                                    "filename": input_filename,
                                    "context": json.dumps(context),

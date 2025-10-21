@@ -35,7 +35,6 @@ class TestSeft(TestBase):
                     files={"seft_file": b'file bytes'}
                     )
 
-
         self.assertTrue(response.is_success)
 
         expected_v2_message: MessageSchemaV2 = {

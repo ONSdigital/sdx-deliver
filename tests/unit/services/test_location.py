@@ -27,42 +27,41 @@ class LocationNameSettings:
 
 class TestLocationService(unittest.TestCase):
 
+    def setUp(self):
+        self.location_service = LocationService(LocationNameSettings(), reset=True)
+
     def test_lookup_ftp(self: Self):
-        location_service = LocationService(LocationNameSettings())
         expected: LocationKey = {
             "location_type": WINDOWS_SERVER,
             "location_name": NIFI_LOCATION_FTP}
 
-        value = location_service.get_location_key(LookupKey.FTP)
+        value = self.location_service.get_location_key(LookupKey.FTP)
 
         self.assertEqual(expected, value)
 
     def test_lookup_sdx(self: Self):
-        location_service = LocationService(LocationNameSettings())
         expected: LocationKey = {
             "location_type": GCS,
             "location_name": "test-bucket"}
 
-        value = location_service.get_location_key(LookupKey.SDX)
+        value = self.location_service.get_location_key(LookupKey.SDX)
 
         self.assertEqual(expected, value)
 
     def test_lookup_spp(self: Self):
-        location_service = LocationService(LocationNameSettings())
         expected: LocationKey = {
             "location_type": S3,
             "location_name": NIFI_LOCATION_SPP}
 
-        value = location_service.get_location_key(LookupKey.SPP)
+        value = self.location_service.get_location_key(LookupKey.SPP)
 
         self.assertEqual(expected, value)
 
     def test_lookup_dap(self: Self):
-        location_service = LocationService(LocationNameSettings())
         expected: LocationKey = {
             "location_type": WINDOWS_SERVER,
             "location_name": NIFI_LOCATION_DAP}
 
-        value = location_service.get_location_key(LookupKey.DAP)
+        value = self.location_service.get_location_key(LookupKey.DAP)
 
         self.assertEqual(expected, value)

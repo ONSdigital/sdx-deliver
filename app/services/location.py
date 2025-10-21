@@ -24,7 +24,6 @@ class LocationNameSettings(Protocol):
 class LocationService(LocationBase, metaclass=AbstractSingleton):
 
     def __init__(self, location_name_settings: LocationNameSettings):
-        print("instantiating LocationService")
         self._settings = location_name_settings
         ftp_key: str = str(LookupKey.FTP.value)
         sdx_key: str = str(LookupKey.SDX.value)

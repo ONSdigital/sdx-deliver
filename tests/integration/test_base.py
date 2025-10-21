@@ -72,3 +72,8 @@ class TestBase(unittest.TestCase):
         app.dependency_overrides[get_gcp_service] = lambda: self.mock_gcp
         self.app = app
         self.client = TestClient(app)
+
+    def tearDown(self):
+        os.environ.pop("PROJECT_ID", None)
+        os.environ.pop("DATA_SENSITIVITY", None)
+        os.environ.pop("DATA_RECIPIENT", None)
