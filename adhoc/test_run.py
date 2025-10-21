@@ -22,8 +22,8 @@ class TestRun(unittest.TestCase):
     def test_run(self: Self):
         os.environ["PROJECT_ID"] = "ons-sdx-nifi"
         os.environ["DATA_SENSITIVITY"] = "Low"
-        os.environ["DATA_RECIPIENT"] = "ingest.service@ons.gov.uk"
-        # os.environ["DATA_RECIPIENT"] = "dap@ons.gov.uk"
+        # os.environ["DATA_RECIPIENT"] = "ingest.service@ons.gov.uk"
+        os.environ["DATA_RECIPIENT"] = "dap@ons.gov.uk"
         proj_root = Path(__file__).parent.parent  # sdx-deliver dir
 
         app: FastAPI = run(Settings,
