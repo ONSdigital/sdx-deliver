@@ -19,11 +19,11 @@ from app.settings import Settings
 
 class TestRun(unittest.TestCase):
 
-    def test_run(self: Self):
+    def test_adhoc(self: Self):
         os.environ["PROJECT_ID"] = "ons-sdx-nifi"
         os.environ["DATA_SENSITIVITY"] = "Low"
-        # os.environ["DATA_RECIPIENT"] = "ingest.service@ons.gov.uk"
-        os.environ["DATA_RECIPIENT"] = "dap@ons.gov.uk"
+        os.environ["DATA_RECIPIENT"] = "ingest.service@ons.gov.uk"
+        # os.environ["DATA_RECIPIENT"] = "dap@ons.gov.uk"
         proj_root = Path(__file__).parent.parent  # sdx-deliver dir
 
         app: FastAPI = run(Settings,
@@ -126,5 +126,46 @@ class TestRun(unittest.TestCase):
                                },
                                files={"zip_file": zip_bytes}
                                )
+
+        self.assertTrue(response.is_success)
+
+    def test_seft(self: Self):
+        os.environ["PROJECT_ID"] = "ons-sdx-nifi"
+        os.environ["DATA_SENSITIVITY"] = "Low"
+        os.environ["DATA_RECIPIENT"] = "ingest.service@ons.gov.uk"
+        # os.environ["DATA_RECIPIENT"] = "dap@ons.gov.uk"
+        proj_root = Path(__file__).parent.parent  # sdx-deliver dir
+
+        app: FastAPI = run(Settings,
+                           routers=[RouterConfig(router)],
+                           proj_root=proj_root,
+                           serve=lambda a, b: a
+                           )
+
+        tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
+        input_filename = "14112300153_202203_141_20220623072928.xlsx.gpg"
+        output_filename = "14112300153_202203_141_20220623072928.xlsx"
+        survey_id = "141"
+        period_id = "202203"
+        ru_ref = "14112300153"
+
+        context = {
+            "survey_type": SurveyType.SEFT,
+            "context_type": ContextType.BUSINESS_SURVEY,
+            "survey_id": survey_id,
+            "period_id": period_id,
+            "ru_ref": ru_ref,
+            "tx_id": tx_id
+        }
+
+        client = TestClient(app)
+        response = client.post("/deliver/v2/seft",
+                                    params={
+                                        "filename": input_filename,
+                                        "context": json.dumps(context),
+                                        "tx_id": tx_id
+                                    },
+                                    files={"seft_file": b'file bytes'}
+                                    )
 
         self.assertTrue(response.is_success)
