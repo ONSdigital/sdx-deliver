@@ -130,10 +130,10 @@ class TestRun(unittest.TestCase):
         self.assertTrue(response.is_success)
 
     def test_seft(self: Self):
-        os.environ["PROJECT_ID"] = "ons-sdx-nifi"
+        os.environ["PROJECT_ID"] = "ons-sdx-jon"
         os.environ["DATA_SENSITIVITY"] = "Low"
-        os.environ["DATA_RECIPIENT"] = "ingest.service@ons.gov.uk"
-        # os.environ["DATA_RECIPIENT"] = "dap@ons.gov.uk"
+        # os.environ["DATA_RECIPIENT"] = "ingest.service@ons.gov.uk"
+        os.environ["DATA_RECIPIENT"] = "dap@ons.gov.uk"
         proj_root = Path(__file__).parent.parent  # sdx-deliver dir
 
         app: FastAPI = run(Settings,
@@ -144,7 +144,6 @@ class TestRun(unittest.TestCase):
 
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
         input_filename = "14112300153_202203_141_20220623072928.xlsx.gpg"
-        output_filename = "14112300153_202203_141_20220623072928.xlsx"
         survey_id = "141"
         period_id = "202203"
         ru_ref = "14112300153"
@@ -158,6 +157,10 @@ class TestRun(unittest.TestCase):
             "tx_id": tx_id
         }
 
+        file_bytes: bytes
+        with open(f'adhoc/{input_filename}', "rb") as f:
+            file_bytes = f.read()
+
         client = TestClient(app)
         response = client.post("/deliver/v2/seft",
                                     params={
@@ -165,7 +168,7 @@ class TestRun(unittest.TestCase):
                                         "context": json.dumps(context),
                                         "tx_id": tx_id
                                     },
-                                    files={"seft_file": b'file bytes'}
+                                    files={"seft_file": file_bytes}
                                     )
 
         self.assertTrue(response.is_success)

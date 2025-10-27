@@ -31,12 +31,12 @@ class Deliver:
         via PubSub
         """
         encrypted_bytes: bytes
-        if context.survey_type == SurveyType.SEFT:
-            encrypted_bytes = data_bytes
-        else:
-            logger.info("Encrypting output")
-            encrypted_output: str = self._encrypter.encrypt(data_bytes)
-            encrypted_bytes = encrypted_output.encode()
+        # if context.survey_type == SurveyType.SEFT:
+        #     encrypted_bytes = data_bytes
+        # else:
+        logger.info("Encrypting output")
+        encrypted_output: str = self._encrypter.encrypt(data_bytes)
+        encrypted_bytes = encrypted_output.encode()
 
         md5sum: str
         size_bytes: int
