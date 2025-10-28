@@ -5,6 +5,7 @@ from app.definitions.survey_type import SurveyType
 from app.submission_types.adhoc_survey import AdhocSubmissionType
 from app.submission_types.comments import CommentsSubmissionType
 from app.submission_types.dap_survey import DapSubmissionType
+from app.submission_types.dexta_survey import DextaSubmissionType
 from app.submission_types.environmental_survey import EnvironmentalSubmissionType
 from app.submission_types.feedback import FeedbackSubmissionType
 from app.submission_types.legacy_survey import LegacySubmissionType
@@ -35,5 +36,7 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
             return EnvironmentalSubmissionType(self._location_service)
         elif survey_type == SurveyType.MATERIALS:
             return MaterialsSubmissionType(self._location_service)
+        elif survey_type == SurveyType.DEXTA:
+            return DextaSubmissionType(self._location_service)
         else:
             return LegacySubmissionType(self._location_service)

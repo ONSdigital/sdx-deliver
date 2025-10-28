@@ -11,3 +11,4 @@ class SurveyType(StrEnum):
     SEFT = "seft"
     ADHOC = "adhoc"
     COMMENTS = "comments"
+    DEXTA = "dexta"
