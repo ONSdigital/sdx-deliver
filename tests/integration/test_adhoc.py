@@ -71,7 +71,7 @@ class TestAdhoc(TestBase):
                         {
                             "location_type": "cdp",
                             "location_name": "nifi-location-cdp",
-                            "path": "dapsen/landing_zone/ons/covid_resp_inf_surv_response/prod/phm_740_health_insights_2024/v1/",
+                            "path": "dapsen/landing_zone/ons/covid_resp_inf_surv_response/preprod/phm_740_health_insights_2024/v1/",
                             "filename": output_filename
                         }
                     ]
