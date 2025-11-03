@@ -2,7 +2,6 @@ steps:
 - id: 'Unit Tests'
   name: 'ghcr.io/astral-sh/uv:python3.13-alpine'
   script: |
-    #!/usr/bin/env bash
     apk add --no-cache gnupg
     uv sync --frozen
     uv run flake8 . --count --statistics
