@@ -7,6 +7,8 @@ on:
 
 jobs:
   uv-example:
+    permissions:
+      contents: read
     name: Python
     runs-on: ubuntu-latest
 
