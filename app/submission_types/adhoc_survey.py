@@ -28,7 +28,7 @@ class AdhocSubmissionType(SubmissionType):
         if self._is_prod_env():
             return "dapsen/landing_zone/ons/covid_resp_inf_surv_response/prod/phm_740_health_insights_2024/v1/"
         else:
-            return "dapsen/landing_zone/ons/covid_resp_inf_surv_response/preprod/phm_740_health_insights_2024/v1/"
+            return "dapsen/landing_zone/ons/covid_resp_inf_surv_response/test/phm_740_health_insights_2024/v1/"
 
     def get_file_config(self, _context: AdhocSurveyContext) -> dict[str, list[File]]:
         return {
