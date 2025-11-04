@@ -1,0 +1,54 @@
+from typing import Final, Self
+
+from app.definitions.config_schema import File
+from app.definitions.context import BusinessSurveyContext
+from app.definitions.lookup_key import LookupKey
+from app.submission_types.bases.survey_submission import SurveySubmission
+
+# file types
+_INDEX: Final[str] = "index"
+_RECEIPT: Final[str] = "receipt"
+_LCREE: Final[str] = "lcree"
+_EPE: Final[str] = "epe"
+
+# file extensions
+_JPG: Final[str] = "jpg"
+_IMAGE: Final[str] = "image"
+_CSV: Final[str] = "csv"
+_DAT: Final[str] = "dat"
+
+
+class EnvironmentalSubmissionType(SurveySubmission):
+
+    def _get_ns5_path(self: Self) -> str:
+        return "prod" if self._is_prod_env() else "preprod"
+
+    def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
+        return {
+            _IMAGE: [self.get_ftp_image()],
+            _INDEX: [self.get_ftp_index()],
+            _RECEIPT: [self.get_ftp_receipt()],
+            _LCREE: [{
+                "location": LookupKey.NS5,
+                "path": f"lcres/LCRES_EQ_data/{self._get_ns5_path()}/{context.period_id}/v1"
+            }],
+            _EPE: [{
+                "location": LookupKey.NS5,
+                "path": f"epes/EPE_EQ_DATA/{self._get_ns5_path()}/{context.period_id}/v1"
+            }],
+        }
+
+    def get_mapping(self, filename: str) -> str:
+        split_string = filename.split(".")
+        extension = split_string[1].lower()
+        if extension == _JPG:
+            return _IMAGE
+        elif extension == _CSV:
+            return _INDEX
+        elif extension == _DAT:
+            return _RECEIPT
+
+        if filename.startswith("007"):
+            return _LCREE
+        else:
+            return _EPE

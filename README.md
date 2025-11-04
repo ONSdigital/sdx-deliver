@@ -18,34 +18,73 @@ before being stored
 
 ## Getting started
 
-Create the virtual environment:
-```shell
-$ python3 -m venv venv
+### Prerequisites
+
+- Python 3.13
+- UV (a command line tool for managing Python environments)
+- make
+
+### Installing Python 3.13
+
+If you don't have Python 3.13 installed, you can install it via brew:
+
+```bash
+brew install python@3.13
 ```
 
-Activate the virtual environment:
-```shell
-$ . venv/bin/activate
+### Install UV:
+   - This project uses UV for dependency management. Ensure it is installed on your system.
+   - If UV is not installed, you can install it using:
+```bash
+
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+OR 
+
+brew install uv
+```
+- Use the official UV installation guide for other installation methods: https://docs.astral.sh/uv/getting-started/installation/
+- Verify the installation by using the following command:
+```bash
+uv --version
 ```
 
-Install and Update pip
-```shell
-$ python3 -m pip install --upgrade pip
+### Install dependencies
+
+This command will install all the dependencies required for the project, including development dependencies:
+
+```bash
+uv sync
 ```
 
-Pull the dependencies:
-```shell
-$ pip install -r requirements.txt
+If you ever need to update the dependencies, you can run:
+
+```bash
+uv sync --upgrade
 ```
 
-Pull the test dependencies:
-```shell
-$ pip install -r test-requirements.txt
+## Running the service
+
+```bash
+uv run run.py
 ```
 
-Run the code:
-```shell
-$ python3 -m run.py
+## Linting
+
+```bash
+make lint
+```
+
+## Formatting
+
+```bash
+make format
+```
+
+## Tests
+
+```bash
+make test
 ```
 
 ## GCP
@@ -53,37 +92,6 @@ $ python3 -m run.py
 ### PubSub
 
 Once a submission has been successfully encrypted and stored in the Bucket. A message is published to the `dap-topic`.
-
-**Message Structure Example:**
-```python
-dap_message: Message {
-  data: b'{"version": "1", "files": [{"name": "087bfc03-8698...'
-  ordering_key: ''
-  attributes: {
-    "gcs.bucket": "ons-sdx-sandbox-outputs",
-    "gcs.key": "dap|087bfc03-8698-4137-a3ac-7a596b9beb2b",
-    "tx_id": "087bfc03-8698-4137-a3ac-7a596b9beb2b"
-  }
-}
-```
-**Message Data field for Version 1:**
-```python
-    data : {
-        'version': '1',
-        'files': [{
-            'name': '4f1c130a-0681-442f-8195-b5fa6c57e469:ftp',
-            'sizeBytes': 121144,
-            'md5sum': 'be08e1e407c79507a17d1e6dcdada055'
-        }],
-        'sensitivity': 'High',
-        'sourceName': 'ons-sdx-sandbox',
-        'manifestCreated': '2021-06-16T07:47:45.481Z',
-        'description': '009 survey response for period 1704 sample unit 49900108249D',
-        'dataset': '009',
-        'schemaversion': '1',
-        'iterationL1': '1704'
-    }
-```
 
 **Message Data field for Version 2:**
 ```python
@@ -125,12 +133,14 @@ dap_message: Message {
 All submissions are stored within: `ons-sdx-{project_id}-outputs` in their respective folders.
 
 ### Secret Manager
-The gpg key used to encrypt JSON surveys: `dap-public-gpg` is managed by Google Secret Manager. A single API call is 
-made on program startup and stored in `ENCRYPTION_KEY`.
+The gpg key used to encrypt JSON surveys: `dap-public-gpg` is managed by Google Secret Manager.
 The location names of various servers are also stored as secrets.
 They are currently:
 * nifi-location-ftp
 * nifi-location-spp
+* nifi-location-dap
+* nifi-location-cdp
+* nifi-location-ns5
 * nifi-location-dap
 
 
@@ -138,28 +148,11 @@ They are currently:
 
 Allows Survey, SEFT and Collate to send data to be stored by deliver
 
-Endpoints for the v1 message:
-
-* `POST /deliver/dap` - Processes JSON surveys destined for DAP
-
-* `POST /deliver/legacy` - Processes JSON surveys destined for Legacy downstream
-
-* `POST /deliver/feedback` - Processes JSON Feedback submissions
-
-* `POST /deliver/comments` - Processes zipped spreadsheet (.xls) of comments
-
-* `POST /deliver/seft` - Processes SEFT submissions
-
-* `POST /deliver/hybrid` - Processes submissions destined that require specific routing in Nifi (Version 1 only)
-
-Endpoints for the v2 message:
-
 * `POST /deliver/v2/survey` - Processes any survey type that originated from eQ-runner including legacy, spp, adhoc, feedback etc
 
 * `POST /deliver/v2/coments` - Processes the comments zip
 
 * `POST /deliver/v2/seft` - Processes SEFT submissions
-
 
 
 ## License

@@ -1,129 +1,100 @@
-import json
+from typing import Final
 
-from sdx_gcp import Flask, Request, TX_ID
-from sdx_gcp.app import get_logger
+from fastapi import APIRouter, UploadFile, Depends
+from sdx_base.errors.errors import UnrecoverableError
+from starlette.responses import JSONResponse
 
-from app.deliver import deliver
-from app.meta_wrapper import MetaWrapper, MetaWrapperV2, MetaWrapperAdhoc
+from app import get_logger
+from app.definitions.context import BusinessSurveyContext, CommentsFileContext, AdhocSurveyContext
+from app.deliver import Deliver
+from app.dependencies import get_deliver_service
 
 logger = get_logger()
 
-ZIP_FILE = 'zip'
-SUBMISSION_FILE = 'submission'
-TRANSFORMED_FILE = 'transformed'
-METADATA_FILE = 'metadata'
-SEFT_FILE = 'seft'
-FILE_NAME = "filename"
-VERSION = "version"
-V1 = "v1"
-V2 = "v2"
-ADHOC = "adhoc"
+FILE_NAME: Final[str] = "filename"
+CONTEXT: Final[str] = 'context'
+ZIP_FILE: Final[str] = 'zip_file'
+SEFT_FILE: Final[str] = 'seft_file'
+
+router = APIRouter()
 
 
-def get_wrapper(req_args: dict[str, str]) -> MetaWrapper:
-    filename = req_args.get(FILE_NAME)
-    version = req_args.get(VERSION, V1)
-
-    if version == V2:
-        return MetaWrapperV2(filename)
-    elif version == ADHOC:
-        return MetaWrapperAdhoc(filename)
-    else:
-        return MetaWrapper(filename)
-
-
-def deliver_dap(req: Request, _tx_id: TX_ID):
+@router.post("/deliver/v2/survey")
+async def deliver_survey(filename: str,
+                         context: str,
+                         zip_file: UploadFile,
+                         deliver: Deliver = Depends(get_deliver_service)):
     """
-    Endpoint for submissions only intended for DAP. POST request requires the submission JSON to be uploaded
-    as "submission" and the filename passed in the query parameters.
+    Endpoint for business submissions that will use the version 2 schema for the nifi message.
     """
-    logger.info('Processing DAP submission')
-    meta = get_wrapper(req.args)
-    files = req.files
-    submission_bytes = files[SUBMISSION_FILE].read()
-    survey_dict = json.loads(submission_bytes.decode())
-    data_bytes = submission_bytes
-    meta.set_dap(survey_dict)
-    deliver(meta, data_bytes)
-    return Flask.jsonify(success=True)
+    logger.info('Processing business submission')
+    if filename is None:
+        logger.error("missing filename")
+        raise UnrecoverableError("Missing filename")
+
+    if zip_file is None:
+        logger.error("missing zip file")
+        raise UnrecoverableError("Missing zip file")
+    data_bytes = await zip_file.read()
+    context_obj = BusinessSurveyContext.model_validate_json(context)
+    deliver.deliver_v2(filename, data_bytes, context_obj)
+    return JSONResponse(content={"success": True}, status_code=200)
 
 
-def deliver_legacy(req: Request, _tx_id: TX_ID):
+@router.post("/deliver/v2/adhoc")
+async def deliver_adhoc(filename: str,
+                        context: str,
+                        zip_file: UploadFile,
+                        deliver: Deliver = Depends(get_deliver_service)):
     """
-    Endpoint for submissions intended for legacy systems. POST request requires the submission JSON to be uploaded as
-    "submission", the zipped transformed artifact as "transformed", and the filename passed in the query
-    parameters.
+    Endpoint for business submissions that will use the version 2 schema for the nifi message.
     """
-    logger.info('Processing Legacy submission')
-    meta = get_wrapper(req.args)
-    files = req.files
-    submission_bytes = files[SUBMISSION_FILE].read()
-    survey_dict = json.loads(submission_bytes.decode())
-    data_bytes = files[TRANSFORMED_FILE].read()
-    meta.set_legacy(survey_dict)
-    deliver(meta, data_bytes)
-    return Flask.jsonify(success=True)
+    logger.info('Processing adhoc submission')
+    if filename is None:
+        logger.error("missing filename")
+        raise UnrecoverableError("Missing filename")
+
+    if zip_file is None:
+        logger.error("missing zip file")
+        raise UnrecoverableError("Missing zip file")
+    data_bytes = await zip_file.read()
+    context_obj = AdhocSurveyContext.model_validate_json(context)
+    deliver.deliver_v2(filename, data_bytes, context_obj)
+    return JSONResponse(content={"success": True}, status_code=200)
 
 
-def deliver_hybrid(req: Request, _tx_id: TX_ID):
+@router.post("/deliver/v2/comments")
+async def deliver_comments_file(filename: str,
+                                context: str,
+                                zip_file: UploadFile,
+                                deliver: Deliver = Depends(get_deliver_service)):
     """
-    Endpoint for submissions intended for dap and legacy systems. POST request requires the submission JSON to be
-    uploaded as "submission", the zipped transformed artifact as "transformed", and the filename passed in the
-    query parameters.
+    Endpoint for the comments file using the version 2 schema for the nifi message.
     """
-    logger.info('Processing Hybrid submission')
-    meta = get_wrapper(req.args)
-    files = req.files
-    submission_bytes = files[SUBMISSION_FILE].read()
-    survey_dict = json.loads(submission_bytes.decode())
-    data_bytes = files[TRANSFORMED_FILE].read()
-    meta.set_hybrid(survey_dict)
-    deliver(meta, data_bytes)
-    return Flask.jsonify(success=True)
+    logger.info('Processing comments')
+    if zip_file is None:
+        logger.error("missing zip file")
+        raise UnrecoverableError("Missing zip file")
+    data_bytes = await zip_file.read()
+    context_obj = CommentsFileContext.model_validate_json(context)
+    deliver.deliver_v2(filename, data_bytes, context_obj)
+    return JSONResponse(content={"success": True}, status_code=200)
 
 
-def deliver_feedback(req: Request, _tx_id: TX_ID):
+@router.post("/deliver/v2/seft")
+async def deliver_seft_submission(filename: str,
+                                  context: str,
+                                  seft_file: UploadFile,
+                                  deliver: Deliver = Depends(get_deliver_service)):
     """
-    Endpoint for feedback submissions only. POST request requires the feedback JSON to be uploaded as
-    "submission", and the filename passed in the query parameters.
+    Endpoint for seft submissions that will use the version 2 schema for the nifi message.
     """
-    logger.info('Processing Feedback submission')
-    meta = get_wrapper(req.args)
-    files = req.files
-    submission_bytes = files[SUBMISSION_FILE].read()
-    survey_dict = json.loads(submission_bytes.decode())
-    data_bytes = submission_bytes
-    meta.set_feedback(survey_dict)
-    deliver(meta, data_bytes)
-    return Flask.jsonify(success=True)
+    logger.info('Processing seft')
+    context_obj = BusinessSurveyContext.model_validate_json(context)
 
-
-def deliver_comments(req: Request, _tx_id: TX_ID):
-    """
-    Endpoint for delivering daily comment report. POST request requires the zipped up comments to be uploaded as
-    "zip", and the filename passed in the query parameters.
-    """
-    logger.info('Processing Comments submission')
-    meta = get_wrapper(req.args)
-    files = req.files
-    data_bytes = files[ZIP_FILE].read()
-    meta.set_comments()
-    deliver(meta, data_bytes)
-    return Flask.jsonify(success=True)
-
-
-def deliver_seft(req: Request, _tx_id: TX_ID):
-    """
-    Endpoint for delivering SEFT submissions. POST request requires the encrypted SEFT to be uploaded as
-    "seft", metadata JSON as "metadata", and the filename passed in the query parameters.
-    Metadata file is required to provide information about the submissions to construct the PubSub message.
-    """
-    logger.info('Processing SEFT submission')
-    meta = get_wrapper(req.args)
-    files = req.files
-    meta_bytes = files[METADATA_FILE].read()
-    meta_dict = json.loads(meta_bytes.decode())
-    data_bytes = files[SEFT_FILE].read()
-    meta.set_seft(meta_dict)
-    deliver(meta, data_bytes)
-    return Flask.jsonify(success=True)
+    if seft_file is None:
+        logger.error("missing SEFT file")
+        raise UnrecoverableError("Missing SEFT file")
+    data_bytes = await seft_file.read()
+    deliver.deliver_v2(filename, data_bytes, context_obj)
+    return JSONResponse(content={"success": True}, status_code=200)

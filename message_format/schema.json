@@ -151,7 +151,7 @@
           "description": "an optional list of actions to be performed on the source file",
           "items": {
             "type": "string",
-            "enum": ["unzip", "decrypt"]
+            "enum": ["unzip", "decrypt", "batch"]
           }
         },
         "targets": {
