@@ -32,7 +32,7 @@ class TestRun(unittest.TestCase):
                            serve=lambda a, b: a
                            )
 
-        tx_id = "555931f2-6230-4ca3-b84e-136e02e3f92c"
+        tx_id = "333931f2-6230-4ca3-b84e-136e02e3f81b"
         input_filename = tx_id
         output_filename = f'{tx_id}.json'
         survey_id = "740"

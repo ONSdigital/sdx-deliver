@@ -25,7 +25,7 @@ class AdhocSubmissionType(SubmissionType):
         return [DECRYPT, UNZIP, BATCH]
 
     def _get_dap_path(self: Self) -> str:
-        return "dapsen/landing_zone/ons/covid_resp_inf_surv_response/prod/phm_740_health_insights_2024/v1/"
+        return "dapsen/landing_zone/ons/covid_resp_inf_surv_response/test/phm_740_health_insights_2024/v1/"
 
     def get_file_config(self, _context: AdhocSurveyContext) -> dict[str, list[File]]:
         return {
