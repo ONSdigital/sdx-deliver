@@ -22,7 +22,7 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
     def get_submission_type(self, survey_type: SurveyType) -> SubmissionTypeBase:
         if survey_type == SurveyType.ADHOC:
             return AdhocSubmissionType(self._location_service)
-        if survey_type == SurveyType.SEFT:
+        elif survey_type == SurveyType.SEFT:
             return SeftSubmissionType(self._location_service)
         elif survey_type == SurveyType.SPP:
             return SppSubmissionType(self._location_service)
