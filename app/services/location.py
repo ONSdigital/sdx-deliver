@@ -73,6 +73,8 @@ class LocationService(LocationBase, metaclass=AbstractSingleton):
             return self._settings.nifi_location_dap
         elif key == LookupKey.NS5:
             return self._settings.nifi_location_ns5
+        elif key == LookupKey.NS2:
+            return self._settings.nifi_location_ns2
         elif key == LookupKey.CDP:
             return self._settings.nifi_location_cdp
         else:
