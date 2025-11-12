@@ -6,7 +6,6 @@ from app.definitions.lookup_key import LookupKey
 
 
 class LocationBase(ABC):
-
     @abstractmethod
     def is_prod_env(self) -> bool:
         pass

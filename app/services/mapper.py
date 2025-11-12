@@ -15,7 +15,6 @@ from app.submission_types.spp_survey import SppSubmissionType
 
 
 class SubmissionTypeMapper(SubmissionTypeMapperBase):
-
     def __init__(self, location_service: LocationBase):
         self._location_service = location_service
 

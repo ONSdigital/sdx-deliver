@@ -18,7 +18,6 @@ from app.settings import Settings
 
 
 class TestRun(unittest.TestCase):
-
     def test_run(self: Self):
         os.environ["PROJECT_ID"] = "ons-sdx-nifi"
         os.environ["DATA_SENSITIVITY"] = "Low"
@@ -26,15 +25,11 @@ class TestRun(unittest.TestCase):
         os.environ["DATA_RECIPIENT"] = "dap@ons.gov.uk"
         proj_root = Path(__file__).parent.parent  # sdx-deliver dir
 
-        app: FastAPI = run(Settings,
-                           routers=[RouterConfig(router)],
-                           proj_root=proj_root,
-                           serve=lambda a, b: a
-                           )
+        app: FastAPI = run(Settings, routers=[RouterConfig(router)], proj_root=proj_root, serve=lambda a, b: a)
 
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92c"
         input_filename = tx_id
-        output_filename = f'{tx_id}.json'
+        output_filename = f"{tx_id}.json"
         survey_id = "740"
         title = "covid_resp_inf_surv_response"
         label = "phm_740_health_insights_2024"
@@ -62,48 +57,30 @@ class TestRun(unittest.TestCase):
                 "PARTICIPANT_WINDOW_ID": "DHR-11111111111-000",
                 "TEST_QUESTIONS": "T",
                 "WINDOW_CLOSE_DATE": "2023-02-03",
-                "WINDOW_START_DATE": "2023-01-20"
+                "WINDOW_START_DATE": "2023-01-20",
             },
             "data": {
                 "answers": [
-                    {
-                        "answer_id": "answerbbdb0b77-e4d2-4a94-bb52-c7b6e91ab850",
-                        "value": "No"
-                    },
-                    {
-                        "answer_id": "answer3cbbbc81-3d85-4eca-b230-9a24e7203f38",
-                        "value": "No"
-                    },
-                    {
-                        "answer_id": "answer3d3e4020-8795-444f-98e4-057ec571ec07",
-                        "value": ["Continue"]
-                    }
+                    {"answer_id": "answerbbdb0b77-e4d2-4a94-bb52-c7b6e91ab850", "value": "No"},
+                    {"answer_id": "answer3cbbbc81-3d85-4eca-b230-9a24e7203f38", "value": "No"},
+                    {"answer_id": "answer3d3e4020-8795-444f-98e4-057ec571ec07", "value": ["Continue"]},
                 ],
                 "lists": [],
                 "answer_codes": [
-                    {
-                        "answer_id": "answerbbdb0b77-e4d2-4a94-bb52-c7b6e91ab850",
-                        "code": "PHM-FUP-INT-003"
-                    },
-                    {
-                        "answer_id": "answer3cbbbc81-3d85-4eca-b230-9a24e7203f38",
-                        "code": "PHM-FUP-INT-004"
-                    },
-                    {
-                        "answer_id": "answer3d3e4020-8795-444f-98e4-057ec571ec07",
-                        "code": "PHM-FUP-INT-005"
-                    }
-                ]
+                    {"answer_id": "answerbbdb0b77-e4d2-4a94-bb52-c7b6e91ab850", "code": "PHM-FUP-INT-003"},
+                    {"answer_id": "answer3cbbbc81-3d85-4eca-b230-9a24e7203f38", "code": "PHM-FUP-INT-004"},
+                    {"answer_id": "answer3d3e4020-8795-444f-98e4-057ec571ec07", "code": "PHM-FUP-INT-005"},
+                ],
             },
             "channel": "RH",
             "started_at": "2023-03-21T10:08:32.556293+00:00",
-            "submission_language_code": "en"
+            "submission_language_code": "en",
         }
 
         # Create the input zipfile
         zip_buffer = io.BytesIO()
 
-        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
             zip_file.writestr(output_filename, json.dumps(submission))
 
         zip_bytes = zip_buffer.getvalue()
@@ -118,13 +95,10 @@ class TestRun(unittest.TestCase):
         }
 
         client = TestClient(app)
-        response = client.post("/deliver/v2/adhoc",
-                               params={
-                                   "filename": input_filename,
-                                   "context": json.dumps(context),
-                                   "tx_id": tx_id
-                               },
-                               files={"zip_file": zip_bytes}
-                               )
+        response = client.post(
+            "/deliver/v2/adhoc",
+            params={"filename": input_filename, "context": json.dumps(context), "tx_id": tx_id},
+            files={"zip_file": zip_bytes},
+        )
 
         self.assertTrue(response.is_success)

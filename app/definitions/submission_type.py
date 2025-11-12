@@ -10,7 +10,6 @@ BATCH: Final[str] = "batch"
 
 
 class SubmissionTypeBase(ABC):
-
     @abstractmethod
     def get_source(self, filename: str) -> Location:
         pass

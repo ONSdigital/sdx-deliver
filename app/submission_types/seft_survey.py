@@ -10,7 +10,6 @@ _XLSX: Final[str] = "xlsx"
 
 
 class SeftSubmissionType(SubmissionType):
-
     @override
     def get_source_path(self) -> str:
         return "seft"
@@ -26,18 +25,13 @@ class SeftSubmissionType(SubmissionType):
 
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         if context.survey_id == "141":
-            return {
-                _XLSX: [{
-                    "location": LookupKey.NS2,
-                    "path": "s&e/ASHE/ASHE_Python_Submissions_TEST"
-                }]
-            }
+            ashe_dir: str = "ASHE_Python_Submissions" if self._is_prod_env() else "ASHE_Python_Submissions_TEST"
+            return {_XLSX: [{"location": LookupKey.NS2, "path": f"s&e/ASHE/{ashe_dir}"}]}
         else:
             return {
-                _XLSX: [{
-                    "location": LookupKey.FTP,
-                    "path": f"{self._get_ftp_path()}/EDC_Submissions/{context.survey_id}"
-                }]
+                _XLSX: [
+                    {"location": LookupKey.FTP, "path": f"{self._get_ftp_path()}/EDC_Submissions/{context.survey_id}"}
+                ]
             }
 
     @override

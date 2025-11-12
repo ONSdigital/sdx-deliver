@@ -34,11 +34,10 @@ def get_mapper_service(location_service: LocationBase = Depends(get_location_ser
     return SubmissionTypeMapper(location_service)
 
 
-def get_message_builder(settings: Settings = Depends(get_settings),
-                        submission_mapper: SubmissionTypeMapperBase = Depends(get_mapper_service)
-                        ) -> MessageBuilderBase:
-    return MessageBuilder(submission_mapper,
-                          data_sensitivity=settings.data_sensitivity)
+def get_message_builder(
+    settings: Settings = Depends(get_settings), submission_mapper: SubmissionTypeMapperBase = Depends(get_mapper_service)
+) -> MessageBuilderBase:
+    return MessageBuilder(submission_mapper, data_sensitivity=settings.data_sensitivity)
 
 
 def get_zip_service() -> ZipService:
@@ -49,13 +48,10 @@ def get_gcp_service(settings: Settings = Depends(get_settings)) -> GcpService:
     return GcpService(PubsubService(), StorageService(), settings)
 
 
-def get_deliver_service(message_builder: MessageBuilderBase = Depends(get_message_builder),
-                        encrypter: EncryptionBase = Depends(get_encryption_service),
-                        gcp: GcpBase = Depends(get_gcp_service),
-                        zipper: ZipBase = Depends(get_zip_service)) -> Deliver:
-    return Deliver(
-        message_builder=message_builder,
-        encrypter=encrypter,
-        gcp=gcp,
-        zipper=zipper
-    )
+def get_deliver_service(
+    message_builder: MessageBuilderBase = Depends(get_message_builder),
+    encrypter: EncryptionBase = Depends(get_encryption_service),
+    gcp: GcpBase = Depends(get_gcp_service),
+    zipper: ZipBase = Depends(get_zip_service),
+) -> Deliver:
+    return Deliver(message_builder=message_builder, encrypter=encrypter, gcp=gcp, zipper=zipper)

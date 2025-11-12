@@ -12,40 +12,26 @@ from app.services.message_builder import MessageBuilder
 
 
 class MockSubmissionType(SubmissionTypeBase):
-
     def get_source(self, filename: str) -> Location:
-        return {
-            "location_type": "server1",
-            "location_name": "server1-name",
-            "path": "test-path-1",
-            "filename": filename
-        }
+        return {"location_type": "server1", "location_name": "server1-name", "path": "test-path-1", "filename": filename}
 
     def get_actions(self) -> list[str]:
         return [DECRYPT]
 
     def get_outputs(self, filename: str, context: Context) -> list[Location]:
-        return [{
-            "location_type": "server2",
-            "location_name": "server2-name",
-            "path": "test-path-2",
-            "filename": filename
-        }]
+        return [
+            {"location_type": "server2", "location_name": "server2-name", "path": "test-path-2", "filename": filename}
+        ]
 
 
 class MockSubmissionTypeMapper(SubmissionTypeMapperBase):
-
     def get_submission_type(self, survey_type: SurveyType) -> SubmissionTypeBase:
         return MockSubmissionType()
 
 
 class TestMessageBuilder(unittest.TestCase):
-
     def setUp(self):
-        self.message_builder = MessageBuilder(
-            submission_mapper=MockSubmissionTypeMapper(),
-            data_sensitivity="Low"
-        )
+        self.message_builder = MessageBuilder(submission_mapper=MockSubmissionTypeMapper(), data_sensitivity="Low")
 
     def test_get_source(self: Self):
         filename = "file1"
@@ -55,21 +41,15 @@ class TestMessageBuilder(unittest.TestCase):
             "location_type": "server1",
             "location_name": "server1-name",
             "path": "test-path-1",
-            "filename": "file1"
+            "filename": "file1",
         }
 
         self.assertEqual(expected, source)
 
     def test_get_target(self: Self):
         filename_list = ["file1", "file2"]
-        context: Context = Context(
-            tx_id = "123",
-            survey_type = SurveyType.SPP,
-            context_type = ContextType.BUSINESS_SURVEY
-        )
-        target_list = self.message_builder.get_targets(filename_list,
-                                                       MockSubmissionType(),
-                                                       context)
+        context: Context = Context(tx_id="123", survey_type=SurveyType.SPP, context_type=ContextType.BUSINESS_SURVEY)
+        target_list = self.message_builder.get_targets(filename_list, MockSubmissionType(), context)
 
         expected = [
             {
@@ -79,9 +59,9 @@ class TestMessageBuilder(unittest.TestCase):
                         "location_type": "server2",
                         "location_name": "server2-name",
                         "path": "test-path-2",
-                        "filename": "file1"
+                        "filename": "file1",
                     }
-                ]
+                ],
             },
             {
                 "input": "file2",
@@ -90,10 +70,10 @@ class TestMessageBuilder(unittest.TestCase):
                         "location_type": "server2",
                         "location_name": "server2-name",
                         "path": "test-path-2",
-                        "filename": "file2"
+                        "filename": "file2",
                     },
-                ]
-            }
+                ],
+            },
         ]
 
         self.assertEqual(expected, target_list)
@@ -106,12 +86,12 @@ class TestMessageBuilder(unittest.TestCase):
 
     def test_get_business_survey_context(self: Self):
         context: BusinessSurveyContext = BusinessSurveyContext(
-            tx_id = "123",
-            survey_type = SurveyType.LEGACY,
-            context_type = ContextType.BUSINESS_SURVEY,
-            survey_id = "666",
-            period_id = "202101",
-            ru_ref = "10550"
+            tx_id="123",
+            survey_type=SurveyType.LEGACY,
+            context_type=ContextType.BUSINESS_SURVEY,
+            survey_id="666",
+            period_id="202101",
+            ru_ref="10550",
         )
 
         actual = self.message_builder.get_context(context)
@@ -120,36 +100,30 @@ class TestMessageBuilder(unittest.TestCase):
             "survey_id": "666",
             "period_id": "202101",
             "ru_ref": "10550",
-            "context_type": ContextType.BUSINESS_SURVEY
+            "context_type": ContextType.BUSINESS_SURVEY,
         }
 
         self.assertEqual(expected, actual)
 
     def test_get_comments_context(self: Self):
         context: CommentsFileContext = CommentsFileContext(
-            tx_id = "123",
-            survey_type = SurveyType.COMMENTS,
-            context_type = ContextType.COMMENTS_FILE,
-            title = "Comments.zip"
+            tx_id="123", survey_type=SurveyType.COMMENTS, context_type=ContextType.COMMENTS_FILE, title="Comments.zip"
         )
 
         actual = self.message_builder.get_context(context)
 
-        expected = {
-            "title": "Comments.zip",
-            "context_type": ContextType.COMMENTS_FILE
-        }
+        expected = {"title": "Comments.zip", "context_type": ContextType.COMMENTS_FILE}
 
         self.assertEqual(expected, actual)
 
     def test_get_adhoc_context(self: Self):
         context: AdhocSurveyContext = AdhocSurveyContext(
-            tx_id = "123",
-            survey_type = SurveyType.ADHOC,
-            context_type = ContextType.ADHOC_SURVEY,
-            survey_id = "101",
-            title = "101 survey response for adhoc survey",
-            label = "adhoc label"
+            tx_id="123",
+            survey_type=SurveyType.ADHOC,
+            context_type=ContextType.ADHOC_SURVEY,
+            survey_id="101",
+            title="101 survey response for adhoc survey",
+            label="adhoc label",
         )
 
         actual = self.message_builder.get_context(context)
@@ -158,7 +132,7 @@ class TestMessageBuilder(unittest.TestCase):
             "survey_id": "101",
             "title": "101 survey response for adhoc survey",
             "label": "adhoc label",
-            "context_type": ContextType.ADHOC_SURVEY
+            "context_type": ContextType.ADHOC_SURVEY,
         }
 
         self.assertEqual(expected, actual)
@@ -167,51 +141,71 @@ class TestMessageBuilder(unittest.TestCase):
         input_filename = "input_file"
         filenames = ["file1", "file2"]
         size_bytes = 100
-        md5sum = '51252'
+        md5sum = "51252"
         survey_id = "666"
         period_id = "202101"
         ru_ref = "10550"
 
         context: BusinessSurveyContext = BusinessSurveyContext(
-            tx_id = "123",
-            survey_type = SurveyType.LEGACY,
-            context_type = ContextType.BUSINESS_SURVEY,
-            survey_id = survey_id,
-            period_id = period_id,
-            ru_ref = ru_ref
+            tx_id="123",
+            survey_type=SurveyType.LEGACY,
+            context_type=ContextType.BUSINESS_SURVEY,
+            survey_id=survey_id,
+            period_id=period_id,
+            ru_ref=ru_ref,
         )
 
         zip_details: ZipDetails = {
             "filename": input_filename,
             "size_bytes": size_bytes,
             "md5sum": md5sum,
-            "filenames": filenames
+            "filenames": filenames,
         }
 
         actual = self.message_builder.build_message(zip_details, context)
 
-        expected = {'actions': ['decrypt'],
-                    'context': {'period_id': period_id,
-                                'ru_ref': ru_ref,
-                                'survey_id': survey_id,
-                                'context_type': ContextType.BUSINESS_SURVEY},
-                    'md5sum': md5sum,
-                    'schema_version': '2',
-                    'sensitivity': 'Low',
-                    'sizeBytes': size_bytes,
-                    'source': {'filename': 'input_file',
-                               'location_name': 'server1-name',
-                               'location_type': 'server1',
-                               'path': 'test-path-1'},
-                    'targets': [{'input': 'file1',
-                                 'outputs': [{'filename': 'file1',
-                                              'location_name': 'server2-name',
-                                              'location_type': 'server2',
-                                              'path': 'test-path-2'}]},
-                                {'input': 'file2',
-                                 'outputs': [{'filename': 'file2',
-                                              'location_name': 'server2-name',
-                                              'location_type': 'server2',
-                                              'path': 'test-path-2'}]}]}
+        expected = {
+            "actions": ["decrypt"],
+            "context": {
+                "period_id": period_id,
+                "ru_ref": ru_ref,
+                "survey_id": survey_id,
+                "context_type": ContextType.BUSINESS_SURVEY,
+            },
+            "md5sum": md5sum,
+            "schema_version": "2",
+            "sensitivity": "Low",
+            "sizeBytes": size_bytes,
+            "source": {
+                "filename": "input_file",
+                "location_name": "server1-name",
+                "location_type": "server1",
+                "path": "test-path-1",
+            },
+            "targets": [
+                {
+                    "input": "file1",
+                    "outputs": [
+                        {
+                            "filename": "file1",
+                            "location_name": "server2-name",
+                            "location_type": "server2",
+                            "path": "test-path-2",
+                        }
+                    ],
+                },
+                {
+                    "input": "file2",
+                    "outputs": [
+                        {
+                            "filename": "file2",
+                            "location_name": "server2-name",
+                            "location_type": "server2",
+                            "path": "test-path-2",
+                        }
+                    ],
+                },
+            ],
+        }
 
         self.assertEqual(expected, actual)

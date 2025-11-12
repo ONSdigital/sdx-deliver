@@ -10,7 +10,6 @@ _JSON: Final[str] = "json"
 
 
 class AdhocSubmissionType(SubmissionType):
-
     @override
     def create_file_config(self, context: Context) -> dict[str, list[File]]:
         business_context: AdhocSurveyContext = cast(AdhocSurveyContext, context)
@@ -31,12 +30,7 @@ class AdhocSubmissionType(SubmissionType):
             return "dapsen/landing_zone/ons/covid_resp_inf_surv_response/test/phm_740_health_insights_2024/v1/"
 
     def get_file_config(self, _context: AdhocSurveyContext) -> dict[str, list[File]]:
-        return {
-            _JSON: [{
-                "location": LookupKey.CDP,
-                "path": self._get_dap_path()
-            }]
-        }
+        return {_JSON: [{"location": LookupKey.CDP, "path": self._get_dap_path()}]}
 
     def get_mapping(self, filename: str) -> str:
         return _JSON

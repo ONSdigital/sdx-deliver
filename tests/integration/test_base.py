@@ -17,13 +17,11 @@ from app.settings import Settings
 
 
 class MockSecretReader:
-
     def get_secret(self, _project_id: str, secret_id: str) -> str:
         return secret_id
 
 
 class MockEncryptor(EncryptionBase):
-
     def encrypt(self, data_bytes: bytes) -> str:
         return "decrypted data"
 
@@ -47,11 +45,10 @@ class MockGcp(GcpBase):
     def get_message(self) -> MessageSchemaV2:
         if self._message:
             return cast(MessageSchemaV2, self._message)
-        raise(Exception("No message sent"))
+        raise (Exception("No message sent"))
 
 
 class TestBase(unittest.TestCase):
-
     def setUp(self: Self):
         os.environ["PROJECT_ID"] = "ons-sdx-sandbox"
         os.environ["DATA_SENSITIVITY"] = "Low"
@@ -59,12 +56,13 @@ class TestBase(unittest.TestCase):
         proj_root = Path(__file__).parent.parent.parent  # sdx-deliver dir
 
         router_config = RouterConfig(router)
-        app: FastAPI = run(Settings,
-                           routers=[router_config],
-                           proj_root=proj_root,
-                           secret_reader=MockSecretReader(),
-                           serve=lambda a, b: a
-                           )
+        app: FastAPI = run(
+            Settings,
+            routers=[router_config],
+            proj_root=proj_root,
+            secret_reader=MockSecretReader(),
+            serve=lambda a, b: a,
+        )
 
         self.mock_encryptor = MockEncryptor()
         self.mock_gcp = MockGcp()

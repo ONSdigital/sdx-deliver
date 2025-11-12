@@ -10,7 +10,6 @@ from tests.integration.test_base import TestBase
 
 
 class TestComments(TestBase):
-
     def test_comments(self: Self):
         tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
         input_filename = "2025-01-01.zip"
@@ -18,10 +17,10 @@ class TestComments(TestBase):
         # Create the input zipfile
         zip_buffer = io.BytesIO()
 
-        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-            zip_file.writestr("file1", 'Some comments.')
-            zip_file.writestr("file2", 'Some more comments.')
-            zip_file.writestr("file3", 'Even more comments!')
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+            zip_file.writestr("file1", "Some comments.")
+            zip_file.writestr("file2", "Some more comments.")
+            zip_file.writestr("file3", "Even more comments!")
 
         zip_bytes = zip_buffer.getvalue()
 
@@ -32,14 +31,11 @@ class TestComments(TestBase):
             "context_type": ContextType.COMMENTS_FILE,
         }
 
-        response = self.client.post("/deliver/v2/comments",
-                               params={
-                                   "filename": input_filename,
-                                   "context": json.dumps(context),
-                                   "tx_id": tx_id
-                               },
-                               files={"zip_file": zip_bytes}
-                               )
+        response = self.client.post(
+            "/deliver/v2/comments",
+            params={"filename": input_filename, "context": json.dumps(context), "tx_id": tx_id},
+            files={"zip_file": zip_bytes},
+        )
 
         self.assertTrue(response.is_success)
 
@@ -56,7 +52,7 @@ class TestComments(TestBase):
                 "location_type": "gcs",
                 "location_name": "ons-sdx-sandbox-outputs",
                 "path": "comments",
-                "filename": input_filename
+                "filename": input_filename,
             },
             "actions": ["decrypt"],
             "targets": [
@@ -67,11 +63,11 @@ class TestComments(TestBase):
                             "location_type": "windows_server",
                             "location_name": "nifi-location-ftp",
                             "path": "SDX_PREPROD/EDC_Submissions/Comments",
-                            "filename": input_filename
+                            "filename": input_filename,
                         }
-                    ]
+                    ],
                 }
-            ]
+            ],
         }
 
         self.assertEqual(expected_v2_message, self.mock_gcp.get_message())

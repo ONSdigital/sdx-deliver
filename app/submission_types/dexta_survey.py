@@ -18,13 +18,9 @@ _DAT: Final[str] = "dat"
 
 
 class DextaSubmissionType(SurveySubmission):
-
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         return {
-            _PCK: [{
-                "location": LookupKey.FTP,
-                "path": f"{self._get_ftp_path()}/SDC_QData"
-            }],
+            _PCK: [{"location": LookupKey.FTP, "path": f"{self._get_ftp_path()}/SDC_QData"}],
             _IMAGE: [self.get_ftp_image()],
             _INDEX: [self.get_ftp_index()],
             _RECEIPT: [self.get_ftp_receipt()],

@@ -10,18 +10,17 @@ from tests.integration.test_base import TestBase
 
 
 class TestAdhoc(TestBase):
-
     def test_adhoc(self: Self):
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
         input_filename = tx_id
-        output_filename = f'{tx_id}.json'
+        output_filename = f"{tx_id}.json"
         survey_id = "740"
         title = "covid_resp_inf_surv_response"
         label = "phm_740_health_insights_2024"
 
         zip_buffer = io.BytesIO()
 
-        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
             zip_file.writestr(output_filename, "This is the content of the json file.")
 
         zip_bytes = zip_buffer.getvalue()
@@ -35,14 +34,11 @@ class TestAdhoc(TestBase):
             "label": label,
         }
 
-        response = self.client.post("/deliver/v2/adhoc",
-                               params={
-                                   "filename": input_filename,
-                                   "context": json.dumps(context),
-                                   "tx_id": tx_id
-                               },
-                               files={"zip_file": zip_bytes}
-                               )
+        response = self.client.post(
+            "/deliver/v2/adhoc",
+            params={"filename": input_filename, "context": json.dumps(context), "tx_id": tx_id},
+            files={"zip_file": zip_bytes},
+        )
 
         self.assertTrue(response.is_success)
 
@@ -61,7 +57,7 @@ class TestAdhoc(TestBase):
                 "location_type": "gcs",
                 "location_name": "ons-sdx-sandbox-outputs",
                 "path": "survey",
-                "filename": input_filename
+                "filename": input_filename,
             },
             "actions": ["decrypt", "unzip", "batch"],
             "targets": [
@@ -72,11 +68,11 @@ class TestAdhoc(TestBase):
                             "location_type": "cdp",
                             "location_name": "nifi-location-cdp",
                             "path": "dapsen/landing_zone/ons/covid_resp_inf_surv_response/test/phm_740_health_insights_2024/v1/",
-                            "filename": output_filename
+                            "filename": output_filename,
                         }
-                    ]
+                    ],
                 }
-            ]
+            ],
         }
 
         self.assertEqual(expected_v2_message, self.mock_gcp.get_message())

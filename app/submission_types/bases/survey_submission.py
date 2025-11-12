@@ -9,7 +9,6 @@ from app.submission_types.bases.submission_type import SubmissionType
 
 
 class SurveySubmission(SubmissionType, ABC):
-
     @abstractmethod
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         pass
@@ -28,25 +27,13 @@ class SurveySubmission(SubmissionType, ABC):
         return [DECRYPT, UNZIP]
 
     def get_ftp_image(self) -> File:
-        return {
-            "location": LookupKey.FTP,
-            "path": f"{self._get_ftp_path()}/EDC_QImages/Images"
-        }
+        return {"location": LookupKey.FTP, "path": f"{self._get_ftp_path()}/EDC_QImages/Images"}
 
     def get_ftp_index(self) -> File:
-        return {
-            "location": LookupKey.FTP,
-            "path": f"{self._get_ftp_path()}/EDC_QImages/Index"
-        }
+        return {"location": LookupKey.FTP, "path": f"{self._get_ftp_path()}/EDC_QImages/Index"}
 
     def get_ftp_receipt(self) -> File:
-        return {
-            "location": LookupKey.FTP,
-            "path": f"{self._get_ftp_path()}/EDC_QReceipts"
-        }
+        return {"location": LookupKey.FTP, "path": f"{self._get_ftp_path()}/EDC_QReceipts"}
 
     def get_ftp_eq_json(self) -> File:
-        return {
-            "location": LookupKey.FTP,
-            "path": f"{self._get_ftp_path()}/EDC_QJson"
-        }
+        return {"location": LookupKey.FTP, "path": f"{self._get_ftp_path()}/EDC_QJson"}

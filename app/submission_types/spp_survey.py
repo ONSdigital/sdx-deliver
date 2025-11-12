@@ -22,17 +22,13 @@ _DAT: Final[str] = "dat"
 
 
 class SppSubmissionType(SurveySubmission):
-
     @override
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         return {
             _IMAGE: [self.get_ftp_image()],
             _INDEX: [self.get_ftp_index()],
             _RECEIPT: [self.get_ftp_receipt()],
-            _SPP: [{
-                "location": LookupKey.SPP,
-                "path": f"sdc-response/{context.survey_id}/"
-            }]
+            _SPP: [{"location": LookupKey.SPP, "path": f"sdc-response/{context.survey_id}/"}],
         }
 
     @override

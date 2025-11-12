@@ -10,7 +10,6 @@ from tests.integration.test_base import TestBase
 
 
 class TestLegacy(TestBase):
-
     def test_legacy_survey(self: Self):
         tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
         input_filename = tx_id
@@ -29,11 +28,11 @@ class TestLegacy(TestBase):
         # Create the input zipfile
         zip_buffer = io.BytesIO()
 
-        with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-            zip_file.writestr(pck_filename, 'This is the content of the pck file.')
-            zip_file.writestr(image_filename, 'This is the content of image file.')
-            zip_file.writestr(index_filename, 'This is the content of index file.')
-            zip_file.writestr(receipt_filename, 'This is the content of the receipt file.')
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+            zip_file.writestr(pck_filename, "This is the content of the pck file.")
+            zip_file.writestr(image_filename, "This is the content of image file.")
+            zip_file.writestr(index_filename, "This is the content of index file.")
+            zip_file.writestr(receipt_filename, "This is the content of the receipt file.")
 
         zip_bytes = zip_buffer.getvalue()
 
@@ -46,14 +45,11 @@ class TestLegacy(TestBase):
             "ru_ref": ru_ref,
         }
 
-        response = self.client.post("/deliver/v2/survey",
-                               params={
-                                   "filename": input_filename,
-                                   "context": json.dumps(context),
-                                   "tx_id": tx_id
-                               },
-                               files={"zip_file": zip_bytes}
-                               )
+        response = self.client.post(
+            "/deliver/v2/survey",
+            params={"filename": input_filename, "context": json.dumps(context), "tx_id": tx_id},
+            files={"zip_file": zip_bytes},
+        )
 
         self.assertTrue(response.is_success)
 
@@ -72,7 +68,7 @@ class TestLegacy(TestBase):
                 "location_type": "gcs",
                 "location_name": "ons-sdx-sandbox-outputs",
                 "path": "survey",
-                "filename": input_filename
+                "filename": input_filename,
             },
             "actions": ["decrypt", "unzip"],
             "targets": [
@@ -83,9 +79,9 @@ class TestLegacy(TestBase):
                             "location_type": "windows_server",
                             "location_name": "nifi-location-ftp",
                             "path": "SDX_PREPROD/EDC_QData",
-                            "filename": pck_filename
+                            "filename": pck_filename,
                         }
-                    ]
+                    ],
                 },
                 {
                     "input": image_filename,
@@ -94,9 +90,9 @@ class TestLegacy(TestBase):
                             "location_type": "windows_server",
                             "location_name": "nifi-location-ftp",
                             "path": "SDX_PREPROD/EDC_QImages/Images",
-                            "filename": image_filename
+                            "filename": image_filename,
                         }
-                    ]
+                    ],
                 },
                 {
                     "input": index_filename,
@@ -105,9 +101,9 @@ class TestLegacy(TestBase):
                             "location_type": "windows_server",
                             "location_name": "nifi-location-ftp",
                             "path": "SDX_PREPROD/EDC_QImages/Index",
-                            "filename": index_filename
+                            "filename": index_filename,
                         }
-                    ]
+                    ],
                 },
                 {
                     "input": receipt_filename,
@@ -116,11 +112,11 @@ class TestLegacy(TestBase):
                             "location_type": "windows_server",
                             "location_name": "nifi-location-ftp",
                             "path": "SDX_PREPROD/EDC_QReceipts",
-                            "filename": receipt_filename
+                            "filename": receipt_filename,
                         }
-                    ]
-                }
-            ]
+                    ],
+                },
+            ],
         }
 
         self.assertEqual(expected_v2_message, self.mock_gcp.get_message())

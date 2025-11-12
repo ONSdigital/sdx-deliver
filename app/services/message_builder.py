@@ -10,7 +10,6 @@ from app.definitions.zip_details import ZipDetails
 
 
 class MessageBuilder(MessageBuilderBase):
-
     def __init__(self, submission_mapper: SubmissionTypeMapperBase, data_sensitivity: str):
         self._submission_mapper = submission_mapper
         self._data_sensitivity = data_sensitivity
@@ -25,7 +24,7 @@ class MessageBuilder(MessageBuilderBase):
             "context": self.get_context(context),
             "source": self.get_source(zip_details["filename"], submission_type),
             "actions": self.get_actions(submission_type),
-            "targets": self.get_targets(zip_details["filenames"], submission_type, context)
+            "targets": self.get_targets(zip_details["filenames"], submission_type, context),
         }
         return message
 
@@ -47,10 +46,7 @@ class MessageBuilder(MessageBuilderBase):
     def get_context(self, context: Context) -> dict[str, str]:
         if context.context_type == ContextType.COMMENTS_FILE:
             comments_context: CommentsFileContext = cast(CommentsFileContext, context)
-            return {
-                "title": "Comments.zip",
-                "context_type": comments_context.context_type
-            }
+            return {"title": "Comments.zip", "context_type": comments_context.context_type}
 
         elif context.context_type == ContextType.ADHOC_SURVEY:
             adhoc_context: AdhocSurveyContext = cast(AdhocSurveyContext, context)
@@ -58,7 +54,7 @@ class MessageBuilder(MessageBuilderBase):
                 "survey_id": adhoc_context.survey_id,
                 "title": adhoc_context.title,
                 "label": adhoc_context.label,
-                "context_type": adhoc_context.context_type
+                "context_type": adhoc_context.context_type,
             }
 
         else:
@@ -67,5 +63,5 @@ class MessageBuilder(MessageBuilderBase):
                 "survey_id": business_context.survey_id,
                 "period_id": business_context.period_id,
                 "ru_ref": business_context.ru_ref,
-                "context_type": business_context.context_type
+                "context_type": business_context.context_type,
             }

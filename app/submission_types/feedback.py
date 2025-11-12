@@ -10,7 +10,6 @@ _JSON: Final[str] = "json"
 
 
 class FeedbackSubmissionType(SubmissionType):
-
     @override
     def get_source_path(self) -> str:
         return "feedback"
@@ -24,12 +23,7 @@ class FeedbackSubmissionType(SubmissionType):
         return self.get_file_config(business_context)
 
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
-        return {
-            _JSON: [{
-                "location": LookupKey.FTP,
-                "path": f"{self._get_ftp_path()}/EDC_QFeedback"
-            }]
-        }
+        return {_JSON: [{"location": LookupKey.FTP, "path": f"{self._get_ftp_path()}/EDC_QFeedback"}]}
 
     @override
     def get_mapping(self, filename: str) -> str:

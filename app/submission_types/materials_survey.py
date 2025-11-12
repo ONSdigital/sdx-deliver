@@ -18,17 +18,13 @@ _DAT: Final[str] = "dat"
 
 
 class MaterialsSubmissionType(SurveySubmission):
-
     @override
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         return {
             _IMAGE: [self.get_ftp_image()],
             _INDEX: [self.get_ftp_index()],
             _RECEIPT: [self.get_ftp_receipt()],
-            _JSON: [{
-                "location": LookupKey.FTP,
-                "path": f"{self._get_ftp_path()}/EDC_QJson"
-            }],
+            _JSON: [{"location": LookupKey.FTP, "path": f"{self._get_ftp_path()}/EDC_QJson"}],
         }
 
     @override

@@ -10,7 +10,6 @@ _ZIP: Final[str] = "zip"
 
 
 class CommentsSubmissionType(SubmissionType):
-
     @override
     def get_source_path(self) -> str:
         return "comments"
@@ -25,12 +24,7 @@ class CommentsSubmissionType(SubmissionType):
         return self.get_file_config(comments_context)
 
     def get_file_config(self, _context: CommentsFileContext) -> dict[str, list[File]]:
-        return {
-            _ZIP: [{
-                "location": LookupKey.FTP,
-                "path": f"{self._get_ftp_path()}/EDC_Submissions/Comments"
-            }]
-        }
+        return {_ZIP: [{"location": LookupKey.FTP, "path": f"{self._get_ftp_path()}/EDC_Submissions/Comments"}]}
 
     @override
     def get_mapping(self, filename: str) -> str:

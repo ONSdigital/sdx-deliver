@@ -17,7 +17,7 @@ class Settings(AppSettings):
     nifi_location_cdp: Annotated[SECRET, "nifi-location-cdp"]
 
     def get_bucket_name(self) -> str:
-        return f'{self.project_id}-outputs'
+        return f"{self.project_id}-outputs"
 
 
 def get_instance() -> Settings:

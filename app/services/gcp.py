@@ -19,31 +19,23 @@ class GcpSettings(Protocol):
 
 
 class GcpService(GcpBase):
-
-    def __init__(self, pubsub_service: PubsubService,
-                 storage_service: StorageService,
-                 settings: GcpSettings):
+    def __init__(self, pubsub_service: PubsubService, storage_service: StorageService, settings: GcpSettings):
         self._pubsub_service = pubsub_service
         self._storage_service = storage_service
         self._settings = settings
 
     def publish_v2_message(self, message: MessageSchemaV2, tx_id: str):
-        attributes = {
-            'tx_id': tx_id
-        }
+        attributes = {"tx_id": tx_id}
 
         dap_topic_id: str = self._settings.dap_topic_id
         dap_topic_path: str = f"projects/{self._settings.project_id}/topics/{dap_topic_id}"
-        self._pubsub_service.publish_message(dap_topic_path,
-                                             json.dumps(message),
-                                             attributes)
+        self._pubsub_service.publish_message(dap_topic_path, json.dumps(message), attributes)
 
-    def store(self,
-              data: bytes,
-              filename: str,
-              sub_dir: str):
-        self._storage_service.write(data,
-                                    filename=filename,
-                                    bucket_name=self._settings.get_bucket_name(),
-                                    project_id=self._settings.project_id,
-                                    sub_dir=sub_dir)
+    def store(self, data: bytes, filename: str, sub_dir: str):
+        self._storage_service.write(
+            data,
+            filename=filename,
+            bucket_name=self._settings.get_bucket_name(),
+            project_id=self._settings.project_id,
+            sub_dir=sub_dir,
+        )

@@ -14,12 +14,7 @@ logger = get_logger()
 
 
 class Deliver:
-
-    def __init__(self,
-                 message_builder: MessageBuilderBase,
-                 encrypter: EncryptionBase,
-                 gcp: GcpBase,
-                 zipper: ZipBase):
+    def __init__(self, message_builder: MessageBuilderBase, encrypter: EncryptionBase, gcp: GcpBase, zipper: ZipBase):
         self._message_builder = message_builder
         self._encrypter = encrypter
         self._gcp = gcp

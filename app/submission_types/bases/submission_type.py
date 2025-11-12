@@ -15,7 +15,6 @@ class LocationHelper(Protocol):
 
 
 class SubmissionType(SubmissionTypeBase):
-
     def __init__(self, location_helper: LocationHelper):
         self._location_helper = location_helper
 
@@ -49,7 +48,7 @@ class SubmissionType(SubmissionTypeBase):
             "location_type": location_key["location_type"],
             "location_name": location_key["location_name"],
             "path": self.get_source_path(),
-            "filename": filename
+            "filename": filename,
         }
 
     def get_output_filename(self, filename: str, _context: Context) -> str:
@@ -63,11 +62,13 @@ class SubmissionType(SubmissionTypeBase):
         for file in filelist:
             lookup_key: LookupKey = file["location"]
             location_key: LocationKey = self._location_helper.get_location_key(lookup_key)
-            result.append({
-                "location_type": location_key["location_type"],
-                "location_name": location_key["location_name"],
-                "path": file["path"],
-                "filename": self.get_output_filename(filename, context)
-            })
+            result.append(
+                {
+                    "location_type": location_key["location_type"],
+                    "location_name": location_key["location_name"],
+                    "path": file["path"],
+                    "filename": self.get_output_filename(filename, context),
+                }
+            )
 
         return result

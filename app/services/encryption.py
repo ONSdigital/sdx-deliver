@@ -18,7 +18,6 @@ class GpgSettings(Protocol):
 
 
 class EncryptionService(EncryptionBase, metaclass=AbstractSingleton):
-
     def __init__(self, gpg_settings: GpgSettings):
         gpg = gnupg.GPG()
         gpg.import_keys(gpg_settings.dap_public_gpg)
@@ -28,9 +27,7 @@ class EncryptionService(EncryptionBase, metaclass=AbstractSingleton):
         """
         Encrypts data using DAP public key (GPG)
         """
-        encrypted_data = gnupg.GPG().encrypt(data_bytes,
-                                             recipients=self._recipients,
-                                             always_trust=True)
+        encrypted_data = gnupg.GPG().encrypt(data_bytes, recipients=self._recipients, always_trust=True)
 
         if encrypted_data.ok:
             logger.info("Successfully encrypted payload")

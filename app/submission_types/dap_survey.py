@@ -10,7 +10,6 @@ _JSON: Final[str] = "json"
 
 
 class DapSubmissionType(SubmissionType):
-
     @override
     def create_file_config(self, context: Context) -> dict[str, list[File]]:
         business_context: BusinessSurveyContext = cast(BusinessSurveyContext, context)
@@ -31,10 +30,9 @@ class DapSubmissionType(SubmissionType):
 
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         return {
-            _JSON: [{
-                "location": LookupKey.DAP,
-                "path": f"{self._get_dap_path()}/{context.survey_id}/{context.period_id}/v1"
-            }]
+            _JSON: [
+                {"location": LookupKey.DAP, "path": f"{self._get_dap_path()}/{context.survey_id}/{context.period_id}/v1"}
+            ]
         }
 
     def get_mapping(self, filename: str) -> str:

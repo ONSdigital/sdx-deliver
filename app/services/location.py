@@ -19,11 +19,11 @@ class LocationNameSettings(Protocol):
     nifi_location_ns5: SECRET
     nifi_location_cdp: SECRET
     nifi_location_ns2: SECRET
+
     def get_bucket_name(self) -> str: ...
 
 
 class LocationService(LocationBase, metaclass=AbstractSingleton):
-
     def __init__(self, location_name_settings: LocationNameSettings):
         self._settings = location_name_settings
         ftp_key: str = str(LookupKey.FTP.value)
@@ -34,34 +34,13 @@ class LocationService(LocationBase, metaclass=AbstractSingleton):
         cdp_key: str = str(LookupKey.CDP.value)
         ns2_key: str = str(LookupKey.NS2.value)
         self._location_keys: dict[str, LocationKey] = {
-            ftp_key: {
-                "location_type": WINDOWS_SERVER,
-                "location_name": self._get_location_name(LookupKey.FTP)
-            },
-            sdx_key: {
-                "location_type": GCS,
-                "location_name": self._get_location_name(LookupKey.SDX)
-            },
-            spp_key: {
-                "location_type": S3,
-                "location_name": self._get_location_name(LookupKey.SPP)
-            },
-            dap_key: {
-                "location_type": WINDOWS_SERVER,
-                "location_name": self._get_location_name(LookupKey.DAP)
-            },
-            ns5_key: {
-                "location_type": WINDOWS_SERVER,
-                "location_name": self._get_location_name(LookupKey.NS5)
-            },
-            ns2_key: {
-                "location_type": WINDOWS_SERVER,
-                "location_name": self._get_location_name(LookupKey.NS2)
-            },
-            cdp_key: {
-                "location_type": CDP,
-                "location_name": self._get_location_name(LookupKey.CDP)
-            },
+            ftp_key: {"location_type": WINDOWS_SERVER, "location_name": self._get_location_name(LookupKey.FTP)},
+            sdx_key: {"location_type": GCS, "location_name": self._get_location_name(LookupKey.SDX)},
+            spp_key: {"location_type": S3, "location_name": self._get_location_name(LookupKey.SPP)},
+            dap_key: {"location_type": WINDOWS_SERVER, "location_name": self._get_location_name(LookupKey.DAP)},
+            ns5_key: {"location_type": WINDOWS_SERVER, "location_name": self._get_location_name(LookupKey.NS5)},
+            ns2_key: {"location_type": WINDOWS_SERVER, "location_name": self._get_location_name(LookupKey.NS2)},
+            cdp_key: {"location_type": CDP, "location_name": self._get_location_name(LookupKey.CDP)},
         }
 
     def _get_location_name(self, key: LookupKey) -> str:

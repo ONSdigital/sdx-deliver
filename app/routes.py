@@ -12,22 +12,21 @@ from app.dependencies import get_deliver_service
 logger = get_logger()
 
 FILE_NAME: Final[str] = "filename"
-CONTEXT: Final[str] = 'context'
-ZIP_FILE: Final[str] = 'zip_file'
-SEFT_FILE: Final[str] = 'seft_file'
+CONTEXT: Final[str] = "context"
+ZIP_FILE: Final[str] = "zip_file"
+SEFT_FILE: Final[str] = "seft_file"
 
 router = APIRouter()
 
 
 @router.post("/deliver/v2/survey")
-async def deliver_survey(filename: str,
-                         context: str,
-                         zip_file: UploadFile,
-                         deliver: Deliver = Depends(get_deliver_service)):
+async def deliver_survey(
+    filename: str, context: str, zip_file: UploadFile, deliver: Deliver = Depends(get_deliver_service)
+):
     """
     Endpoint for business submissions that will use the version 2 schema for the nifi message.
     """
-    logger.info('Processing business submission')
+    logger.info("Processing business submission")
     if filename is None:
         logger.error("missing filename")
         raise UnrecoverableError("Missing filename")
@@ -42,14 +41,13 @@ async def deliver_survey(filename: str,
 
 
 @router.post("/deliver/v2/adhoc")
-async def deliver_adhoc(filename: str,
-                        context: str,
-                        zip_file: UploadFile,
-                        deliver: Deliver = Depends(get_deliver_service)):
+async def deliver_adhoc(
+    filename: str, context: str, zip_file: UploadFile, deliver: Deliver = Depends(get_deliver_service)
+):
     """
     Endpoint for business submissions that will use the version 2 schema for the nifi message.
     """
-    logger.info('Processing adhoc submission')
+    logger.info("Processing adhoc submission")
     if filename is None:
         logger.error("missing filename")
         raise UnrecoverableError("Missing filename")
@@ -64,14 +62,13 @@ async def deliver_adhoc(filename: str,
 
 
 @router.post("/deliver/v2/comments")
-async def deliver_comments_file(filename: str,
-                                context: str,
-                                zip_file: UploadFile,
-                                deliver: Deliver = Depends(get_deliver_service)):
+async def deliver_comments_file(
+    filename: str, context: str, zip_file: UploadFile, deliver: Deliver = Depends(get_deliver_service)
+):
     """
     Endpoint for the comments file using the version 2 schema for the nifi message.
     """
-    logger.info('Processing comments')
+    logger.info("Processing comments")
     if zip_file is None:
         logger.error("missing zip file")
         raise UnrecoverableError("Missing zip file")
@@ -82,14 +79,13 @@ async def deliver_comments_file(filename: str,
 
 
 @router.post("/deliver/v2/seft")
-async def deliver_seft_submission(filename: str,
-                                  context: str,
-                                  seft_file: UploadFile,
-                                  deliver: Deliver = Depends(get_deliver_service)):
+async def deliver_seft_submission(
+    filename: str, context: str, seft_file: UploadFile, deliver: Deliver = Depends(get_deliver_service)
+):
     """
     Endpoint for seft submissions that will use the version 2 schema for the nifi message.
     """
-    logger.info('Processing seft')
+    logger.info("Processing seft")
     context_obj = BusinessSurveyContext.model_validate_json(context)
 
     if seft_file is None:

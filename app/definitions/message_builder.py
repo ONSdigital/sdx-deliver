@@ -7,7 +7,6 @@ from app.definitions.zip_details import ZipDetails
 
 
 class MessageBuilderBase(ABC):
-
     @abstractmethod
     def build_message(self, zip_details: ZipDetails, context: Context) -> MessageSchemaV2:
         pass

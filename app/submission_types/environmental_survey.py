@@ -19,7 +19,6 @@ _DAT: Final[str] = "dat"
 
 
 class EnvironmentalSubmissionType(SurveySubmission):
-
     def _get_ns5_path(self: Self) -> str:
         return "prod" if self._is_prod_env() else "preprod"
 
@@ -28,14 +27,12 @@ class EnvironmentalSubmissionType(SurveySubmission):
             _IMAGE: [self.get_ftp_image()],
             _INDEX: [self.get_ftp_index()],
             _RECEIPT: [self.get_ftp_receipt()],
-            _LCREE: [{
-                "location": LookupKey.NS5,
-                "path": f"lcres/LCRES_EQ_data/{self._get_ns5_path()}/{context.period_id}/v1"
-            }],
-            _EPE: [{
-                "location": LookupKey.NS5,
-                "path": f"epes/EPE_EQ_DATA/{self._get_ns5_path()}/{context.period_id}/v1"
-            }],
+            _LCREE: [
+                {"location": LookupKey.NS5, "path": f"lcres/LCRES_EQ_data/{self._get_ns5_path()}/{context.period_id}/v1"}
+            ],
+            _EPE: [
+                {"location": LookupKey.NS5, "path": f"epes/EPE_EQ_DATA/{self._get_ns5_path()}/{context.period_id}/v1"}
+            ],
         }
 
     def get_mapping(self, filename: str) -> str:
