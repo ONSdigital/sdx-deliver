@@ -941,7 +941,7 @@ wheels = [
 
 [[package]]
 name = "sdx-base"
-version = "0.2.3"
+version = "0.2.4"
 source = { registry = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/simple/" }
 dependencies = [
     { name = "fastapi" },
@@ -954,9 +954,9 @@ dependencies = [
     { name = "python-multipart" },
     { name = "uvicorn" },
 ]
-sdist = { url = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/sdx-base/sdx_base-0.2.3.tar.gz", hash = "sha256:16e0c4a00e869dbbf7ea3edba46e5aeea8367c280633a0513b0164bd04692126" }
+sdist = { url = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/sdx-base/sdx_base-0.2.4.tar.gz", hash = "sha256:e3bbfdc7f118256e81ac2f11bc3129c977f6b5ac2e49087d495cd4bf36676da1" }
 wheels = [
-    { url = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/sdx-base/sdx_base-0.2.3-py3-none-any.whl", hash = "sha256:5ddae161672f54854e14e13e12fe76b3a7f4ec8fb7751a3093ab23943ecacb8d" },
+    { url = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/sdx-base/sdx_base-0.2.4-py3-none-any.whl", hash = "sha256:c7aee1ea464af969999dc44f9ce4e1f3c32fa35427aad9aa1d87c2fcb207fe7f" },
 ]
 
 [[package]]
@@ -990,7 +990,7 @@ version-check = [
 requires-dist = [
     { name = "google-crc32c", specifier = ">=1.7.1" },
     { name = "python-gnupg", specifier = "==0.4.7" },
-    { name = "sdx-base", specifier = "==0.2.3", index = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/simple/" },
+    { name = "sdx-base", specifier = "==0.2.4", index = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/simple/" },
 ]
 
 [package.metadata.requires-dev]
