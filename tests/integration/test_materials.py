@@ -82,7 +82,7 @@ class TestMaterials(TestBase):
                         {
                             "location_type": "windows_server",
                             "location_name": "nifi-location-ftp",
-                            "path": f"SDX_PREPROD/EDC_QJson",
+                            "path": "SDX_PREPROD/EDC_QJson",
                             "filename": json_filename
                         }
                     ]
