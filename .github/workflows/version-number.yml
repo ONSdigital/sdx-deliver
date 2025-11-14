@@ -1,28 +1,24 @@
 name: Check Pyproject Version
 
 on:
-  pull_request:
-    branches:
-      - '*'
+    pull_request:
+        branches:
+            - '*'
 
 jobs:
-  uv-example:
-    permissions:
-      contents: read
-    name: Python
-    runs-on: ubuntu-latest
+    uv-example:
+        permissions:
+            contents: read
+        name: Python
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+        steps:
+            -   name: Checkout repository
+                uses: actions/checkout@v4
 
-      - name: Set up UV
-        uses: astral-sh/setup-uv@v5
+            -   name: Set up UV
+                uses: astral-sh/setup-uv@v6
 
-      - name: Install dependencies using UV
-        run: |
-          uv sync
-
-      - name: Check version in pyproject.toml
-        run: |
-          uv run python scripts/check_version.py
+            -   name: Check version in pyproject.toml
+                run: |
+                    uv run --only-group version-check python .github/scripts/check_version.py
