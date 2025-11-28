@@ -20,10 +20,12 @@ from app.settings import Settings
 class TestRun(unittest.TestCase):
 
     def test_adhoc(self: Self):
+        # change this each time
+        tx_id = "222931f2-6230-4ca3-b84e-136e02e3f81b"
+
         os.environ["PROJECT_ID"] = "ons-sdx-nifi"
         os.environ["DATA_SENSITIVITY"] = "Low"
         os.environ["DATA_RECIPIENT"] = "ingest.service@ons.gov.uk"
-        # os.environ["DATA_RECIPIENT"] = "dap@ons.gov.uk"
         proj_root = Path(__file__).parent.parent  # sdx-deliver dir
 
         app: FastAPI = run(Settings,
@@ -32,7 +34,6 @@ class TestRun(unittest.TestCase):
                            serve=lambda a, b: a
                            )
 
-        tx_id = "222931f2-6230-4ca3-b84e-136e02e3f81b"
         input_filename = tx_id
         output_filename = f'{tx_id}.json'
         survey_id = "740"
@@ -133,7 +134,6 @@ class TestRun(unittest.TestCase):
         os.environ["PROJECT_ID"] = "ons-sdx-nifi"
         os.environ["DATA_SENSITIVITY"] = "Low"
         os.environ["DATA_RECIPIENT"] = "ingest.service@ons.gov.uk"
-        # os.environ["DATA_RECIPIENT"] = "dap@ons.gov.uk"
         proj_root = Path(__file__).parent.parent  # sdx-deliver dir
 
         app: FastAPI = run(Settings,
