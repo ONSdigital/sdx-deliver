@@ -62,7 +62,7 @@ class Deliver:
         logger.info("Sending Nifi message")
         self._gcp.publish_v2_message(v2_message, context.tx_id)
 
-        logger.info("Process completed successfully", extra={"survey_id": _get_survey_id(context)})
+        logger.info("Process completed successfully", {"survey_id": _get_survey_id(context)})
 
 
 def _get_survey_id(context: Context) -> str:

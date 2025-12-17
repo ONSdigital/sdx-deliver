@@ -246,6 +246,23 @@ wheels = [
 ]
 
 [[package]]
+name = "google-cloud-run"
+version = "0.13.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "google-api-core", extra = ["grpc"] },
+    { name = "google-auth" },
+    { name = "grpc-google-iam-v1" },
+    { name = "grpcio" },
+    { name = "proto-plus" },
+    { name = "protobuf" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0e/0d/28412b08dce5eb7cff7653bb7e6fedffc8fdc802b46689024557675f9cc7/google_cloud_run-0.13.0.tar.gz", hash = "sha256:97534ad76d3a2c2047d124c0a0a294a4822fcc24331eba0f294cadfb193c49ad", size = 436585, upload-time = "2025-12-11T15:01:40.485Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7a/7a/a207e4e5e61f0cade88c7856036a381fc274082c96699985a6067ca08df7/google_cloud_run-0.13.0-py3-none-any.whl", hash = "sha256:ec61a8ec2e38e04d482643ef8a6f371630c8a7d6173ab6c69c1d80ad9754220f", size = 398768, upload-time = "2025-12-11T15:01:35.779Z" },
+]
+
+[[package]]
 name = "google-cloud-secret-manager"
 version = "2.24.0"
 source = { registry = "https://pypi.org/simple" }
@@ -873,12 +890,13 @@ wheels = [
 
 [[package]]
 name = "sdx-base"
-version = "0.2.4"
+version = "0.2.8"
 source = { registry = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/simple/" }
 dependencies = [
     { name = "fastapi" },
     { name = "google-cloud-datastore" },
     { name = "google-cloud-pubsub" },
+    { name = "google-cloud-run" },
     { name = "google-cloud-secret-manager" },
     { name = "google-cloud-storage" },
     { name = "httpx" },
@@ -886,9 +904,9 @@ dependencies = [
     { name = "python-multipart" },
     { name = "uvicorn" },
 ]
-sdist = { url = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/sdx-base/sdx_base-0.2.4.tar.gz", hash = "sha256:e3bbfdc7f118256e81ac2f11bc3129c977f6b5ac2e49087d495cd4bf36676da1" }
+sdist = { url = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/sdx-base/sdx_base-0.2.8.tar.gz", hash = "sha256:fd01234b3f8ae0d6ab367bf093d864d4bf09b6b98a91b49e9c0caf9b58d9bc9b" }
 wheels = [
-    { url = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/sdx-base/sdx_base-0.2.4-py3-none-any.whl", hash = "sha256:c7aee1ea464af969999dc44f9ce4e1f3c32fa35427aad9aa1d87c2fcb207fe7f" },
+    { url = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/sdx-base/sdx_base-0.2.8-py3-none-any.whl", hash = "sha256:aa7cb9b392d79b14974a5fd834fc9839d591fbe5e0d9762bb474d2f0ce303f1e" },
 ]
 
 [[package]]
@@ -922,7 +940,7 @@ version-check = [
 requires-dist = [
     { name = "google-crc32c", specifier = ">=1.7.1" },
     { name = "python-gnupg", specifier = "==0.4.7" },
-    { name = "sdx-base", specifier = "==0.2.4", index = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/simple/" },
+    { name = "sdx-base", specifier = "==0.2.8", index = "https://europe-west2-python.pkg.dev/ons-sdx-ci/sdx-python-packages/simple/" },
 ]
 
 [package.metadata.requires-dev]
