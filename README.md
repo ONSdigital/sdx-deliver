@@ -1,5 +1,7 @@
 # sdx-deliver
 
+![Version](https://ons-badges-752336435892.europe-west2.run.app/api/badge/custom?left=Python&right=3.13)
+
 The SDX-Deliver service is responsible for ensuring that all SDX outputs are delivered to ONS via NIFI. This is done by
 encrypting and storing data into a GCP Bucket, and then sending a message via Pub/Sub to Nifi. 
 The message is in 2 different formats. Version 1 contains identifiers (such as ftp or hybrid) that Nifi
