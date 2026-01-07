@@ -24,13 +24,27 @@ class SeftSubmissionType(SubmissionType):
         business_context: BusinessSurveyContext = cast(BusinessSurveyContext, context)
         return self.get_file_config(business_context)
 
+    def get_ashe_folder(self) -> str:
+        if self._is_prod_env():
+            return "ASHE_Python_Submissions"
+        else:
+            return "ASHE_Python_Submissions_TEST"
+
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
-        return {
-            _XLSX: [{
-                "location": LookupKey.FTP,
-                "path": f"{self._get_ftp_path()}/EDC_Submissions/{context.survey_id}"
-            }]
-        }
+        if context.survey_id == "141":
+            return {
+                _XLSX: [{
+                    "location": LookupKey.NS2,
+                    "path": f"s&e/ASHE/{self.get_ashe_folder()}"
+                }]
+            }
+        else:
+            return {
+                _XLSX: [{
+                    "location": LookupKey.FTP,
+                    "path": f"{self._get_ftp_path()}/EDC_Submissions/{context.survey_id}"
+                }]
+            }
 
     @override
     def get_mapping(self, filename: str) -> str:

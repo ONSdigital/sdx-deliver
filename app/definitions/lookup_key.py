@@ -8,3 +8,4 @@ class LookupKey(StrEnum):
     DAP = "dap"
     NS5 = "ns5"
     CDP = "cdp"
+    NS2 = "ns2"
