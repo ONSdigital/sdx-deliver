@@ -2,7 +2,6 @@ from typing import Final, override
 
 from app.definitions.config_schema import File
 from app.definitions.context import BusinessSurveyContext
-from app.definitions.lookup_key import LookupKey
 from app.submission_types.bases.survey_submission import SurveySubmission
 
 # file types
@@ -25,10 +24,7 @@ class MaterialsSubmissionType(SurveySubmission):
             _IMAGE: [self.get_ftp_image()],
             _INDEX: [self.get_ftp_index()],
             _RECEIPT: [self.get_ftp_receipt()],
-            _JSON: [{
-                "location": LookupKey.FTP,
-                "path": f"{self._get_ftp_path()}/EDC_QJson"
-            }],
+            _JSON: [self.get_ftp_bdd_json()],
         }
 
     @override

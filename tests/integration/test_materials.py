@@ -21,7 +21,7 @@ class TestMaterials(TestBase):
         submission_date_str = "20210105"
         submission_date_dm = "0501"
 
-        json_filename = f"{survey_id}_{tx_id_trunc}.json"
+        json_filename = f"{survey_id}_{ru_ref}_{period_id}.json"
         image_filename = f"S{tx_id_trunc}_1.JPG"
         index_filename = f"EDC_{survey_id}_{submission_date_str}_{tx_id_trunc}.csv"
         receipt_filename = f"REC{submission_date_dm}_{tx_id_trunc}.DAT"
@@ -82,7 +82,7 @@ class TestMaterials(TestBase):
                         {
                             "location_type": "windows_server",
                             "location_name": "nifi-location-ftp",
-                            "path": "SDX_PREPROD/EDC_QJson",
+                            "path": "bdd_ogd/Submissions_Preprod",
                             "filename": json_filename
                         }
                     ]

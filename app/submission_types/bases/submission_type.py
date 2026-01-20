@@ -25,6 +25,9 @@ class SubmissionType(SubmissionTypeBase):
     def _get_ftp_path(self: Self) -> str:
         return "SDX_Prod" if self._is_prod_env() else "SDX_PREPROD"
 
+    def _get_ftp_bdd_path(self: Self) -> str:
+        return "Submissions" if self._is_prod_env() else "Submissions_Preprod"
+
     @abstractmethod
     def create_file_config(self, context: Context) -> dict[str, list[File]]:
         pass

@@ -50,3 +50,9 @@ class SurveySubmission(SubmissionType, ABC):
             "location": LookupKey.FTP,
             "path": f"{self._get_ftp_path()}/EDC_QJson"
         }
+
+    def get_ftp_bdd_json(self) -> File:
+        return {
+            "location": LookupKey.FTP,
+            "path": f"bdd_ogd/{self._get_ftp_bdd_path()}"
+        }
