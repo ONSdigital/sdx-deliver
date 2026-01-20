@@ -2,7 +2,6 @@ from typing import Final, override
 
 from app.definitions.config_schema import File
 from app.definitions.context import BusinessSurveyContext
-from app.definitions.lookup_key import LookupKey
 from app.submission_types.bases.survey_submission import SurveySubmission
 
 # file types
