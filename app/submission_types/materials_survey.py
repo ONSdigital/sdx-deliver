@@ -25,10 +25,7 @@ class MaterialsSubmissionType(SurveySubmission):
             _IMAGE: [self.get_ftp_image()],
             _INDEX: [self.get_ftp_index()],
             _RECEIPT: [self.get_ftp_receipt()],
-            _JSON: [{
-                "location": LookupKey.FTP,
-                "path": f"{self._get_ftp_path()}/EDC_QJson"
-            }],
+            _JSON: [self.get_ftp_bdd_json()],
         }
 
     @override
