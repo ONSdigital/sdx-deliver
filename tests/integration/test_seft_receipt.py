@@ -20,14 +20,12 @@ class TestSEFTReceipt(TestBase):
         ru_ref = "12346789012A"
         submission_date_dm = "0501"
 
-        json_filename = f"{survey_id}_{ru_ref}_{period_id}.json"
         receipt_filename = f"REC{submission_date_dm}_{tx_id_trunc}.DAT"
 
         # Create the input zipfile
         zip_buffer = io.BytesIO()
 
         with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-            zip_file.writestr(json_filename, 'This is the content of the json file.')
             zip_file.writestr(receipt_filename, 'This is the content of the receipt file.')
 
         zip_bytes = zip_buffer.getvalue()
