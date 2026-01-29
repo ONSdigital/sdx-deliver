@@ -98,3 +98,22 @@ async def deliver_seft_submission(filename: str,
     data_bytes = await seft_file.read()
     deliver.deliver_v2(filename, data_bytes, context_obj)
     return JSONResponse(content={"success": True}, status_code=200)
+
+
+@router.post("/deliver/v2/seft_receipt")
+async def deliver_seft_receipt_submission(filename: str,
+                                  context: str,
+                                  receipt_file: UploadFile,
+                                  deliver: Deliver = Depends(get_deliver_service)):
+    """
+    Endpoint for seft receipt that will use the version 2 schema for the nifi message.
+    """
+    logger.info('Processing seft receipt')
+    context_obj = BusinessSurveyContext.model_validate_json(context)
+
+    if receipt_file is None:
+        logger.error("missing SEFT receipt file")
+        raise UnrecoverableError("Missing SEFT receipt file")
+    data_bytes = await receipt_file.read()
+    deliver.deliver_v2(filename, data_bytes, context_obj)
+    return JSONResponse(content={"success": True}, status_code=200)
