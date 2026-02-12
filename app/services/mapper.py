@@ -10,6 +10,7 @@ from app.submission_types.environmental_survey import EnvironmentalSubmissionTyp
 from app.submission_types.feedback import FeedbackSubmissionType
 from app.submission_types.legacy_survey import LegacySubmissionType
 from app.submission_types.materials_survey import MaterialsSubmissionType
+from app.submission_types.seft_receipt import SEFTReceiptSubmissionType
 from app.submission_types.seft_survey import SeftSubmissionType
 from app.submission_types.spp_survey import SppSubmissionType
 
@@ -24,6 +25,8 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
             return AdhocSubmissionType(self._location_service)
         elif survey_type == SurveyType.SEFT:
             return SeftSubmissionType(self._location_service)
+        elif survey_type == SurveyType.SEFT_RECEIPT:
+            return SEFTReceiptSubmissionType(self._location_service)
         elif survey_type == SurveyType.SPP:
             return SppSubmissionType(self._location_service)
         elif survey_type == SurveyType.FEEDBACK:

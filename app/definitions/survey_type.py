@@ -9,6 +9,7 @@ class SurveyType(StrEnum):
     MATERIALS = "materials"
     FEEDBACK = "feedback"
     SEFT = "seft"
+    SEFT_RECEIPT = "seft_receipt"
     ADHOC = "adhoc"
     COMMENTS = "comments"
     DEXTA = "dexta"
