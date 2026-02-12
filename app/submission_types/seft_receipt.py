@@ -7,9 +7,6 @@ from app.submission_types.bases.survey_submission import SurveySubmission
 # file types
 _RECEIPT: Final[str] = "receipt"
 
-# file extensions
-_DAT: Final[str] = "dat"
-
 
 class SEFTReceiptSubmissionType(SurveySubmission):
 
