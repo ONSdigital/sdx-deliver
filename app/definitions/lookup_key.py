@@ -9,3 +9,5 @@ class LookupKey(StrEnum):
     NS5 = "ns5"
     CDP = "cdp"
     NS2 = "ns2"
+    NS3 = "ns3"
+    LD7 = "ld7"

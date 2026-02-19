@@ -1,7 +1,12 @@
+from typing import Optional
+
 from app.definitions.location import LocationBase
+from app.definitions.output_mapper import OutputMapperBase
 from app.definitions.submission_type import SubmissionTypeBase
 from app.definitions.submission_type_mapper import SubmissionTypeMapperBase
 from app.definitions.survey_type import SurveyType
+from app.services.output_mapper.output_mapper_configs import SEFTOutputConfigProd, SEFTOutputConfigPreProd
+from app.services.output_mapper.seft_output_mapper import SEFTOutputMapper
 from app.submission_types.adhoc_survey import AdhocSubmissionType
 from app.submission_types.comments import CommentsSubmissionType
 from app.submission_types.dap_survey import DapSubmissionType
@@ -17,14 +22,16 @@ from app.submission_types.spp_survey import SppSubmissionType
 
 class SubmissionTypeMapper(SubmissionTypeMapperBase):
 
-    def __init__(self, location_service: LocationBase):
+    def __init__(self, location_service: LocationBase) -> None:
         self._location_service = location_service
 
-    def get_submission_type(self, survey_type: SurveyType) -> SubmissionTypeBase:
+    def get_submission_type(self,
+                            survey_type: SurveyType) -> SubmissionTypeBase:
         if survey_type == SurveyType.ADHOC:
             return AdhocSubmissionType(self._location_service)
         elif survey_type == SurveyType.SEFT:
-            return SeftSubmissionType(self._location_service)
+            output_mapper = self.get_output_mapper(survey_type)
+            return SeftSubmissionType(self._location_service, output_mapper)
         elif survey_type == SurveyType.SEFT_RECEIPT:
             return SEFTReceiptSubmissionType(self._location_service)
         elif survey_type == SurveyType.SPP:
@@ -43,3 +50,10 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
             return DextaSubmissionType(self._location_service)
         else:
             return LegacySubmissionType(self._location_service)
+
+    def get_output_mapper(self, survey_type: SurveyType) -> Optional[OutputMapperBase]:
+        if survey_type == SurveyType.SEFT:
+            return SEFTOutputMapper(prod_config=SEFTOutputConfigProd, preprod_config=SEFTOutputConfigPreProd)
+        else:
+            return None
+
