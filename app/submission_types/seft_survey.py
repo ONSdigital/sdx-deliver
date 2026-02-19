@@ -12,7 +12,7 @@ _XLSX: Final[str] = "xlsx"
 class SeftSubmissionType(SubmissionType):
     def __init__(self, location_helper: LocationHelper, output_mapper: SEFTOutputConfigPreProd) -> None:
         super().__init__(location_helper)
-        self.output_mapper = output_mapper
+        self._output_mapper = output_mapper
 
     @override
     def get_source_path(self) -> str:
@@ -29,7 +29,7 @@ class SeftSubmissionType(SubmissionType):
 
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         return {
-            _XLSX: [self.output_mapper.map_output(context, self._is_prod_env())]
+            _XLSX: [self._output_mapper.map_output(context, self._is_prod_env())]
         }
 
     @override
