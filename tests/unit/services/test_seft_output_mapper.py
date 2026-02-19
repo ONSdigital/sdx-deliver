@@ -113,6 +113,22 @@ class TestSeftOutputMapper(unittest.TestCase):
 
         self.assertEqual(output, expected_output)
 
+    def test_map_output_prod_with_default_2(self):
+        """
+        This test is intended to be a copy of the previous test to ensure that the
+        default output is returned consistently for different non-existent survey ids in the prod environment.
+        """
+        survey_id = "non_existent_survey_2"
+        context = create_test_context(survey_id=survey_id)
+
+        output = self.output_mapper.map_output(context, is_prod_env=True)
+        expected_output: File = {
+                "location": LookupKey.NS5,
+                "path": f"default_path/prod/non_existent_survey_2"
+        }
+
+        self.assertEqual(output, expected_output)
+
     def test_map_output_preprod_with_default(self):
         survey_id = "non_existent_survey"
         context = create_test_context(survey_id=survey_id)

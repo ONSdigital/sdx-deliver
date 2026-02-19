@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from app.definitions.config_schema import File
-from app.definitions.context import BusinessSurveyContext
+from app.definitions.context import Context
 
 
 class OutputMapperBase(ABC):
@@ -10,5 +10,5 @@ class OutputMapperBase(ABC):
         pass
 
     @abstractmethod
-    def map_output(self, context: BusinessSurveyContext, is_prod_env: bool) -> File:
+    def map_output(self, context: Context, is_prod_env: bool) -> File:
         pass

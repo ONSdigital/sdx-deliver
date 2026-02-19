@@ -15,10 +15,11 @@ class SEFTOutputMapper(OutputMapper):
 
     def format_output(self, file_output: File, context: BusinessSurveyContext) -> File:
         """
-        Formats the output file configuration by replacing any placeholders in the path
+        Copy the output file configuration and formats it by replacing any placeholders in the path
         with actual values from the context for dynamic path
         """
-        if SURVEY_TAG in file_output["path"]:
-            file_output["path"] = file_output["path"].format(survey_id=context.survey_id)
+        return_file_output: File = file_output.copy()
+        if SURVEY_TAG in return_file_output["path"]:
+            return_file_output["path"] = return_file_output["path"].format(survey_id=context.survey_id)
 
-        return file_output
+        return return_file_output
