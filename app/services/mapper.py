@@ -30,7 +30,7 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
         if survey_type == SurveyType.ADHOC:
             return AdhocSubmissionType(self._location_service)
         elif survey_type == SurveyType.SEFT:
-            output_mapper = self.get_output_mapper(survey_type)
+            output_mapper = self.get_seft_output_mapper()
             return SeftSubmissionType(self._location_service, output_mapper)
         elif survey_type == SurveyType.SEFT_RECEIPT:
             return SEFTReceiptSubmissionType(self._location_service)
@@ -51,10 +51,8 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
         else:
             return LegacySubmissionType(self._location_service)
 
-    def get_output_mapper(self, survey_type: SurveyType) -> Optional[OutputMapperBase]:
-        if survey_type == SurveyType.SEFT:
-            output_config = SEFTOutputConfigProd if self._location_service.is_prod_env() else SEFTOutputConfigPreProd
-            return SEFTOutputMapper(output_config=output_config)
-        else:
-            return None
+    def get_seft_output_mapper(self) -> SEFTOutputMapper:
+        output_config = SEFTOutputConfigProd if self._location_service.is_prod_env() else SEFTOutputConfigPreProd
+        return SEFTOutputMapper(output_config=output_config)
+
 
