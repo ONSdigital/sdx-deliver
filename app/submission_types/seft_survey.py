@@ -29,7 +29,7 @@ class SeftSubmissionType(SubmissionType):
 
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         return {
-            _XLSX: [self._output_mapper.map_output(context, self._is_prod_env())]
+            _XLSX: [self._output_mapper.map_output(context)]
         }
 
     @override

@@ -225,6 +225,104 @@ class TestSeft(TestBase):
 
         self.assertEqual(expected_v2_message, self.mock_gcp.get_message())
 
+    def test_093_fsps(self: Self):
+        tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
+        input_filename = "11110000016H_202012_093_20210920153234.xlsx.gpg"
+        output_filename = "11110000016H_202012_093_20210920153234.xlsx"
+        survey_id = "093"
+        period_id = "202012"
+        ru_ref = "11110000016"
+
+        context = self.set_context(survey_id, period_id, ru_ref, tx_id)
+
+        response = self.post_seft(self.client, input_filename, context, tx_id)
+
+        self.assertTrue(response.is_success)
+
+        expected_v2_message: MessageSchemaV2 = {
+            "schema_version": "2",
+            "sensitivity": "Low",
+            "sizeBytes": 10,
+            "md5sum": "md5sum",
+            "context": {
+                "survey_id": survey_id,
+                "period_id": period_id,
+                "ru_ref": ru_ref,
+                "context_type": ContextType.BUSINESS_SURVEY,
+            },
+            "source": {
+                "location_type": "gcs",
+                "location_name": "ons-sdx-sandbox-outputs",
+                "path": "seft",
+                "filename": input_filename
+            },
+            "actions": ["decrypt"],
+            "targets": [
+                {
+                    "input": input_filename,
+                    "outputs": [
+                        {
+                            "location_type": "windows_server",
+                            "location_name": "nifi-location-ld7",
+                            "path": "FiTP Pensions/Downstream_System_V3.0/Pensions_Data/Upload folder Preprod",
+                            "filename": output_filename
+                        }
+                    ]
+                }
+            ]
+        }
+
+        self.assertEqual(expected_v2_message, self.mock_gcp.get_message())
+
+    def test_137_pcs(self: Self):
+        tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
+        input_filename = "11110000016H_202102_137_20210716070302.xlsx.gpg"
+        output_filename = "11110000016H_202102_137_20210716070302.xlsx"
+        survey_id = "137"
+        period_id = "202102"
+        ru_ref = "11110000016"
+
+        context = self.set_context(survey_id, period_id, ru_ref, tx_id)
+
+        response = self.post_seft(self.client, input_filename, context, tx_id)
+
+        self.assertTrue(response.is_success)
+
+        expected_v2_message: MessageSchemaV2 = {
+            "schema_version": "2",
+            "sensitivity": "Low",
+            "sizeBytes": 10,
+            "md5sum": "md5sum",
+            "context": {
+                "survey_id": survey_id,
+                "period_id": period_id,
+                "ru_ref": ru_ref,
+                "context_type": ContextType.BUSINESS_SURVEY,
+            },
+            "source": {
+                "location_type": "gcs",
+                "location_name": "ons-sdx-sandbox-outputs",
+                "path": "seft",
+                "filename": input_filename
+            },
+            "actions": ["decrypt"],
+            "targets": [
+                {
+                    "input": input_filename,
+                    "outputs": [
+                        {
+                            "location_type": "windows_server",
+                            "location_name": "nifi-location-ftp",
+                            "path": "NA_GPC/Submissions_PreProd",
+                            "filename": output_filename
+                        }
+                    ]
+                }
+            ]
+        }
+
+        self.assertEqual(expected_v2_message, self.mock_gcp.get_message())
+
     def test_141_ashe(self: Self):
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
         input_filename = "14112300153_202203_141_20220623072928.xlsx.gpg"

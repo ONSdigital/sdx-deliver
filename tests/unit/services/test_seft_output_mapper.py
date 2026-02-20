@@ -1,5 +1,7 @@
 import unittest
 
+from sdx_base.errors.errors import UnrecoverableError
+
 from app.definitions.config_schema import File
 from app.definitions.context import BusinessSurveyContext
 from app.definitions.context_type import ContextType
@@ -9,7 +11,7 @@ from app.services.output_mapper.output_mapper_configs import DEFAULT_KEY, SURVEY
 from app.services.output_mapper.seft_output_mapper import SEFTOutputMapper
 
 
-TestProdConfig: dict[str, File] = {
+TestConfigProd: dict[str, File] = {
     "survey1":{
         "location": LookupKey.FTP,
         "path": "prod/path1"
@@ -24,7 +26,7 @@ TestProdConfig: dict[str, File] = {
     }
 }
 
-TestPreProdConfig: dict[str, File] = {
+TestConfigPreProd: dict[str, File] = {
     "survey1":{
         "location": LookupKey.FTP,
         "path": "preprod/path1"
@@ -36,6 +38,17 @@ TestPreProdConfig: dict[str, File] = {
     DEFAULT_KEY: {
         "location": LookupKey.NS5,
         "path": f"default_path/preprod/{SURVEY_TAG}"
+    }
+}
+
+TestConfigWithoutDefault: dict[str, File] = {
+    "survey1":{
+        "location": LookupKey.FTP,
+        "path": "prod/path1"
+    },
+    "survey2":{
+        "location": LookupKey.NS2,
+        "path": f"prod/{SURVEY_TAG}/path2"
     }
 }
 
@@ -52,16 +65,21 @@ def create_test_context(survey_id: str) -> BusinessSurveyContext:
 class TestSeftOutputMapper(unittest.TestCase):
 
     def setUp(self):
-        self.output_mapper = SEFTOutputMapper(
-            prod_config=TestProdConfig,
-            preprod_config=TestPreProdConfig
+        self.output_mapper_prod = SEFTOutputMapper(
+            output_config=TestConfigProd
+        )
+        self.output_mapper_preprod = SEFTOutputMapper(
+            output_config=TestConfigPreProd
+        )
+        self.output_mapper_without_default = SEFTOutputMapper(
+            output_config=TestConfigWithoutDefault
         )
 
     def test_map_output_prod(self):
         survey_id = "survey1"
         context = create_test_context(survey_id=survey_id)
 
-        output = self.output_mapper.map_output(context, is_prod_env=True)
+        output = self.output_mapper_prod.map_output(context)
         expected_output: File = {
             "location": LookupKey.FTP,
             "path": "prod/path1"
@@ -72,7 +90,7 @@ class TestSeftOutputMapper(unittest.TestCase):
         survey_id = "survey1"
         context = create_test_context(survey_id=survey_id)
 
-        output = self.output_mapper.map_output(context, is_prod_env=False)
+        output = self.output_mapper_preprod.map_output(context)
         expected_output: File = {
             "location": LookupKey.FTP,
             "path": "preprod/path1"
@@ -83,7 +101,7 @@ class TestSeftOutputMapper(unittest.TestCase):
         survey_id = "survey2"
         context = create_test_context(survey_id=survey_id)
 
-        output = self.output_mapper.map_output(context, is_prod_env=True)
+        output = self.output_mapper_prod.map_output(context)
         expected_output: File = {
             "location": LookupKey.NS2,
             "path": "prod/survey2/path2"
@@ -94,7 +112,7 @@ class TestSeftOutputMapper(unittest.TestCase):
         survey_id = "survey2"
         context = create_test_context(survey_id=survey_id)
 
-        output = self.output_mapper.map_output(context, is_prod_env=False)
+        output = self.output_mapper_preprod.map_output(context)
         expected_output: File = {
             "location": LookupKey.SDX,
             "path": "preprod/survey2/path2"
@@ -105,7 +123,7 @@ class TestSeftOutputMapper(unittest.TestCase):
         survey_id = "non_existent_survey"
         context = create_test_context(survey_id=survey_id)
 
-        output = self.output_mapper.map_output(context, is_prod_env=True)
+        output = self.output_mapper_prod.map_output(context)
         expected_output: File = {
                 "location": LookupKey.NS5,
                 "path": f"default_path/prod/non_existent_survey"
@@ -121,7 +139,7 @@ class TestSeftOutputMapper(unittest.TestCase):
         survey_id = "non_existent_survey_2"
         context = create_test_context(survey_id=survey_id)
 
-        output = self.output_mapper.map_output(context, is_prod_env=True)
+        output = self.output_mapper_prod.map_output(context)
         expected_output: File = {
                 "location": LookupKey.NS5,
                 "path": f"default_path/prod/non_existent_survey_2"
@@ -133,10 +151,20 @@ class TestSeftOutputMapper(unittest.TestCase):
         survey_id = "non_existent_survey"
         context = create_test_context(survey_id=survey_id)
 
-        output = self.output_mapper.map_output(context, is_prod_env=False)
+        output = self.output_mapper_preprod.map_output(context)
         expected_output: File = {
                 "location": LookupKey.NS5,
                 "path": f"default_path/preprod/non_existent_survey"
         }
 
         self.assertEqual(output, expected_output)
+
+    def test_error_when_no_config_and_no_default_prod(self):
+        survey_id = "non_existent_survey"
+        context = create_test_context(survey_id=survey_id)
+
+        with self.assertRaises(UnrecoverableError) as error:
+            self.output_mapper_without_default.map_output(context)
+
+        self.assertIn("No output file configuration is found and no default configuration is set",
+                      str(error.exception))

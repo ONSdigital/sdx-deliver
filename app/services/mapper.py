@@ -53,7 +53,8 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
 
     def get_output_mapper(self, survey_type: SurveyType) -> Optional[OutputMapperBase]:
         if survey_type == SurveyType.SEFT:
-            return SEFTOutputMapper(prod_config=SEFTOutputConfigProd, preprod_config=SEFTOutputConfigPreProd)
+            output_config = SEFTOutputConfigProd if self._location_service.is_prod_env() else SEFTOutputConfigPreProd
+            return SEFTOutputMapper(output_config=output_config)
         else:
             return None
 
