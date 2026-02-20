@@ -1,5 +1,3 @@
-from typing import override
-
 from app.definitions.config_schema import File
 from app.definitions.context import BusinessSurveyContext
 from app.services.output_mapper.output_mapper import OutputMapper
@@ -7,7 +5,6 @@ from app.services.output_mapper.output_mapper_configs import SURVEY_TAG
 
 
 class SEFTOutputMapper(OutputMapper):
-    @override
     def map_output(self, context: BusinessSurveyContext, is_prod_env: bool) -> File:
         file_output = self.lookup_output(context.survey_id, is_prod_env)
 

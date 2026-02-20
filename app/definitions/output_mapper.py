@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
-
+from typing import TypeVar
 from app.definitions.config_schema import File
 from app.definitions.context import Context
 
+T = TypeVar("T", bound=Context)
 
 class OutputMapperBase(ABC):
     @abstractmethod
@@ -10,5 +11,5 @@ class OutputMapperBase(ABC):
         pass
 
     @abstractmethod
-    def map_output(self, context: Context, is_prod_env: bool) -> File:
+    def map_output(self, context: T, is_prod_env: bool) -> File:
         pass

@@ -1,4 +1,5 @@
 from abc import abstractmethod
+
 from sdx_base.errors.errors import UnrecoverableError
 
 from app import get_logger
