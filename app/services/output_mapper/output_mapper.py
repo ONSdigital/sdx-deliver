@@ -11,7 +11,7 @@ from app.services.output_mapper.output_mapper_configs import DEFAULT_KEY
 logger = get_logger()
 
 
-class OutputMapper(OutputMapperBase):
+class OutputMapper[T: Context](OutputMapperBase[T]):
     def __init__(self, prod_config: dict[str, File], preprod_config: dict[str, File]) -> None:
         self.prod_config = prod_config
         self.preprod_config = preprod_config
@@ -35,5 +35,5 @@ class OutputMapper(OutputMapperBase):
         return file_output
 
     @abstractmethod
-    def map_output(self, context: Context, is_prod_env: bool) -> File:
+    def map_output(self, context: T, is_prod_env: bool) -> File:
         pass
