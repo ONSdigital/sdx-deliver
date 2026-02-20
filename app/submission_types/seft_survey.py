@@ -1,16 +1,16 @@
-from typing import Final, override, cast, Protocol
+from typing import Final, override, cast
 
 from app.definitions.config_schema import File
 from app.definitions.context import BusinessSurveyContext, Context
 from app.definitions.submission_type import DECRYPT
-from app.services.output_mapper.output_mapper_configs import SEFTOutputConfigPreProd
+from app.services.output_mapper.seft_output_mapper import SEFTOutputMapper
 from app.submission_types.bases.submission_type import SubmissionType, LocationHelper
 
 _XLSX: Final[str] = "xlsx"
 
 
 class SeftSubmissionType(SubmissionType):
-    def __init__(self, location_helper: LocationHelper, output_mapper: SEFTOutputConfigPreProd) -> None:
+    def __init__(self, location_helper: LocationHelper, output_mapper: SEFTOutputMapper) -> None:
         super().__init__(location_helper)
         self._output_mapper = output_mapper
 
