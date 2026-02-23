@@ -30,8 +30,8 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
         if survey_type == SurveyType.ADHOC:
             return AdhocSubmissionType(self._location_service)
         elif survey_type == SurveyType.SEFT:
-            output_mapper = self.get_seft_output_mapper()
-            return SeftSubmissionType(self._location_service, output_mapper)
+            seft_output_mapper = self.get_seft_output_mapper()
+            return SeftSubmissionType(self._location_service, seft_output_mapper)
         elif survey_type == SurveyType.SEFT_RECEIPT:
             return SEFTReceiptSubmissionType(self._location_service)
         elif survey_type == SurveyType.SPP:
