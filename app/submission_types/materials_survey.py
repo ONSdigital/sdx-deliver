@@ -5,13 +5,13 @@ from app.definitions.context import BusinessSurveyContext
 from app.submission_types.bases.survey_submission import SurveySubmission
 
 # file types
+_IMAGE: Final[str] = "image"
 _INDEX: Final[str] = "index"
 _RECEIPT: Final[str] = "receipt"
 _JSON: Final[str] = "json"
 
 # file extensions
 _JPG: Final[str] = "jpg"
-_IMAGE: Final[str] = "image"
 _CSV: Final[str] = "csv"
 _DAT: Final[str] = "dat"
 

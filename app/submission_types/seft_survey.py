@@ -2,14 +2,17 @@ from typing import Final, override, cast
 
 from app.definitions.config_schema import File
 from app.definitions.context import BusinessSurveyContext, Context
-from app.definitions.lookup_key import LookupKey
 from app.definitions.submission_type import DECRYPT
-from app.submission_types.bases.submission_type import SubmissionType
+from app.services.output_mapper.seft_output_mapper import SEFTOutputMapper
+from app.submission_types.bases.submission_type import SubmissionType, LocationHelper
 
 _XLSX: Final[str] = "xlsx"
 
 
 class SeftSubmissionType(SubmissionType):
+    def __init__(self, location_helper: LocationHelper, output_mapper: SEFTOutputMapper) -> None:
+        super().__init__(location_helper)
+        self._output_mapper = output_mapper
 
     @override
     def get_source_path(self) -> str:
@@ -24,27 +27,10 @@ class SeftSubmissionType(SubmissionType):
         business_context: BusinessSurveyContext = cast(BusinessSurveyContext, context)
         return self.get_file_config(business_context)
 
-    def get_ashe_folder(self) -> str:
-        if self._is_prod_env():
-            return "ASHE_Python_Submissions"
-        else:
-            return "ASHE_Python_Submissions_TEST"
-
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
-        if context.survey_id == "141":
-            return {
-                _XLSX: [{
-                    "location": LookupKey.NS2,
-                    "path": f"s&e/ASHE/{self.get_ashe_folder()}"
-                }]
-            }
-        else:
-            return {
-                _XLSX: [{
-                    "location": LookupKey.FTP,
-                    "path": f"{self._get_ftp_path()}/EDC_Submissions/{context.survey_id}"
-                }]
-            }
+        return {
+            _XLSX: [self._output_mapper.map_output(context)]
+        }
 
     @override
     def get_mapping(self, filename: str) -> str:

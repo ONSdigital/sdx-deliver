@@ -9,14 +9,13 @@ from app.definitions.lookup_key import LookupKey
 from app.submission_types.bases.survey_submission import SurveySubmission
 
 # file types
-_PCK: Final[str] = "pck"
+_IMAGE: Final[str] = "image"
 _INDEX: Final[str] = "index"
 _RECEIPT: Final[str] = "receipt"
 _SPP: Final[str] = "spp"
 
 # file extensions
 _JPG: Final[str] = "jpg"
-_IMAGE: Final[str] = "image"
 _CSV: Final[str] = "csv"
 _DAT: Final[str] = "dat"
 
