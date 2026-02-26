@@ -68,7 +68,7 @@ class TestSeft(TestBase):
                         {
                             "location_type": "windows_server",
                             "location_name": "nifi-location-ns3",
-                            "path": "OF1/ITIS/ITIS_SDB/Submissions_PreProd",
+                            "path": "OF1/UAT Submissions",
                             "filename": output_filename
                         }
                     ]
