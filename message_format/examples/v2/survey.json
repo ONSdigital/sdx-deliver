@@ -15,7 +15,7 @@
       "path": "survey",
       "filename": "7f64de49-07da-4065-8b07-5a6fd2cf9586"
     },
-    "actions": ["unzip"],
+    "actions": ["decrypt", "unzip"],
     "targets": [
       {
         "input": "202_7f64de4907da4065",

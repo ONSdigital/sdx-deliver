@@ -1,0 +1,62 @@
+{
+  "data": {
+    "schema_version": "2",
+    "sensitivity": "Low",
+    "sizeBytes": 2691342,
+    "md5sum": "f6e217c6f99dcf79ce54937f766f20f9",
+    "context": {
+      "survey_id": "202",
+      "period_id": "23",
+      "ru_ref": "12346789012A"
+    },
+    "source": {
+      "location_type": "gcs",
+      "location_name": "ons-sdx-preprod-outputs",
+      "path": "survey",
+      "filename": "7f64de49-07da-4065-8b07-5a6fd2cf9586"
+    },
+    "actions": ["decrypt", "unzip"],
+    "targets": [
+      {
+        "input": "A_7f64de4907da4065.txt",
+        "outputs": [
+          {
+            "batch": true
+          }
+        ]
+      },
+      {
+        "input": "B_7f64de4907da4065.txt",
+        "outputs": [
+          {
+            "batch": true
+          }
+        ]
+      },
+      {
+        "input": "C_7f64de4907da4065.txt",
+        "outputs": [
+          {
+            "batch": true
+          }
+        ]
+      },
+      {
+        "input": "sbr.json",
+        "outputs": [
+          {
+            "location_type": "AWS",
+            "location_name": "sbr",
+            "path": "path/in/sbr/bucket",
+            "filename": "sbr.json"
+          }
+        ]
+      }
+    ]
+  },
+  "attributes": {
+    "tx_id": "a35b2951-d942-4429-98c3-b8e3bf6e2e73"
+  },
+  "messageId": "123456789101112",
+  "publishTime": "2014-10-02T15:01:23Z"
+}
