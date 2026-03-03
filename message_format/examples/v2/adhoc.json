@@ -21,10 +21,12 @@
         "input": "20f44292-488e-4ed8-908a-76e4b50b5b14.json",
         "outputs": [
           {
-            "location_type": "windows_server",
-            "location_name": "?",
-            "path": "?",
-            "filename": "?"
+
+            "location_type": "cdp",
+            "location_name": "nifi-location-cdp",
+            "path": "dapsen/landing_zone/ons/covid_resp_inf_surv_response/test/phm_740_health_insights_2024/v1/",
+            "filename": "20f44292-488e-4ed8-908a-76e4b50b5b14.json"
+
           }
         ]
       }
