@@ -2,7 +2,7 @@
 
 The SDX-Deliver service is responsible for ensuring that all SDX outputs are delivered to ONS via NIFI. This is done by
 encrypting and storing data into a GCP Bucket, and then sending a message via Pub/Sub to Nifi. 
-The message is in 2 different formats. Version 1 contains identifiers (such as ftp or hybrid) that Nifi
+The message is in 2 different formats. Version 1 contains identifiers (such as ftp) that Nifi
 use to work out the appropriate route. For Version 2 the message defines all source and target locations explicitly
 allowing SDX to be fully in control of where the files are sent.
 
