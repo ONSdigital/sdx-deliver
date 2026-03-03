@@ -72,11 +72,11 @@ SEFTOutputConfigProd: dict[str, File] = {
 SEFTOutputConfigPreProd: dict[str, File] = {
     "057": {
         "location": LookupKey.NS3,
-        "path": "OF1/ITIS/ITIS_SDB/Submissions_PreProd"
+        "path": "OF1/UAT Submissions"
     },
     "058": {
         "location": LookupKey.NS3,
-        "path": "OF1/ITIS/ITIS_SDB/Submissions_PreProd"
+        "path": "OF1/UAT Submissions"
     },
     "062": {
         "location": LookupKey.FTP,
