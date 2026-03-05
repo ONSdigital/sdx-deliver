@@ -1,6 +1,6 @@
 [project]
 name = "sdx-deliver"
-version = "4.0.12"
+version = "4.0.13"
 description = "Delivering for SDX"
 requires-python = "==3.13.*"
 dependencies = [
