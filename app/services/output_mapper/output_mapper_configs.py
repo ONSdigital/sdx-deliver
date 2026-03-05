@@ -8,12 +8,12 @@ DEFAULT_KEY: Final[str] = "default"
 
 SEFTOutputConfigProd: dict[str, File] = {
     "057": {
-        "location": LookupKey.NS3,
-        "path": "OF1/ITIS/ITIS_SDB/Submissions"
+        "location": LookupKey.FTP,
+        "path": "SDX_Prod/EDC_Submissions/057"
     },
     "058": {
-        "location": LookupKey.NS3,
-        "path": "OF1/ITIS/ITIS_SDB/Submissions"
+        "location": LookupKey.FTP,
+        "path": "SDX_Prod/EDC_Submissions/058"
     },
     "062": {
         "location": LookupKey.FTP,
@@ -71,12 +71,12 @@ SEFTOutputConfigProd: dict[str, File] = {
 
 SEFTOutputConfigPreProd: dict[str, File] = {
     "057": {
-        "location": LookupKey.NS3,
-        "path": "OF1/UAT Submissions"
+        "location": LookupKey.FTP,
+        "path": "SDX_PREPROD/EDC_Submissions/057"
     },
     "058": {
-        "location": LookupKey.NS3,
-        "path": "OF1/UAT Submissions"
+        "location": LookupKey.FTP,
+        "path": "SDX_PREPROD/EDC_Submissions/058"
     },
     "062": {
         "location": LookupKey.FTP,
