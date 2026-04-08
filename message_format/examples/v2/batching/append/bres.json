@@ -15,13 +15,22 @@
       "path": "survey",
       "filename": "7f64de49-07da-4065-8b07-5a6fd2cf9586"
     },
-    "actions": ["decrypt", "unzip"],
+    "actions": ["decrypt", "unzip", "batch"],
     "targets": [
       {
         "input": "A_7f64de4907da4065.txt",
         "outputs": [
           {
+            //where to do the batch?
+          },
+          {
             "batch": "A_master_file.txt"
+          },
+          {
+            "location_type": "windows_server",
+            "location_name": "NP123456",
+            "path": "SDX_PREPROD/IDBR/bres",
+            "filename": "A_master_file.txt"
           }
         ]
       },
