@@ -52,6 +52,7 @@ TestConfigWithoutDefault: dict[str, File] = {
     }
 }
 
+
 def create_test_context(survey_id: str) -> BusinessSurveyContext:
     return BusinessSurveyContext(
         survey_type=SurveyType.SEFT,
@@ -61,6 +62,7 @@ def create_test_context(survey_id: str) -> BusinessSurveyContext:
         ru_ref="60226421137",
         tx_id="016931f2-6230-4ca3-b84e-136e02e3f92b"
     )
+
 
 class TestSeftOutputMapper(unittest.TestCase):
 
@@ -126,7 +128,7 @@ class TestSeftOutputMapper(unittest.TestCase):
         output = self.output_mapper_prod.map_output(context)
         expected_output: File = {
                 "location": LookupKey.NS5,
-                "path": f"default_path/prod/non_existent_survey"
+                "path": "default_path/prod/non_existent_survey"
         }
 
         self.assertEqual(output, expected_output)
@@ -142,7 +144,7 @@ class TestSeftOutputMapper(unittest.TestCase):
         output = self.output_mapper_prod.map_output(context)
         expected_output: File = {
                 "location": LookupKey.NS5,
-                "path": f"default_path/prod/non_existent_survey_2"
+                "path": "default_path/prod/non_existent_survey_2"
         }
 
         self.assertEqual(output, expected_output)
@@ -154,7 +156,7 @@ class TestSeftOutputMapper(unittest.TestCase):
         output = self.output_mapper_preprod.map_output(context)
         expected_output: File = {
                 "location": LookupKey.NS5,
-                "path": f"default_path/preprod/non_existent_survey"
+                "path": "default_path/preprod/non_existent_survey"
         }
 
         self.assertEqual(output, expected_output)
