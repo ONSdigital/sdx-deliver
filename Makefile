@@ -22,6 +22,7 @@ lint:
 .PHONY: dev
 dev:
 	@echo "Starting development server..."
+	gcloud auth application-default login
 	uv run run.py
 
 
