@@ -75,7 +75,7 @@ class TestSEFTReceipt(TestBase):
                         {
                             "location_type": "windows_server",
                             "location_name": "nifi-location-ftp",
-                            "path": "SDX_PREPROD/EDC_QReceipts",
+                            "path": "SDX_PREPROD/SDC_QReceipts",
                             "filename": receipt_filename
                         }
                     ]

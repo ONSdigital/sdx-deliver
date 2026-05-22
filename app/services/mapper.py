@@ -1,7 +1,5 @@
-from typing import Optional
 
 from app.definitions.location import LocationBase
-from app.definitions.output_mapper import OutputMapperBase
 from app.definitions.submission_type import SubmissionTypeBase
 from app.definitions.submission_type_mapper import SubmissionTypeMapperBase
 from app.definitions.survey_type import SurveyType
@@ -54,5 +52,3 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
     def get_seft_output_mapper(self) -> SEFTOutputMapper:
         output_config = SEFTOutputConfigProd if self._location_service.is_prod_env() else SEFTOutputConfigPreProd
         return SEFTOutputMapper(output_config=output_config)
-
-

@@ -56,7 +56,7 @@
           {
             "location_type": "windows_server",
             "location_name": "NP123456",
-            "path": "SDX_PREPROD/EDC_QReceipts",
+            "path": "SDX_PREPROD/SDC_QReceipts",
             "filename": "REC0002_e10e8f37e1194d1f.dat"
           }
         ]

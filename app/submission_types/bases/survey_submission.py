@@ -42,7 +42,7 @@ class SurveySubmission(SubmissionType, ABC):
     def get_ftp_receipt(self) -> File:
         return {
             "location": LookupKey.FTP,
-            "path": f"{self._get_ftp_path()}/EDC_QReceipts"
+            "path": f"{self._get_ftp_path()}/SDC_QReceipts"
         }
 
     def get_ftp_eq_json(self) -> File:
