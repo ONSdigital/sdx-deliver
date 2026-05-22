@@ -67,8 +67,8 @@ class TestSeft(TestBase):
                     "outputs": [
                         {
                             "location_type": "windows_server",
-                            "location_name": "nifi-location-ftp",
-                            "path": "SDX_PREPROD/EDC_Submissions/057",
+                            "location_name": "nifi-location-ns3",
+                            "path": "OF1/UAT Submissions",
                             "filename": output_filename
                         }
                     ]
