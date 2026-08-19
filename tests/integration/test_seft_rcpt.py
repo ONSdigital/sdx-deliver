@@ -9,9 +9,9 @@ from app.definitions.survey_type import SurveyType
 from tests.integration.test_base import TestBase
 
 
-class TestSEFTReceipt(TestBase):
+class TestSEFTRcpt(TestBase):
 
-    def test_seft_receipt(self: Self):
+    def test_seft_rcpt(self: Self):
         tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
         input_filename = f"{tx_id}_receipt"
         tx_id_trunc = "c37a3efa-593c-4bab"
@@ -31,7 +31,7 @@ class TestSEFTReceipt(TestBase):
         zip_bytes = zip_buffer.getvalue()
 
         context = {
-            "survey_type": SurveyType.SEFT_RECEIPT,
+            "survey_type": SurveyType.SEFT_RCPT,
             "context_type": ContextType.BUSINESS_SURVEY,
             "tx_id": tx_id,
             "survey_id": survey_id,

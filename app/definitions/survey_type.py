@@ -9,7 +9,7 @@ class SurveyType(StrEnum):
     EQV2JSON_IMG_RCPT = "eqv2_img_rcpt"
     FEEDBACK = "feedback"
     SEFT = "seft"
-    SEFT_RECEIPT = "seft_receipt"
+    SEFT_RCPT = "seft_rcpt"
     EQV2JSON = "eqv2json"
     COMMENTS = "comments"
     PCK_IMG_RCPT = "pck_img_rcpt"

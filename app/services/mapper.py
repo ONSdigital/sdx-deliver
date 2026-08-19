@@ -30,7 +30,7 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
         elif survey_type == SurveyType.SEFT:
             seft_output_mapper = self.get_seft_output_mapper()
             return SeftSubmissionType(self._location_service, seft_output_mapper)
-        elif survey_type == SurveyType.SEFT_RECEIPT:
+        elif survey_type == SurveyType.SEFT_RCPT:
             return SEFTReceiptSubmissionType(self._location_service)
         elif survey_type == SurveyType.SPPJSON_IMG_RCPT:
             return SppSubmissionType(self._location_service)
