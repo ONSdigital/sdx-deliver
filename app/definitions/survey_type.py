@@ -2,14 +2,14 @@ from enum import StrEnum
 
 
 class SurveyType(StrEnum):
-    DAP = "dap"
+    EQV1JSON = "eqv1json"
     LEGACY = "legacy"
-    SPP = "spp"
-    ENVIRONMENTAL = "environmental"
-    MATERIALS = "materials"
+    SPPJSON_IMG_RCPT = "sppjson_img_rcpt"
+    EQV1JSON_IMG_RCPT = "eqv1_img_rcpt"
+    EQV2JSON_IMG_RCPT = "eqv2_img_rcpt"
     FEEDBACK = "feedback"
     SEFT = "seft"
     SEFT_RECEIPT = "seft_receipt"
-    ADHOC = "adhoc"
+    EQV2JSON = "eqv2json"
     COMMENTS = "comments"
-    DEXTA = "dexta"
+    PCK_IMG_RCPT = "pck_img_rcpt"

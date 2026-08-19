@@ -9,36 +9,36 @@ from app.definitions.survey_type import SurveyType
 from tests.integration.test_base import TestBase
 
 
-class TestMaterials(TestBase):
+class TestSppjsonImgRcpt(TestBase):
 
-    def test_materials_survey(self: Self):
+    def test_sppjson_img_rcpt_survey(self: Self):
         tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
         input_filename = tx_id
         tx_id_trunc = "c37a3efa-593c-4bab"
-        survey_id = "024"
-        period_id = "201605"
-        ru_ref = "12346789012A"
+        survey_id = "009"
+        period_id = "202505"
+        ru_ref = "49900000001A"
         submission_date_str = "20210105"
         submission_date_dm = "0501"
 
-        json_filename = f"{survey_id}_{ru_ref}_{period_id}.json"
         image_filename = f"S{tx_id_trunc}_1.JPG"
         index_filename = f"EDC_{survey_id}_{submission_date_str}_{tx_id_trunc}.csv"
         receipt_filename = f"REC{submission_date_dm}_{tx_id_trunc}.DAT"
+        spp_filename = f"{survey_id}_{submission_date_str}_{tx_id}.json"
 
         # Create the input zipfile
         zip_buffer = io.BytesIO()
 
         with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-            zip_file.writestr(json_filename, 'This is the content of the json file.')
             zip_file.writestr(image_filename, 'This is the content of image file.')
             zip_file.writestr(index_filename, 'This is the content of index file.')
             zip_file.writestr(receipt_filename, 'This is the content of the receipt file.')
+            zip_file.writestr(spp_filename, "This is the content of the spp json file.")
 
         zip_bytes = zip_buffer.getvalue()
 
         context = {
-            "survey_type": SurveyType.MATERIALS,
+            "survey_type": SurveyType.SPPJSON_IMG_RCPT,
             "context_type": ContextType.BUSINESS_SURVEY,
             "tx_id": tx_id,
             "survey_id": survey_id,
@@ -77,17 +77,6 @@ class TestMaterials(TestBase):
             "actions": ["decrypt", "unzip"],
             "targets": [
                 {
-                    "input": json_filename,
-                    "outputs": [
-                        {
-                            "location_type": "windows_server",
-                            "location_name": "nifi-location-ftp",
-                            "path": "bdd_ogd/Submissions_Preprod",
-                            "filename": json_filename
-                        }
-                    ]
-                },
-                {
                     "input": image_filename,
                     "outputs": [
                         {
@@ -117,6 +106,17 @@ class TestMaterials(TestBase):
                             "location_name": "nifi-location-ftp",
                             "path": "SDX_PREPROD/SDC_QReceipts",
                             "filename": receipt_filename
+                        }
+                    ]
+                },
+                {
+                    "input": spp_filename,
+                    "outputs": [
+                        {
+                            "location_type": "s3",
+                            "location_name": "nifi-location-spp",
+                            "path": f"sdc-response/{survey_id}/",
+                            "filename": spp_filename
                         }
                     ]
                 }

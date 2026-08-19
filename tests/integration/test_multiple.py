@@ -26,7 +26,7 @@ class TestMultiple(TestBase):
         zip_bytes = zip_buffer.getvalue()
 
         context = {
-            "survey_type": SurveyType.ADHOC,
+            "survey_type": SurveyType.EQV2JSON,
             "context_type": ContextType.ADHOC_SURVEY,
             "tx_id": tx_id,
             "survey_id": survey_id,
@@ -47,7 +47,7 @@ class TestMultiple(TestBase):
 
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92c"
         context = {
-            "survey_type": SurveyType.ADHOC,
+            "survey_type": SurveyType.EQV2JSON,
             "context_type": ContextType.ADHOC_SURVEY,
             "tx_id": tx_id,
             "survey_id": survey_id,

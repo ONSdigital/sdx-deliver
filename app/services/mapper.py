@@ -25,26 +25,26 @@ class SubmissionTypeMapper(SubmissionTypeMapperBase):
 
     def get_submission_type(self,
                             survey_type: SurveyType) -> SubmissionTypeBase:
-        if survey_type == SurveyType.ADHOC:
+        if survey_type == SurveyType.EQV2JSON:
             return AdhocSubmissionType(self._location_service)
         elif survey_type == SurveyType.SEFT:
             seft_output_mapper = self.get_seft_output_mapper()
             return SeftSubmissionType(self._location_service, seft_output_mapper)
         elif survey_type == SurveyType.SEFT_RECEIPT:
             return SEFTReceiptSubmissionType(self._location_service)
-        elif survey_type == SurveyType.SPP:
+        elif survey_type == SurveyType.SPPJSON_IMG_RCPT:
             return SppSubmissionType(self._location_service)
         elif survey_type == SurveyType.FEEDBACK:
             return FeedbackSubmissionType(self._location_service)
         elif survey_type == SurveyType.COMMENTS:
             return CommentsSubmissionType(self._location_service)
-        elif survey_type == SurveyType.DAP:
+        elif survey_type == SurveyType.EQV1JSON:
             return DapSubmissionType(self._location_service)
-        elif survey_type == SurveyType.ENVIRONMENTAL:
+        elif survey_type == SurveyType.EQV1JSON_IMG_RCPT:
             return EnvironmentalSubmissionType(self._location_service)
-        elif survey_type == SurveyType.MATERIALS:
+        elif survey_type == SurveyType.EQV2JSON_IMG_RCPT:
             return MaterialsSubmissionType(self._location_service)
-        elif survey_type == SurveyType.DEXTA:
+        elif survey_type == SurveyType.PCK_IMG_RCPT:
             return DextaSubmissionType(self._location_service)
         else:
             return LegacySubmissionType(self._location_service)

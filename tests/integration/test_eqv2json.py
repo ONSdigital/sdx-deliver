@@ -9,9 +9,9 @@ from app.definitions.survey_type import SurveyType
 from tests.integration.test_base import TestBase
 
 
-class TestAdhoc(TestBase):
+class TestEqv2json(TestBase):
 
-    def test_adhoc(self: Self):
+    def test_eqv2json(self: Self):
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
         input_filename = tx_id
         output_filename = f'{tx_id}.json'
@@ -27,7 +27,7 @@ class TestAdhoc(TestBase):
         zip_bytes = zip_buffer.getvalue()
 
         context = {
-            "survey_type": SurveyType.ADHOC,
+            "survey_type": SurveyType.EQV2JSON,
             "context_type": ContextType.ADHOC_SURVEY,
             "tx_id": tx_id,
             "survey_id": survey_id,

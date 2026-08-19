@@ -9,19 +9,19 @@ from app.definitions.survey_type import SurveyType
 from tests.integration.test_base import TestBase
 
 
-class TestDexta(TestBase):
+class TestEqv1ImgRcpt(TestBase):
 
-    def test_dexta_survey(self: Self):
+    def test_eqv1_img_rcpt_survey(self: Self):
         tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
         input_filename = tx_id
         tx_id_trunc = "c37a3efa-593c-4bab"
-        survey_id = "066"
+        survey_id = "007"
         period_id = "201605"
         ru_ref = "12346789012A"
         submission_date_str = "20210105"
         submission_date_dm = "0501"
 
-        pck_filename = tx_id
+        json_filename = f"{survey_id}_{tx_id_trunc}.json"
         image_filename = f"S{tx_id_trunc}_1.JPG"
         index_filename = f"EDC_{survey_id}_{submission_date_str}_{tx_id_trunc}.csv"
         receipt_filename = f"REC{submission_date_dm}_{tx_id_trunc}.DAT"
@@ -30,7 +30,7 @@ class TestDexta(TestBase):
         zip_buffer = io.BytesIO()
 
         with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-            zip_file.writestr(pck_filename, 'This is the content of the pck file.')
+            zip_file.writestr(json_filename, 'This is the content of the json file.')
             zip_file.writestr(image_filename, 'This is the content of image file.')
             zip_file.writestr(index_filename, 'This is the content of index file.')
             zip_file.writestr(receipt_filename, 'This is the content of the receipt file.')
@@ -38,7 +38,7 @@ class TestDexta(TestBase):
         zip_bytes = zip_buffer.getvalue()
 
         context = {
-            "survey_type": SurveyType.DEXTA,
+            "survey_type": SurveyType.EQV1JSON_IMG_RCPT,
             "context_type": ContextType.BUSINESS_SURVEY,
             "tx_id": tx_id,
             "survey_id": survey_id,
@@ -77,13 +77,13 @@ class TestDexta(TestBase):
             "actions": ["decrypt", "unzip"],
             "targets": [
                 {
-                    "input": pck_filename,
+                    "input": json_filename,
                     "outputs": [
                         {
                             "location_type": "windows_server",
-                            "location_name": "nifi-location-ftp",
-                            "path": "SDX_PREPROD/SDC_QData",
-                            "filename": pck_filename
+                            "location_name": "nifi-location-ns5",
+                            "path": f"lcres/LCRES_EQ_data/preprod/{period_id}/v1",
+                            "filename": json_filename
                         }
                     ]
                 },

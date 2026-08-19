@@ -9,19 +9,19 @@ from app.definitions.survey_type import SurveyType
 from tests.integration.test_base import TestBase
 
 
-class TestEnvironmental(TestBase):
+class TestEqv2jsonImgRcpt(TestBase):
 
-    def test_environmental_survey(self: Self):
+    def test_eqv2json_img_rcpt(self: Self):
         tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
         input_filename = tx_id
         tx_id_trunc = "c37a3efa-593c-4bab"
-        survey_id = "007"
+        survey_id = "024"
         period_id = "201605"
         ru_ref = "12346789012A"
         submission_date_str = "20210105"
         submission_date_dm = "0501"
 
-        json_filename = f"{survey_id}_{tx_id_trunc}.json"
+        json_filename = f"{survey_id}_{ru_ref}_{period_id}.json"
         image_filename = f"S{tx_id_trunc}_1.JPG"
         index_filename = f"EDC_{survey_id}_{submission_date_str}_{tx_id_trunc}.csv"
         receipt_filename = f"REC{submission_date_dm}_{tx_id_trunc}.DAT"
@@ -38,7 +38,7 @@ class TestEnvironmental(TestBase):
         zip_bytes = zip_buffer.getvalue()
 
         context = {
-            "survey_type": SurveyType.ENVIRONMENTAL,
+            "survey_type": SurveyType.EQV2JSON_IMG_RCPT,
             "context_type": ContextType.BUSINESS_SURVEY,
             "tx_id": tx_id,
             "survey_id": survey_id,
@@ -81,8 +81,8 @@ class TestEnvironmental(TestBase):
                     "outputs": [
                         {
                             "location_type": "windows_server",
-                            "location_name": "nifi-location-ns5",
-                            "path": f"lcres/LCRES_EQ_data/preprod/{period_id}/v1",
+                            "location_name": "nifi-location-ftp",
+                            "path": "bdd_ogd/Submissions_Preprod",
                             "filename": json_filename
                         }
                     ]
