@@ -9,29 +9,25 @@ from app.definitions.survey_type import SurveyType
 from tests.integration.test_base import TestBase
 
 
-class TestSEFTReceipt(TestBase):
+class TestEqv1json(TestBase):
 
-    def test_seft_receipt(self: Self):
-        tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
-        input_filename = f"{tx_id}_receipt"
-        tx_id_trunc = "c37a3efa-593c-4bab"
-        survey_id = "066"
-        period_id = "201605"
-        ru_ref = "12346789012A"
-        submission_date_dm = "0501"
+    def test_eqv1json(self: Self):
+        tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
+        input_filename = tx_id
+        output_filename = f'{tx_id}.json'
+        survey_id = "283"
+        period_id = "202505"
+        ru_ref = "49900000001A"
 
-        receipt_filename = f"REC{submission_date_dm}_{tx_id_trunc}.DAT"
-
-        # Create the input zipfile
         zip_buffer = io.BytesIO()
 
         with zipfile.ZipFile(zip_buffer, 'w', zipfile.ZIP_DEFLATED) as zip_file:
-            zip_file.writestr(receipt_filename, 'This is the content of the receipt file.')
+            zip_file.writestr(output_filename, "This is the content of the json file.")
 
         zip_bytes = zip_buffer.getvalue()
 
         context = {
-            "survey_type": SurveyType.SEFT_RECEIPT,
+            "survey_type": SurveyType.EQV1JSON,
             "context_type": ContextType.BUSINESS_SURVEY,
             "tx_id": tx_id,
             "survey_id": survey_id,
@@ -39,7 +35,7 @@ class TestSEFTReceipt(TestBase):
             "ru_ref": ru_ref,
         }
 
-        response = self.client.post("/deliver/v2/seft_receipt",
+        response = self.client.post("/deliver/v2/survey",
                                params={
                                    "filename": input_filename,
                                    "context": json.dumps(context),
@@ -70,13 +66,13 @@ class TestSEFTReceipt(TestBase):
             "actions": ["decrypt", "unzip"],
             "targets": [
                 {
-                    "input": receipt_filename,
+                    "input": output_filename,
                     "outputs": [
                         {
                             "location_type": "windows_server",
-                            "location_name": "nifi-location-ftp",
-                            "path": "SDX_PREPROD/SDC_QReceipts",
-                            "filename": receipt_filename
+                            "location_name": "nifi-location-dap",
+                            "path": f"Covid_Survey/pre-prod/{survey_id}/{period_id}/v1",
+                            "filename": output_filename
                         }
                     ]
                 }

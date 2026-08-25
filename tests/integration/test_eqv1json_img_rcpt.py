@@ -9,9 +9,9 @@ from app.definitions.survey_type import SurveyType
 from tests.integration.test_base import TestBase
 
 
-class TestEnvironmental(TestBase):
+class TestEqv1ImgRcpt(TestBase):
 
-    def test_environmental_survey(self: Self):
+    def test_eqv1_img_rcpt_survey(self: Self):
         tx_id = "c37a3efa-593c-4bab-b49c-bee0613c4fb2"
         input_filename = tx_id
         tx_id_trunc = "c37a3efa-593c-4bab"
@@ -38,7 +38,7 @@ class TestEnvironmental(TestBase):
         zip_bytes = zip_buffer.getvalue()
 
         context = {
-            "survey_type": SurveyType.ENVIRONMENTAL,
+            "survey_type": SurveyType.EQV1JSON_IMG_RCPT,
             "context_type": ContextType.BUSINESS_SURVEY,
             "tx_id": tx_id,
             "survey_id": survey_id,
