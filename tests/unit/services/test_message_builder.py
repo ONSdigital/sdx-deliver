@@ -64,7 +64,7 @@ class TestMessageBuilder(unittest.TestCase):
         filename_list = ["file1", "file2"]
         context: Context = Context(
             tx_id = "123",
-            survey_type = SurveyType.SPP,
+            survey_type = SurveyType.SPPJSON_IMG_RCPT,
             context_type = ContextType.BUSINESS_SURVEY
         )
         target_list = self.message_builder.get_targets(filename_list,
@@ -145,7 +145,7 @@ class TestMessageBuilder(unittest.TestCase):
     def test_get_adhoc_context(self: Self):
         context: AdhocSurveyContext = AdhocSurveyContext(
             tx_id = "123",
-            survey_type = SurveyType.ADHOC,
+            survey_type = SurveyType.EQV2JSON,
             context_type = ContextType.ADHOC_SURVEY,
             survey_id = "101",
             title = "101 survey response for adhoc survey",

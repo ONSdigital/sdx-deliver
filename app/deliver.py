@@ -68,7 +68,7 @@ class Deliver:
 def _get_survey_id(context: Context) -> str:
     if context.survey_type == SurveyType.COMMENTS:
         return "Comments"
-    elif context.survey_type == SurveyType.ADHOC:
+    elif context.survey_type == SurveyType.EQV2JSON:
         adhoc_context: AdhocSurveyContext = cast(AdhocSurveyContext, context)
         return adhoc_context.survey_id
     else:

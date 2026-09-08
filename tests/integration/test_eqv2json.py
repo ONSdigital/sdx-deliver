@@ -9,15 +9,15 @@ from app.definitions.survey_type import SurveyType
 from tests.integration.test_base import TestBase
 
 
-class TestDap(TestBase):
+class TestEqv2json(TestBase):
 
-    def test_dap(self: Self):
+    def test_eqv2json(self: Self):
         tx_id = "016931f2-6230-4ca3-b84e-136e02e3f92b"
         input_filename = tx_id
         output_filename = f'{tx_id}.json'
-        survey_id = "283"
-        period_id = "202505"
-        ru_ref = "49900000001A"
+        survey_id = "740"
+        title = "covid_resp_inf_surv_response"
+        label = "phm_740_health_insights_2024"
 
         zip_buffer = io.BytesIO()
 
@@ -27,15 +27,15 @@ class TestDap(TestBase):
         zip_bytes = zip_buffer.getvalue()
 
         context = {
-            "survey_type": SurveyType.DAP,
-            "context_type": ContextType.BUSINESS_SURVEY,
+            "survey_type": SurveyType.EQV2JSON,
+            "context_type": ContextType.ADHOC_SURVEY,
             "tx_id": tx_id,
             "survey_id": survey_id,
-            "period_id": period_id,
-            "ru_ref": ru_ref,
+            "title": title,
+            "label": label,
         }
 
-        response = self.client.post("/deliver/v2/survey",
+        response = self.client.post("/deliver/v2/adhoc",
                                params={
                                    "filename": input_filename,
                                    "context": json.dumps(context),
@@ -53,9 +53,9 @@ class TestDap(TestBase):
             "md5sum": "md5sum",
             "context": {
                 "survey_id": survey_id,
-                "period_id": period_id,
-                "ru_ref": ru_ref,
-                "context_type": ContextType.BUSINESS_SURVEY,
+                "title": title,
+                "label": label,
+                "context_type": ContextType.ADHOC_SURVEY,
             },
             "source": {
                 "location_type": "gcs",
@@ -63,15 +63,15 @@ class TestDap(TestBase):
                 "path": "survey",
                 "filename": input_filename
             },
-            "actions": ["decrypt", "unzip"],
+            "actions": ["decrypt", "unzip", "batch"],
             "targets": [
                 {
                     "input": output_filename,
                     "outputs": [
                         {
-                            "location_type": "windows_server",
-                            "location_name": "nifi-location-dap",
-                            "path": f"Covid_Survey/pre-prod/{survey_id}/{period_id}/v1",
+                            "location_type": "cdp",
+                            "location_name": "nifi-location-cdp",
+                            "path": "dapsen/landing_zone/ons/covid_resp_inf_surv_response/test/phm_740_health_insights_2024/v1/",
                             "filename": output_filename
                         }
                     ]
