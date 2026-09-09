@@ -21,6 +21,7 @@ class LocationNameSettings(Protocol):
     nifi_location_ns2: SECRET
     nifi_location_ns3: SECRET
     nifi_location_ld7: SECRET
+    nifi_location_ns1: SECRET
     def get_bucket_name(self) -> str: ...
 
 
@@ -37,6 +38,7 @@ class LocationService(LocationBase, metaclass=AbstractSingleton):
         ns2_key: str = str(LookupKey.NS2.value)
         ns3_key: str = str(LookupKey.NS3.value)
         ld7_key: str = str(LookupKey.LD7.value)
+        ns1_key: str = str(LookupKey.NS1.value)
         self._location_keys: dict[str, LocationKey] = {
             ftp_key: {
                 "location_type": WINDOWS_SERVER,
@@ -73,6 +75,10 @@ class LocationService(LocationBase, metaclass=AbstractSingleton):
             ld7_key: {
                 "location_type": WINDOWS_SERVER,
                 "location_name": self._get_location_name(LookupKey.LD7)
+            },
+            ns1_key: {
+                "location_type": WINDOWS_SERVER,
+                "location_name": self._get_location_name(LookupKey.NS1)
             }
         }
 
@@ -93,6 +99,8 @@ class LocationService(LocationBase, metaclass=AbstractSingleton):
             return self._settings.nifi_location_ns3
         elif key == LookupKey.LD7:
             return self._settings.nifi_location_ld7
+        elif key == LookupKey.NS1:
+            return self._settings.nifi_location_ns1
         else:
             # return sdx location
             return self._settings.get_bucket_name()

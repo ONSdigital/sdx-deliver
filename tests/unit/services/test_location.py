@@ -14,6 +14,7 @@ NIFI_LOCATION_NS2: Final[str] = "ns2_location_name"
 NIFI_LOCATION_CDP: Final[str] = "cdp_location_name"
 NIFI_LOCATION_NS3: Final[str] = "ns3_location_name"
 NIFI_LOCATION_LD7: Final[str] = "ld7_location_name"
+NIFI_LOCATION_NS1: Final[str] = "ns1_location_name"
 
 
 class LocationNameSettings:
@@ -26,6 +27,7 @@ class LocationNameSettings:
     nifi_location_cdp = NIFI_LOCATION_CDP
     nifi_location_ns3 = NIFI_LOCATION_NS3
     nifi_location_ld7 = NIFI_LOCATION_LD7
+    nifi_location_ns1 = NIFI_LOCATION_NS1
 
     def get_bucket_name(self) -> str:
         return "test-bucket"
@@ -87,5 +89,14 @@ class TestLocationService(unittest.TestCase):
             "location_name": NIFI_LOCATION_LD7}
 
         value = self.location_service.get_location_key(LookupKey.LD7)
+
+        self.assertEqual(expected, value)
+
+    def test_lookup_ns1(self: Self):
+        expected: LocationKey = {
+            "location_type": WINDOWS_SERVER,
+            "location_name": NIFI_LOCATION_NS1}
+
+        value = self.location_service.get_location_key(LookupKey.NS1)
 
         self.assertEqual(expected, value)
