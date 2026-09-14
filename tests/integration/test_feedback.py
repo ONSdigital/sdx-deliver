@@ -70,8 +70,8 @@ class TestFeedback(TestBase):
                     "outputs": [
                         {
                             "location_type": "windows_server",
-                            "location_name": "nifi-location-ftp",
-                            "path": "SDX_PREPROD/EDC_QFeedback",
+                            "location_name": "nifi-location-ns1",
+                            "path": "sdc_feedback/test",
                             "filename": output_filename
                         }
                     ]
@@ -140,8 +140,8 @@ class TestFeedback(TestBase):
                     "outputs": [
                         {
                             "location_type": "windows_server",
-                            "location_name": "nifi-location-ftp",
-                            "path": "SDX_PREPROD/EDC_QFeedback",
+                            "location_name": "nifi-location-ns1",
+                            "path": "sdc_feedback/test",
                             "filename": output_filename
                         }
                     ]

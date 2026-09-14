@@ -26,8 +26,8 @@ class FeedbackSubmissionType(SubmissionType):
     def get_file_config(self, context: BusinessSurveyContext) -> dict[str, list[File]]:
         return {
             _JSON: [{
-                "location": LookupKey.FTP,
-                "path": f"{self._get_ftp_path()}/EDC_QFeedback"
+                "location": LookupKey.NS1,
+                "path": "sdc_feedback" if self._is_prod_env() else "sdc_feedback/test"
             }]
         }
 

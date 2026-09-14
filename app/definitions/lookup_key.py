@@ -10,4 +10,5 @@ class LookupKey(StrEnum):
     CDP = "cdp"
     NS2 = "ns2"
     NS3 = "ns3"
+    NS1 = "ns1"
     LD7 = "ld7"
